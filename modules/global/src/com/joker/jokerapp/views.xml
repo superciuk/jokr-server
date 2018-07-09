@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
-    <view class="com.joker.jokerapp.entity.ProductCategory"
+    <view class="com.joker.jokerapp.entity.ProductItemCategory"
           extends="_local"
           name="productCategory-view"/>
+    <view class="com.joker.jokerapp.entity.ProductItem"
+          extends="_local"
+          name="productItem-view">
+        <property name="category"
+                  view="productCategory-view"/>
+    </view>
 </views>

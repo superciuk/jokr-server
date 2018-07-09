@@ -8,7 +8,9 @@ import com.haulmont.cuba.core.entity.StandardEntity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import com.haulmont.chile.core.annotations.NamePattern;
 
+@NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_ITEM")
 @Entity(name = "jokerapp$ProductItem")
 public class ProductItem extends StandardEntity {
@@ -21,15 +23,28 @@ public class ProductItem extends StandardEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "CATEGORY_ID")
-    protected ProductCategory category;
+    protected ProductItemCategory category;
 
-    public void setCategory(ProductCategory category) {
+    @Column(name = "VISIBLE")
+    protected Boolean visible;
+
+    public ProductItemCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ProductItemCategory category) {
         this.category = category;
     }
 
-    public ProductCategory getCategory() {
-        return category;
+
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
     }
+
+    public Boolean getVisible() {
+        return visible;
+    }
+
 
 
     public void setName(String name) {

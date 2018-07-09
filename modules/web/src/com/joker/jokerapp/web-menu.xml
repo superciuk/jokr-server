@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <menu-config xmlns="http://schemas.haulmont.com/cuba/menu.xsd">
-    <menu id="application-jokerapp" insertBefore="administration">
+    <menu id="application-jokerapp"
+          insertBefore="administration">
+        <item screen="jokerapp$ProductCategory.browse"/>
+        <item screen="jokerapp$ProductItem.browse"/>
     </menu>
 </menu-config>
