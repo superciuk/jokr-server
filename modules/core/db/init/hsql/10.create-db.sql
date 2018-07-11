@@ -96,6 +96,7 @@ create table JOKERAPP_TICKET_ITEM_LINE (
     --
     QUANTITY integer not null,
     PRODUCT_ITEM_ID varchar(36) not null,
+    TICKET_ITEM_ID varchar(36) not null,
     --
     primary key (ID)
 )^

@@ -26,6 +26,19 @@ public class TicketItemLine extends StandardEntity {
     @JoinColumn(name = "PRODUCT_ITEM_ID")
     protected ProductItem productItem;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "TICKET_ITEM_ID")
+    protected TicketItem ticketItem;
+
+    public void setTicketItem(TicketItem ticketItem) {
+        this.ticketItem = ticketItem;
+    }
+
+    public TicketItem getTicketItem() {
+        return ticketItem;
+    }
+
+
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }

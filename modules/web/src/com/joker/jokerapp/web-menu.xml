@@ -2,7 +2,7 @@
 <menu-config xmlns="http://schemas.haulmont.com/cuba/menu.xsd">
     <menu id="application-jokerapp"
           insertBefore="administration">
-        <item screen="jokerapp$ProductCategory.browse"/>
         <item screen="jokerapp$ProductItem.browse"/>
+        <item screen="jokerapp$ProductItemCategory.browse"/>
     </menu>
 </menu-config>

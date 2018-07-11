@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://browseCaption"
-        class="com.joker.jokerapp.web.productitem.ProductItemBrowse"
-        focusComponent="productItemsTable"
-        lookupComponent="productItemsTable"
-        messagesPack="com.joker.jokerapp.web.productitem">
+        class="com.joker.jokerapp.web.productitemcategory.ProductItemCategoryBrowse"
+        focusComponent="productItemCategoriesTable"
+        lookupComponent="productItemCategoriesTable"
+        messagesPack="com.joker.jokerapp.web.productitemcategory">
     <dsContext>
-        <groupDatasource id="productItemsDs"
-                         class="com.joker.jokerapp.entity.ProductItem"
-                         view="productItem-view">
+        <groupDatasource id="productItemCategoriesDs"
+                         class="com.joker.jokerapp.entity.ProductItemCategory"
+                         view="productCategory-view">
             <query>
-                <![CDATA[select e from jokerapp$ProductItem e]]>
+                <![CDATA[select e from jokerapp$ProductItemCategory e]]>
             </query>
         </groupDatasource>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
-    <layout expand="productItemsTable"
+    <layout expand="productItemCategoriesTable"
             spacing="true">
         <filter id="filter"
-                applyTo="productItemsTable"
-                datasource="productItemsDs">
+                applyTo="productItemCategoriesTable"
+                datasource="productItemCategoriesDs">
             <properties include=".*"/>
         </filter>
-        <groupTable id="productItemsTable"
+        <groupTable id="productItemCategoriesTable"
                     multiselect="true"
                     width="100%">
             <actions>
@@ -33,19 +33,19 @@
             </actions>
             <columns>
                 <column id="name"/>
-                <column id="category"/>
                 <column id="visible"/>
+                <column id="sortOrder"/>
             </columns>
-            <rows datasource="productItemsDs"/>
+            <rows datasource="productItemCategoriesDs"/>
             <rowsCount/>
             <buttonsPanel id="buttonsPanel"
                           alwaysVisible="true">
                 <button id="createBtn"
-                        action="productItemsTable.create"/>
+                        action="productItemCategoriesTable.create"/>
                 <button id="editBtn"
-                        action="productItemsTable.edit"/>
+                        action="productItemCategoriesTable.edit"/>
                 <button id="removeBtn"
-                        action="productItemsTable.remove"/>
+                        action="productItemCategoriesTable.remove"/>
             </buttonsPanel>
         </groupTable>
     </layout>
