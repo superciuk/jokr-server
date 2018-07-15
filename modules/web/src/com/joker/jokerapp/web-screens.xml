@@ -9,4 +9,8 @@
             template="com/joker/jokerapp/web/productitemcategory/product-item-category-browse.xml"/>
     <screen id="jokerapp$ProductItemCategory.edit"
             template="com/joker/jokerapp/web/productitemcategory/product-item-category-edit.xml"/>
+    <screen id="jokerapp$Printer.browse"
+            template="com/joker/jokerapp/web/printer/printer-browse.xml"/>
+    <screen id="jokerapp$PrinterGroup.browse"
+            template="com/joker/jokerapp/web/printergroup/printer-group-browse.xml"/>
 </screen-config>

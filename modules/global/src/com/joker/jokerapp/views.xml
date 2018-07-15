@@ -8,5 +8,19 @@
           name="productItem-view">
         <property name="category"
                   view="productCategory-view"/>
+        <property name="printerGroup"
+                  view="_minimal">
+            <property name="printer"
+                      view="_minimal"/>
+        </property>
+    </view>
+    <view class="com.joker.jokerapp.entity.Printer"
+          extends="_local"
+          name="printer-view"/>
+    <view class="com.joker.jokerapp.entity.PrinterGroup"
+          extends="_local"
+          name="printerGroup-view">
+        <property name="printer"
+                  view="_minimal"/>
     </view>
 </views>

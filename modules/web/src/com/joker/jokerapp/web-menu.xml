@@ -4,5 +4,7 @@
           insertBefore="administration">
         <item screen="jokerapp$ProductItem.browse"/>
         <item screen="jokerapp$ProductItemCategory.browse"/>
+        <item screen="jokerapp$Printer.browse"/>
+        <item screen="jokerapp$PrinterGroup.browse"/>
     </menu>
 </menu-config>

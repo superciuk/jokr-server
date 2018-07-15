@@ -35,6 +35,9 @@
                 <column id="name"/>
                 <column id="category"/>
                 <column id="visible"/>
+                <column id="price"/>
+                <column id="sortOrder"/>
+                <column id="printerGroup"/>
             </columns>
             <rows datasource="productItemsDs"/>
             <rowsCount/>

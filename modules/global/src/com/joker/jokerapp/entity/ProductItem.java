@@ -20,13 +20,51 @@ public class ProductItem extends StandardEntity {
     @Column(name = "NAME", nullable = false, length = 100)
     protected String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRINTER_GROUP_ID")
+    protected PrinterGroup printerGroup;
+
+    @Column(name = "SORT_ORDER")
+    protected Integer sortOrder;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "CATEGORY_ID")
     protected ProductItemCategory category;
 
+    @NotNull
+    @Column(name = "PRICE", nullable = false)
+    protected Double price;
+
     @Column(name = "VISIBLE")
     protected Boolean visible;
+
+    public void setPrinterGroup(PrinterGroup printerGroup) {
+        this.printerGroup = printerGroup;
+    }
+
+    public PrinterGroup getPrinterGroup() {
+        return printerGroup;
+    }
+
+
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
 
     public ProductItemCategory getCategory() {
         return category;

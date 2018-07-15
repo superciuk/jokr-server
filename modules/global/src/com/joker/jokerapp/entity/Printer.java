@@ -11,7 +11,7 @@ import com.haulmont.chile.core.annotations.NamePattern;
 @Table(name = "JOKERAPP_PRINTER")
 @Entity(name = "jokerapp$Printer")
 public class Printer extends StandardEntity {
-    private static final long serialVersionUID = -2719994457085713347L;
+    private static final long serialVersionUID = -86873518909824558L;
 
     @NotNull
     @Column(name = "NAME", nullable = false)

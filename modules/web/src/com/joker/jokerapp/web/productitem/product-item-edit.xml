@@ -21,6 +21,9 @@
                 <field property="name"/>
                 <field property="category"/>
                 <field property="visible"/>
+                <field property="price"/>
+                <field property="sortOrder"/>
+                <field property="printerGroup"/>
             </column>
         </fieldGroup>
         <frame id="windowActions"

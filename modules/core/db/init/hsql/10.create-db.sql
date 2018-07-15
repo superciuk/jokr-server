@@ -10,7 +10,10 @@ create table JOKERAPP_PRODUCT_ITEM (
     DELETED_BY varchar(50),
     --
     NAME varchar(100) not null,
+    PRINTER_GROUP_ID varchar(36),
+    SORT_ORDER integer,
     CATEGORY_ID varchar(36) not null,
+    PRICE double precision not null,
     VISIBLE boolean,
     --
     primary key (ID)
@@ -46,6 +49,7 @@ create table JOKERAPP_TICKET_ITEM (
     DELETED_BY varchar(50),
     --
     PAID boolean not null,
+    TABLE_ITEM_ID varchar(36) not null,
     --
     primary key (ID)
 )^
@@ -137,23 +141,7 @@ create table JOKERAPP_PRODUCT_MODIFIER (
     primary key (ID)
 )^
 -- end JOKERAPP_PRODUCT_MODIFIER
--- begin JOKERAPP_TAX
-create table JOKERAPP_TAX (
-    ID varchar(36) not null,
-    VERSION integer not null,
-    CREATE_TS timestamp,
-    CREATED_BY varchar(50),
-    UPDATE_TS timestamp,
-    UPDATED_BY varchar(50),
-    DELETE_TS timestamp,
-    DELETED_BY varchar(50),
-    --
-    NAME varchar(255) not null,
-    RATE double precision not null,
-    --
-    primary key (ID)
-)^
--- end JOKERAPP_TAX
+
 -- begin JOKERAPP_PRINTER
 create table JOKERAPP_PRINTER (
     ID varchar(36) not null,
@@ -170,3 +158,20 @@ create table JOKERAPP_PRINTER (
     primary key (ID)
 )^
 -- end JOKERAPP_PRINTER
+-- begin JOKERAPP_PRINTER_GROUP
+create table JOKERAPP_PRINTER_GROUP (
+    ID varchar(36) not null,
+    VERSION integer not null,
+    CREATE_TS timestamp,
+    CREATED_BY varchar(50),
+    UPDATE_TS timestamp,
+    UPDATED_BY varchar(50),
+    DELETE_TS timestamp,
+    DELETED_BY varchar(50),
+    --
+    NAME varchar(255) not null,
+    PRINTER_ID varchar(36) not null,
+    --
+    primary key (ID)
+)^
+-- end JOKERAPP_PRINTER_GROUP

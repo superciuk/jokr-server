@@ -11,6 +11,10 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
+import java.util.List;
+import javax.persistence.OneToMany;
+import com.haulmont.chile.core.annotations.MetaProperty;
+import javax.persistence.Transient;
 
 @NamePattern("%s - %s|area,number")
 @Table(name = "JOKERAPP_TABLE_ITEM")
@@ -22,11 +26,30 @@ public class TableItem extends StandardEntity {
     @Column(name = "NUMBER_", nullable = false)
     protected Integer number;
 
+    @OneToMany(mappedBy = "tableItem")
+    protected List<TicketItem> ticketItems;
+
     @NotNull
     @Lookup(type = LookupType.DROPDOWN)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "AREA_ID")
     protected TableItemArea area;
+
+    @MetaProperty(related = "ticketItems")
+    public String getStatus() {
+        return null;
+    }
+
+
+
+    public void setTicketItems(List<TicketItem> ticketItems) {
+        this.ticketItems = ticketItems;
+    }
+
+    public List<TicketItem> getTicketItems() {
+        return ticketItems;
+    }
+
 
     public TableItemArea getArea() {
         return area;
