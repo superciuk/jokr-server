@@ -23,6 +23,7 @@ def globalModule = project(":${modulePrefix}-global")
 def coreModule = project(":${modulePrefix}-core")
 def guiModule = project(":${modulePrefix}-gui")
 def webModule = project(":${modulePrefix}-web")
+def polymerClientModule = project(":${modulePrefix}-polymer-client")
 
 def servletApi = 'org.apache.tomcat:tomcat-servlet-api:8.0.26'
 
@@ -38,6 +39,9 @@ cuba {
     }
     tomcat {
         dir = "$project.rootDir/deploy/tomcat"
+    }
+    ide {
+        vcs = 'Git'
     }
 }
 
@@ -184,6 +188,40 @@ configure(webModule) {
     }
 }
 
+configure(polymerClientModule) {
+    apply(plugin: 'cuba')
+    apply(plugin: 'idea')
+    
+
+    def frontAppDir = "${modulePrefix}-front"
+
+    task installBowerPackages(type: NodeTask, dependsOn: npmInstall) {
+        script = file("node_modules/bower/bin/bower")
+        args = ['install','-F']
+        inputs.file "bower.json"
+        outputs.dir "bower_components"
+    }
+
+    task assemble(type: NodeTask, dependsOn: installBowerPackages) {
+        script = file("node_modules/polymer-cli/bin/polymer")
+        args = ['build']
+        inputs.dir "./"
+        outputs.dir "build"
+    }
+
+    task deployUnbundled(type: Copy) {
+        from file('./')
+        include 'bower_components/**'
+        include 'src/**'
+        into "$cuba.tomcat.dir/webapps/$frontAppDir"
+    }
+
+    task deploy(type: Copy, dependsOn: [assemble, deployUnbundled]) {
+        from file('build/es6-unbundled')
+        into "$cuba.tomcat.dir/webapps/$frontAppDir"
+    }
+}
+
 
 
 
@@ -192,6 +230,7 @@ task undeploy(type: Delete, dependsOn: ":${modulePrefix}-web:cleanConf") {
     delete("$cuba.tomcat.dir/shared")
     delete("$cuba.tomcat.dir/webapps/${modulePrefix}-core")
     delete("$cuba.tomcat.dir/webapps/${modulePrefix}")
+    delete("$cuba.tomcat.dir/webapps/${modulePrefix}-front")
 }
 
 task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefix}-web:deploy"], description: 'Redeploys applications and restarts local Tomcat') {
