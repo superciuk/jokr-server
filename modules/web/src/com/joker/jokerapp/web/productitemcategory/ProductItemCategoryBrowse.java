@@ -1,6 +1,6 @@
 package com.joker.jokerapp.web.productitemcategory;
 
-import com.haulmont.cuba.gui.components.AbstractLookup;
+import com.haulmont.cuba.gui.components.EntityCombinedScreen;
 
-public class ProductItemCategoryBrowse extends AbstractLookup {
+public class ProductItemCategoryBrowse extends EntityCombinedScreen {
 }

@@ -1,0 +1,1 @@
+drop table JOKERAPP_PRODUCT_ITEM_MODIFIER_GROUP_ASSOC__UNUSED if exists cascade ;

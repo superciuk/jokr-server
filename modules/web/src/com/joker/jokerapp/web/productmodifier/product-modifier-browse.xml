@@ -6,21 +6,28 @@
   -->
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://caption"
-        class="com.joker.jokerapp.web.printergroup.PrinterGroupBrowse"
+        class="com.joker.jokerapp.web.productmodifier.ProductModifierBrowse"
         focusComponent="table"
         lookupComponent="table"
-        messagesPack="com.joker.jokerapp.web.printergroup">
+        messagesPack="com.joker.jokerapp.web.productmodifier">
     <dsContext>
-        <datasource id="printerGroupDs"
-                    class="com.joker.jokerapp.entity.PrinterGroup"
-                    view="printerGroup-view"/>
-        <groupDatasource id="printerGroupsDs"
-                         class="com.joker.jokerapp.entity.PrinterGroup"
-                         view="printerGroup-view">
+        <datasource id="productModifierDs"
+                    class="com.joker.jokerapp.entity.ProductModifier"
+                    view="productModifier-view"/>
+        <groupDatasource id="productModifiersDs"
+                         class="com.joker.jokerapp.entity.ProductModifier"
+                         view="productModifier-view">
             <query>
-                <![CDATA[select e from jokerapp$PrinterGroup e]]>
+                <![CDATA[select e from jokerapp$ProductModifier e]]>
             </query>
         </groupDatasource>
+        <collectionDatasource id="categoriesDs"
+                              class="com.joker.jokerapp.entity.ProductModifierCategory"
+                              view="_minimal">
+            <query>
+                <![CDATA[select e from jokerapp$ProductModifierCategory e]]>
+            </query>
+        </collectionDatasource>
     </dsContext>
     <actions>
         <action id="save"
@@ -39,7 +46,7 @@
     <layout>
         <split id="split"
                height="100%"
-               orientation="horizontal"
+               orientation="vertical"
                reversePosition="true"
                width="100%">
             <vbox id="lookupBox"
@@ -49,10 +56,11 @@
                   spacing="true">
                 <filter id="filter"
                         applyTo="table"
-                        datasource="printerGroupsDs">
+                        datasource="productModifiersDs">
                     <properties include=".*"/>
                 </filter>
                 <groupTable id="table"
+                            multiselect="true"
                             width="100%">
                     <actions>
                         <action id="create"/>
@@ -61,9 +69,12 @@
                     </actions>
                     <columns>
                         <column id="name"/>
-                        <column id="printer"/>
+                        <column id="addPrice"/>
+                        <column id="subtractPrice"/>
+                        <column id="category"/>
+                        <column id="sortOrder"/>
                     </columns>
-                    <rows datasource="printerGroupsDs"/>
+                    <rows datasource="productModifiersDs"/>
                     <rowsCount/>
                     <buttonsPanel id="buttonsPanel"
                                   alwaysVisible="true">
@@ -83,10 +94,14 @@
                   spacing="true">
                 <scrollBox id="fieldGroupBox">
                     <fieldGroup id="fieldGroup"
-                                datasource="printerGroupDs">
+                                datasource="productModifierDs">
                         <column width="250px">
                             <field property="name"/>
-                            <field property="printer"/>
+                            <field property="addPrice"/>
+                            <field property="subtractPrice"/>
+                            <field optionsDatasource="categoriesDs"
+                                   property="category"/>
+                            <field property="sortOrder"/>
                         </column>
                     </fieldGroup>
                 </scrollBox>

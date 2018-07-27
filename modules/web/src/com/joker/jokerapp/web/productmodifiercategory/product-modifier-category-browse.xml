@@ -6,19 +6,19 @@
   -->
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://caption"
-        class="com.joker.jokerapp.web.printer.PrinterBrowse"
+        class="com.joker.jokerapp.web.productmodifiercategory.ProductModifierCategoryBrowse"
         focusComponent="table"
         lookupComponent="table"
-        messagesPack="com.joker.jokerapp.web.printer">
+        messagesPack="com.joker.jokerapp.web.productmodifiercategory">
     <dsContext>
-        <datasource id="printerDs"
-                    class="com.joker.jokerapp.entity.Printer"
-                    view="printer-view"/>
-        <groupDatasource id="printersDs"
-                         class="com.joker.jokerapp.entity.Printer"
-                         view="printer-view">
+        <datasource id="productModifierCategoryDs"
+                    class="com.joker.jokerapp.entity.ProductModifierCategory"
+                    view="_local"/>
+        <groupDatasource id="productModifierCategoriesDs"
+                         class="com.joker.jokerapp.entity.ProductModifierCategory"
+                         view="_local">
             <query>
-                <![CDATA[select e from jokerapp$Printer e]]>
+                <![CDATA[select e from jokerapp$ProductModifierCategory e]]>
             </query>
         </groupDatasource>
     </dsContext>
@@ -39,17 +39,17 @@
     <layout>
         <split id="split"
                height="100%"
-               orientation="horizontal"
+               orientation="vertical"
                reversePosition="true"
                width="100%">
             <vbox id="lookupBox"
                   expand="table"
                   height="100%"
-                  margin="false,true,false,false"
+                  margin="true"
                   spacing="true">
                 <filter id="filter"
                         applyTo="table"
-                        datasource="printersDs">
+                        datasource="productModifierCategoriesDs">
                     <properties include=".*"/>
                 </filter>
                 <groupTable id="table"
@@ -61,8 +61,9 @@
                     </actions>
                     <columns>
                         <column id="name"/>
+                        <column id="sortOrder"/>
                     </columns>
-                    <rows datasource="printersDs"/>
+                    <rows datasource="productModifierCategoriesDs"/>
                     <rowsCount/>
                     <buttonsPanel id="buttonsPanel"
                                   alwaysVisible="true">
@@ -80,11 +81,14 @@
                   height="100%"
                   margin="false,false,false,true"
                   spacing="true">
-                <scrollBox id="fieldGroupBox">
+                <scrollBox id="fieldGroupBox"
+                           margin="true">
                     <fieldGroup id="fieldGroup"
-                                datasource="printerDs">
+                                border="visible"
+                                datasource="productModifierCategoryDs">
                         <column width="250px">
                             <field property="name"/>
+                            <field property="sortOrder"/>
                         </column>
                     </fieldGroup>
                 </scrollBox>

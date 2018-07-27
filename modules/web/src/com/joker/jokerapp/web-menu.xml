@@ -3,8 +3,8 @@
     <menu id="application-jokerapp"
           insertBefore="administration">
         <item screen="jokerapp$ProductItem.browse"/>
+        <item screen="jokerapp$ProductModifierCategory.browse"/>
         <item screen="jokerapp$ProductItemCategory.browse"/>
-        <item screen="jokerapp$Printer.browse"/>
-        <item screen="jokerapp$PrinterGroup.browse"/>
+        <item screen="jokerapp$ProductModifier.browse"/>
     </menu>
 </menu-config>

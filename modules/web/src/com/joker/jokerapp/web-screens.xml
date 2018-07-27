@@ -3,14 +3,12 @@
     <include file="com/joker/jokerapp/screens.xml"/>
     <screen id="jokerapp$ProductItem.browse"
             template="com/joker/jokerapp/web/productitem/product-item-browse.xml"/>
-    <screen id="jokerapp$ProductItem.edit"
-            template="com/joker/jokerapp/web/productitem/product-item-edit.xml"/>
+    <screen id="jokerapp$ProductModifierCategory.browse"
+            template="com/joker/jokerapp/web/productmodifiercategory/product-modifier-category-browse.xml"/>
     <screen id="jokerapp$ProductItemCategory.browse"
             template="com/joker/jokerapp/web/productitemcategory/product-item-category-browse.xml"/>
-    <screen id="jokerapp$ProductItemCategory.edit"
-            template="com/joker/jokerapp/web/productitemcategory/product-item-category-edit.xml"/>
-    <screen id="jokerapp$Printer.browse"
-            template="com/joker/jokerapp/web/printer/printer-browse.xml"/>
-    <screen id="jokerapp$PrinterGroup.browse"
-            template="com/joker/jokerapp/web/printergroup/printer-group-browse.xml"/>
+    <screen id="jokerapp$ProductItemModifierCategoryAssoc.edit"
+            template="com/joker/jokerapp/web/productitemmodifiercategoryassoc/product-item-modifier-category-assoc-edit.xml"/>
+    <screen id="jokerapp$ProductModifier.browse"
+            template="com/joker/jokerapp/web/productmodifier/product-modifier-browse.xml"/>
 </screen-config>

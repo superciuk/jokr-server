@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
+import com.haulmont.cuba.core.entity.annotation.Lookup;
+import com.haulmont.cuba.core.entity.annotation.LookupType;
 
 @NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_MODIFIER")
@@ -20,16 +22,38 @@ public class ProductModifier extends StandardEntity {
     @Column(name = "NAME", nullable = false)
     protected String name;
 
-    @Column(name = "SORT_ORDER")
-    protected Integer sortOrder;
+    @Column(name = "ADD_PRICE")
+    protected Double addPrice;
 
+    @Column(name = "SUBTRACT_PRICE")
+    protected Double subtractPrice;
+
+    @Lookup(type = LookupType.DROPDOWN)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "CATEGORY_ID")
     protected ProductModifierCategory category;
 
-    @Column(name = "PRICE")
-    protected Integer price;
+    @Column(name = "SORT_ORDER")
+    protected Integer sortOrder;
+
+    public void setAddPrice(Double addPrice) {
+        this.addPrice = addPrice;
+    }
+
+    public Double getAddPrice() {
+        return addPrice;
+    }
+
+
+    public void setSubtractPrice(Double subtractPrice) {
+        this.subtractPrice = subtractPrice;
+    }
+
+    public Double getSubtractPrice() {
+        return subtractPrice;
+    }
+
 
     public ProductModifierCategory getCategory() {
         return category;
@@ -48,14 +72,6 @@ public class ProductModifier extends StandardEntity {
         return sortOrder;
     }
 
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
 
 
     public void setName(String name) {

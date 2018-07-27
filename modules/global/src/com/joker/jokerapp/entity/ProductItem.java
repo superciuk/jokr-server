@@ -9,6 +9,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import com.haulmont.chile.core.annotations.NamePattern;
+import com.haulmont.chile.core.annotations.Composition;
+import com.haulmont.cuba.core.entity.annotation.OnDelete;
+import com.haulmont.cuba.core.global.DeletePolicy;
+import java.util.List;
+import javax.persistence.OneToMany;
 
 @NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_ITEM")
@@ -19,10 +24,6 @@ public class ProductItem extends StandardEntity {
     @NotNull
     @Column(name = "NAME", nullable = false, length = 100)
     protected String name;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PRINTER_GROUP_ID")
-    protected PrinterGroup printerGroup;
 
     @Column(name = "SORT_ORDER")
     protected Integer sortOrder;
@@ -39,12 +40,18 @@ public class ProductItem extends StandardEntity {
     @Column(name = "VISIBLE")
     protected Boolean visible;
 
-    public void setPrinterGroup(PrinterGroup printerGroup) {
-        this.printerGroup = printerGroup;
+
+    @Composition
+    @OnDelete(DeletePolicy.CASCADE)
+    @OneToMany(mappedBy = "productItem")
+    protected List<ProductItemModifierCategoryAssoc> productItemModifierCategoryAssocs;
+
+    public void setProductItemModifierCategoryAssocs(List<ProductItemModifierCategoryAssoc> productItemModifierCategoryAssocs) {
+        this.productItemModifierCategoryAssocs = productItemModifierCategoryAssocs;
     }
 
-    public PrinterGroup getPrinterGroup() {
-        return printerGroup;
+    public List<ProductItemModifierCategoryAssoc> getProductItemModifierCategoryAssocs() {
+        return productItemModifierCategoryAssocs;
     }
 
 

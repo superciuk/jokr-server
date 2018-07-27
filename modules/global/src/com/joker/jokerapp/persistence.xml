@@ -11,7 +11,6 @@
         <class>com.joker.jokerapp.entity.TicketItemLine</class>
         <class>com.joker.jokerapp.entity.ProductModifierCategory</class>
         <class>com.joker.jokerapp.entity.ProductModifier</class>
-        <class>com.joker.jokerapp.entity.Printer</class>
-        <class>com.joker.jokerapp.entity.PrinterGroup</class>
+        <class>com.joker.jokerapp.entity.ProductItemModifierCategoryAssoc</class>
     </persistence-unit>
 </persistence>

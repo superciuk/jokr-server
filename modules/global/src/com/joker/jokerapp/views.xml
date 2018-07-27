@@ -8,19 +8,25 @@
           name="productItem-view">
         <property name="category"
                   view="productCategory-view"/>
-        <property name="printerGroup"
-                  view="_minimal">
-            <property name="printer"
+        <property name="productItemModifierCategoryAssocs"
+                  view="_local">
+            <property name="productModifierCategory"
                       view="_minimal"/>
         </property>
     </view>
-    <view class="com.joker.jokerapp.entity.Printer"
+    <view class="com.joker.jokerapp.entity.ProductModifierCategory"
           extends="_local"
-          name="printer-view"/>
-    <view class="com.joker.jokerapp.entity.PrinterGroup"
+          name="productModifierCategory-view"/>
+    <view class="com.joker.jokerapp.entity.ProductModifier"
           extends="_local"
-          name="printerGroup-view">
-        <property name="printer"
+          name="productModifier-view">
+        <property name="category"
+                  view="_minimal"/>
+    </view>
+    <view class="com.joker.jokerapp.entity.ProductItemModifierCategoryAssoc"
+          extends="_local"
+          name="productItemModifierCategoryAssoc-view">
+        <property name="productModifierCategory"
                   view="_minimal"/>
     </view>
 </views>

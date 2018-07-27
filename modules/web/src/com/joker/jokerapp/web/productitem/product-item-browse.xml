@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2017 Haulmont Technology Ltd. All Rights Reserved.
+  ~ Haulmont Technology proprietary and confidential.
+  ~ Use is subject to license terms.
+  -->
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
-        caption="msg://browseCaption"
+        caption="msg://caption"
         class="com.joker.jokerapp.web.productitem.ProductItemBrowse"
-        focusComponent="productItemsTable"
-        lookupComponent="productItemsTable"
+        focusComponent="table"
+        lookupComponent="table"
         messagesPack="com.joker.jokerapp.web.productitem">
     <dsContext>
+        <datasource id="productItemDs"
+                    class="com.joker.jokerapp.entity.ProductItem"
+                    view="productItem-view">
+            <collectionDatasource id="productItemModifierCategoryAssocsDs"
+                                  property="productItemModifierCategoryAssocs"/>
+        </datasource>
         <groupDatasource id="productItemsDs"
                          class="com.joker.jokerapp.entity.ProductItem"
                          view="productItem-view">
@@ -13,43 +24,136 @@
                 <![CDATA[select e from jokerapp$ProductItem e]]>
             </query>
         </groupDatasource>
+        <datasource id="productItemModifierGroupAssocDs"
+                    class="com.joker.jokerapp.entity.ProductItemModifierCategoryAssoc"/>
+        <groupDatasource id="productItemModifierGroupAssocsDs"
+                         class="com.joker.jokerapp.entity.ProductItemModifierCategoryAssoc">
+            <query>
+                <![CDATA[select e from jokerapp$ProductItemModifierGroupAssoc e]]>
+            </query>
+        </groupDatasource>
     </dsContext>
+    <actions>
+        <action id="save"
+                caption="mainMsg://actions.Ok"
+                icon="icons/ok.png"
+                invoke="save"
+                shortcut="CTRL-ENTER"/>
+        <action id="cancel"
+                caption="mainMsg://actions.Cancel"
+                description="Esc"
+                icon="icons/cancel.png"
+                invoke="cancel"/>
+    </actions>
     <dialogMode height="600"
                 width="800"/>
-    <layout expand="productItemsTable"
-            spacing="true">
-        <filter id="filter"
-                applyTo="productItemsTable"
-                datasource="productItemsDs">
-            <properties include=".*"/>
-        </filter>
-        <groupTable id="productItemsTable"
-                    multiselect="true"
-                    width="100%">
-            <actions>
-                <action id="create"/>
-                <action id="edit"/>
-                <action id="remove"/>
-            </actions>
-            <columns>
-                <column id="name"/>
-                <column id="category"/>
-                <column id="visible"/>
-                <column id="price"/>
-                <column id="sortOrder"/>
-                <column id="printerGroup"/>
-            </columns>
-            <rows datasource="productItemsDs"/>
-            <rowsCount/>
-            <buttonsPanel id="buttonsPanel"
-                          alwaysVisible="true">
-                <button id="createBtn"
-                        action="productItemsTable.create"/>
-                <button id="editBtn"
-                        action="productItemsTable.edit"/>
-                <button id="removeBtn"
-                        action="productItemsTable.remove"/>
-            </buttonsPanel>
-        </groupTable>
+    <layout>
+        <split id="split"
+               height="100%"
+               orientation="vertical"
+               reversePosition="true"
+               width="100%">
+            <vbox id="lookupBox"
+                  expand="table"
+                  height="100%"
+                  margin="true"
+                  spacing="true">
+                <filter id="filter"
+                        applyTo="table"
+                        datasource="productItemsDs">
+                    <properties include=".*"/>
+                </filter>
+                <groupTable id="table"
+                            multiselect="true"
+                            width="100%">
+                    <actions>
+                        <action id="create"/>
+                        <action id="edit"/>
+                        <action id="remove"/>
+                    </actions>
+                    <columns>
+                        <column id="name"/>
+                        <column id="sortOrder"/>
+                        <column id="category"/>
+                        <column id="price"/>
+                        <column id="visible"/>
+                    </columns>
+                    <rows datasource="productItemsDs"/>
+                    <rowsCount/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="createBtn"
+                                action="table.create"/>
+                        <button id="editBtn"
+                                action="table.edit"/>
+                        <button id="removeBtn"
+                                action="table.remove"/>
+                        <button id="duplicateBtn"
+                                caption="msg://Duplicate"
+                                icon="icons/copy.png"
+                                invoke="onDuplicateBtnClick"/>
+                    </buttonsPanel>
+                </groupTable>
+            </vbox>
+            <vbox id="editBox"
+                  expand="fieldGroupBox"
+                  height="100%"
+                  margin="false,false,false,true"
+                  spacing="true">
+                <scrollBox id="fieldGroupBox"
+                           margin="true"
+                           responsive="true"
+                           spacing="true">
+                    <split id="split_1"
+                           orientation="horizontal"
+                           responsive="true"
+                           width="100%">
+                        <fieldGroup id="fieldGroup"
+                                    border="visible"
+                                    datasource="productItemDs"
+                                    responsive="true">
+                            <column width="250px">
+                                <field property="name"/>
+                                <field property="sortOrder"/>
+                                <field property="category"/>
+                                <field property="price"/>
+                                <field property="visible"/>
+                            </column>
+                        </fieldGroup>
+                        <groupBox id="productItemModifierCategoryAssocsBox"
+                                  caption="msg://com.joker.jokerapp.entity/ProductItem.productItemModifierCategoryAssocs">
+                            <table id="productItemModifierCategoryAssocsTable"
+                                   height="200px"
+                                   width="100%">
+                                <actions>
+                                    <action id="create"/>
+                                    <action id="edit"/>
+                                    <action id="remove"/>
+                                </actions>
+                                <columns>
+                                    <column id="productModifierCategory"/>
+                                    <column id="minNumber"/>
+                                    <column id="maxNumber"/>
+                                </columns>
+                                <rows datasource="productItemModifierCategoryAssocsDs"/>
+                                <buttonsPanel>
+                                    <button action="productItemModifierCategoryAssocsTable.create"/>
+                                    <button action="productItemModifierCategoryAssocsTable.edit"/>
+                                    <button action="productItemModifierCategoryAssocsTable.remove"/>
+                                </buttonsPanel>
+                            </table>
+                        </groupBox>
+                    </split>
+                </scrollBox>
+                <hbox id="actionsPane"
+                      spacing="true"
+                      visible="false">
+                    <button id="saveBtn"
+                            action="save"/>
+                    <button id="cancelBtn"
+                            action="cancel"/>
+                </hbox>
+            </vbox>
+        </split>
     </layout>
 </window>
