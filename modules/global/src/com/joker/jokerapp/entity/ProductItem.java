@@ -14,6 +14,8 @@ import com.haulmont.cuba.core.entity.annotation.OnDelete;
 import com.haulmont.cuba.core.global.DeletePolicy;
 import java.util.List;
 import javax.persistence.OneToMany;
+import com.haulmont.cuba.core.entity.annotation.Lookup;
+import com.haulmont.cuba.core.entity.annotation.LookupType;
 
 @NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_ITEM")
@@ -28,6 +30,7 @@ public class ProductItem extends StandardEntity {
     @Column(name = "SORT_ORDER")
     protected Integer sortOrder;
 
+    @Lookup(type = LookupType.DROPDOWN)
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "CATEGORY_ID")
