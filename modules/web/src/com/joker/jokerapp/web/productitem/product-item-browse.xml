@@ -32,6 +32,13 @@
                 <![CDATA[select e from jokerapp$ProductItemModifierGroupAssoc e]]>
             </query>
         </groupDatasource>
+        <collectionDatasource id="categoriesDs"
+                              class="com.joker.jokerapp.entity.ProductItemCategory"
+                              view="_minimal">
+            <query>
+                <![CDATA[select e from jokerapp$ProductItemCategory e]]>
+            </query>
+        </collectionDatasource>
     </dsContext>
     <actions>
         <action id="save"
@@ -70,6 +77,7 @@
                         <action id="create"/>
                         <action id="edit"/>
                         <action id="remove"/>
+                        <action id="excel"/>
                     </actions>
                     <columns>
                         <column id="name"/>
@@ -88,10 +96,13 @@
                                 action="table.edit"/>
                         <button id="removeBtn"
                                 action="table.remove"/>
+                        <button id="excelBtn"
+                                action="table.excel"/>
                         <button id="duplicateBtn"
                                 caption="msg://Duplicate"
                                 icon="icons/copy.png"
                                 invoke="onDuplicateBtnClick"/>
+                        <button invoke="onBtnPress"/>
                     </buttonsPanel>
                 </groupTable>
             </vbox>
@@ -115,7 +126,8 @@
                             <column width="250px">
                                 <field property="name"/>
                                 <field property="sortOrder"/>
-                                <field property="category"/>
+                                <field optionsDatasource="categoriesDs"
+                                       property="category"/>
                                 <field property="price"/>
                                 <field property="visible"/>
                             </column>

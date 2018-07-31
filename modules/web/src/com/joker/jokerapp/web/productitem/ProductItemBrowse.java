@@ -4,11 +4,13 @@ import com.haulmont.cuba.gui.components.EntityCombinedScreen;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.data.GroupDatasource;
-import com.haulmont.cuba.web.gui.components.WebPickerField;
+import com.haulmont.cuba.web.gui.components.WebLookupPickerField;
 import com.joker.jokerapp.entity.ProductItem;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.print.*;
+import java.awt.print.PrinterJob;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,12 +38,14 @@ public class ProductItemBrowse extends EntityCombinedScreen {
     }
 
 
-//    @Override
-//    public void init(Map<String, Object> params) {
-//
-//        super.init(params);
-//        productItemModifierCategoryAssocsBox.setEnabled(false);
-//    }
+    @Override
+    public void init(Map<String, Object> params) {
+
+        super.init(params);
+
+
+
+    }
 
     public void onDuplicateBtnClick() {
 
@@ -75,7 +79,7 @@ public class ProductItemBrowse extends EntityCombinedScreen {
         name.setValue(itemToDuplicate.getName());
         TextField sortOrder = (TextField) getComponent("fieldGroup.sortOrder");
         sortOrder.setValue(max);
-        WebPickerField category = (WebPickerField) getComponent("fieldGroup.category");
+        WebLookupPickerField category = (WebLookupPickerField) getComponent("fieldGroup.category");
         category.setValue(itemToDuplicate.getCategory());
         TextField price = (TextField) getComponent("fieldGroup.price");
         price.setValue(itemToDuplicate.getPrice());
@@ -95,4 +99,22 @@ public class ProductItemBrowse extends EntityCombinedScreen {
         super.disableEditControls();
         productItemModifierCategoryAssocsBox.setEnabled(false);
     }
+
+    public void onBtnPress() {
+
+        PrintService printService = PrinterJob.lookupPrintServices()[0];
+        byte[] arr = new byte[2];
+        arr[0] = 0x2;
+        arr[1] = 0x2;
+
+        Doc doc = new SimpleDoc(arr, DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
+
+        try {
+            printService.createPrintJob().print(doc, null);
+        } catch (PrintException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

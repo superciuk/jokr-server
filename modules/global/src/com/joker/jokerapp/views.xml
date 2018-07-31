@@ -7,7 +7,7 @@
           extends="_local"
           name="productItem-view">
         <property name="category"
-                  view="productCategory-view"/>
+                  view="_minimal"/>
         <property name="productItemModifierCategoryAssocs"
                   view="_local">
             <property name="productModifierCategory"
