@@ -1,18 +1,16 @@
-
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
-<link rel="import" href="../bower_components/cuba-app/cuba-localize-behavior.html">
-<link rel="import" href="../bower_components/cuba-styles/cuba-styles.html">
-<link rel="import" href="shared-styles.html">
-
-<dom-module id="jokerapp-menu">
-  <template>
-    <style include="cuba-styles"></style>
-    <style include="shared-styles"></style>
+<link rel="import" href="../bower_components/polymer/polymer.html"> 
+<link rel="import" href="../bower_components/app-route/app-location.html"> 
+<link rel="import" href="../bower_components/app-route/app-route.html"> 
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html"> 
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html"> 
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html"> 
+<link rel="import" href="../bower_components/cuba-app/cuba-localize-behavior.html"> 
+<link rel="import" href="../bower_components/cuba-styles/cuba-styles.html"> 
+<link rel="import" href="shared-styles.html"> 
+<dom-module id="jokerapp-menu"> 
+  <template> 
+    <style include="cuba-styles"></style> 
+    <style include="shared-styles"></style> 
     <style>
       :host {
         display: block;
@@ -24,22 +22,19 @@
           flex-shrink: 0;
         }
       }
-    </style>
-
-    <app-location path="{{path}}" route="{{route}}" use-hash-as-path></app-location>
-    <app-route route="{{route}}"
-               pattern="/:page"
-               data="{{routeData}}">
-    </app-route>
-
-    <paper-listbox attr-for-selected="data-path"
-                selected="[[_computeSelectedItem(routeData.page)]]">
-      <paper-icon-item data-path="" on-tap="navigate">
-        <iron-icon icon="home" slot="item-icon"></iron-icon> [[msg('Home')]]
+    </style> 
+    <app-location path="{{path}}" route="{{route}}" use-hash-as-path></app-location> 
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}"> 
+    </app-route> 
+    <paper-listbox attr-for-selected="data-path" selected="[[_computeSelectedItem(routeData.page)]]"> 
+      <paper-icon-item data-path="" on-tap="navigate"> 
+        <iron-icon icon="home" slot="item-icon"></iron-icon> [[msg('Home')]] 
+      </paper-icon-item>  
+      <paper-icon-item data-path="jokerapp-product-item-management" on-tap="navigate"> 
+        <iron-icon icon="info-outline" slot="item-icon" item-icon></iron-icon> [[msg('Jokerapp Product Item Management')]] 
       </paper-icon-item>
-    </paper-listbox>
-
-  </template>
+    </paper-listbox> 
+  </template> 
   <script>
     {
       /**
@@ -69,5 +64,5 @@
 
       customElements.define(JokerappMenu.is, JokerappMenu);
     }
-  </script>
+  </script> 
 </dom-module>

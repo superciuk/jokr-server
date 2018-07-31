@@ -6,6 +6,7 @@
 
 
 <link rel="import" href="jokerapp-locale-select.html">
+<link rel="import" href="my-awesome-login.html">
 
 <link rel="import" href="shared-styles.html">
 <dom-module id="jokerapp-login">
@@ -57,9 +58,9 @@
         <div class="card-content">
           <iron-icon id="logo" src="images/app-icon/icon-32x32.png"></iron-icon>
           Welcome to JokerApp
-          <cuba-login on-cuba-login-error="_handleLoginError">
+          <my-awesome-login on-cuba-login-error="_handleLoginError">
             <paper-button slot="login-button" raised class="login-button">Login</paper-button>
-          </cuba-login>
+          </my-awesome-login>
         </div>
       </paper-card>
       
