@@ -5,12 +5,9 @@
                       transaction-type="RESOURCE_LOCAL">
         <class>com.joker.jokerapp.entity.ProductItemCategory</class>
         <class>com.joker.jokerapp.entity.ProductItem</class>
-        <class>com.joker.jokerapp.entity.TicketItem</class>
-        <class>com.joker.jokerapp.entity.TableItemArea</class>
-        <class>com.joker.jokerapp.entity.TableItem</class>
-        <class>com.joker.jokerapp.entity.TicketItemLine</class>
         <class>com.joker.jokerapp.entity.ProductModifierCategory</class>
         <class>com.joker.jokerapp.entity.ProductModifier</class>
         <class>com.joker.jokerapp.entity.ProductItemModifierCategoryAssoc</class>
+        <class>com.joker.jokerapp.entity.TableItem</class>
     </persistence-unit>
 </persistence>

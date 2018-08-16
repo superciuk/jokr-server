@@ -147,9 +147,11 @@ configure(webModule) {
     dependencies {
         provided(servletApi)
         compile(guiModule)
+        compile('org.vaadin.addons:stepper:2.2.2')
 
     }
-    
+
+        
     task webArchive(type: Zip) {
         from file("$buildDir/web")
         from file('web')

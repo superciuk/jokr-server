@@ -15,12 +15,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ProductItemBrowse extends EntityCombinedScreen {
-//
-//    @Inject
-//    private Metadata metadata;
-//
-//    @Inject
-//    private DataManager dataManager;
 
     @Inject
     private GroupDatasource<ProductItem, UUID> productItemsDs;

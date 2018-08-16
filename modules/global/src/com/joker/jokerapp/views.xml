@@ -29,4 +29,7 @@
         <property name="productModifierCategory"
                   view="_minimal"/>
     </view>
+    <view class="com.joker.jokerapp.entity.TableItem"
+          extends="_local"
+          name="tableItem-view"/>
 </views>

@@ -1,0 +1,2 @@
+alter table JOKERAPP_TICKET alter column TABLE_ITEM_ID rename to TABLE_ITEM_ID__UNUSED ;
+drop index IDX_JOKERAPP_TICKET_TABLE_ITEM ;

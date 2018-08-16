@@ -1,0 +1,1 @@
+drop index IDX_JOKERAPP_TABLE_ITEM_AREA ;
