@@ -10,7 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
 
-public class Tables extends AbstractWindow {
+public class TableSelect extends AbstractWindow {
+
 
     @Inject
     private GroupDatasource<TableItem, UUID> tableItemsDs;
@@ -23,21 +24,25 @@ public class Tables extends AbstractWindow {
 
     @Override
     public void init(Map<String, Object> params) {
+
         super.init(params);
 
-        WebButton btn1 = componentsFactory.createComponent(WebButton.class);
-        btn1.setId("button1");
-        btn1.setHeight("300px");
-        btn1.setWidth("300px");
-        btn1.setCaption("PROVA");
-        grid.add(btn1);
+        tableItemsDs.refresh();
 
-        for (TableItem item: tableItemsDs.getItems()) {
+        for (TableItem tableItem: tableItemsDs.getItems()) {
 
-            WebButton btn = componentsFactory.createComponent(WebButton.class);
-            btn.setId(item.getValue("number"));
-            btn.setDescription(item.getValue("number"));
-            grid.add(btn);
+          grid.setColumns(Math.floorDiv(tableItemsDs.size(),3));
+          WebButton btn = componentsFactory.createComponent(WebButton.class);
+          btn.setWidth("200px");
+          btn.setHeight("200px");
+          btn.setId(tableItem.getNumber().toString());
+          btn.setCaption(tableItem.getNumber().toString());
+
+//          btn.setAction(Action );
+
+
+          grid.add(btn);
+
         }
 
     }

@@ -37,8 +37,6 @@ public class ProductItemBrowse extends EntityCombinedScreen {
 
         super.init(params);
 
-
-
     }
 
     public void onDuplicateBtnClick() {

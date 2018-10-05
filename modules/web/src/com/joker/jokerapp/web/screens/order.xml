@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://caption"
+        class="com.joker.jokerapp.web.screens.Order"
+        messagesPack="com.joker.jokerapp.web.screens">
+    <dsContext>
+        <collectionDatasource id="productItemCategoriesDs"
+                              class="com.joker.jokerapp.entity.ProductItemCategory"
+                              view="productCategory-view">
+            <query>
+                <![CDATA[select e from jokerapp$ProductItemCategory e]]>
+            </query>
+        </collectionDatasource>
+        <collectionDatasource id="productItemsDs"
+                              class="com.joker.jokerapp.entity.ProductItem"
+                              view="productItem-view">
+            <query>
+                <![CDATA[select e from jokerapp$ProductItem e]]>
+            </query>
+        </collectionDatasource>
+        <collectionDatasource id="productModifierCategoriesDs"
+                              class="com.joker.jokerapp.entity.ProductModifierCategory"
+                              view="productModifierCategory-view">
+            <query>
+                <![CDATA[select e from jokerapp$ProductModifierCategory e]]>
+            </query>
+        </collectionDatasource>
+        <collectionDatasource id="productModifiersDs"
+                              class="com.joker.jokerapp.entity.ProductModifier"
+                              view="productModifier-view">
+            <query>
+                <![CDATA[select e from jokerapp$ProductModifier e]]>
+            </query>
+        </collectionDatasource>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout margin="true">
+        <split height="100%"
+               orientation="vertical"
+               pos="90%"
+               responsive="true"
+               width="100%">
+            <split height="100%"
+                   orientation="vertical"
+                   pos="10%"
+                   width="100%">
+                <buttonsPanel height="100%"
+                              margin="true"
+                              width="100%"/>
+                <split height="100%"
+                       orientation="horizontal"
+                       pos="30"
+                       width="100%">
+                    <buttonsPanel height="100%"
+                                  margin="true"
+                                  width="100%"/>
+                    <split height="100%"
+                           orientation="horizontal"
+                           pos="70"
+                           width="100%">
+                        <buttonsPanel alwaysVisible="true"
+                                      height="100%"
+                                      margin="true"
+                                      width="100%"/>
+                        <buttonsPanel id="categoryBtnPanel"
+                                      height="100%"
+                                      margin="true"
+                                      width="100%"/>
+                    </split>
+                </split>
+            </split>
+            <buttonsPanel height="100%"
+                          margin="true"
+                          responsive="true"
+                          width="100%"/>
+        </split>
+    </layout>
+</window>

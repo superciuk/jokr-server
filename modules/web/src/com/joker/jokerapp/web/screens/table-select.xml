@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://caption"
-        class="com.joker.jokerapp.web.screens.Tables"
+        class="com.joker.jokerapp.web.screens.TableSelect"
         messagesPack="com.joker.jokerapp.web.screens">
     <dsContext>
         <groupDatasource id="tableItemsDs"
                          class="com.joker.jokerapp.entity.TableItem"
-                         view="_minimal">
+                         view="tableItem-view">
             <query>
-                <![CDATA[select e from jokerapp$TableItem e]]>
+                <![CDATA[select e from jokerapp$TableItem e order by e.number]]>
             </query>
         </groupDatasource>
         <datasource id="tableItemDs"
@@ -20,11 +20,8 @@
         <grid id="grid"
               margin="true"
               spacing="true">
-            <columns count="4"/>
+            <columns count="1"/>
             <rows>
-                <row/>
-                <row/>
-                <row/>
                 <row/>
             </rows>
         </grid>
