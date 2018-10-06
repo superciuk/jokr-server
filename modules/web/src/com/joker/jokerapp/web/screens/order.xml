@@ -8,7 +8,7 @@
                               class="com.joker.jokerapp.entity.ProductItemCategory"
                               view="productCategory-view">
             <query>
-                <![CDATA[select e from jokerapp$ProductItemCategory e]]>
+                <![CDATA[select e from jokerapp$ProductItemCategory e order by e.sortOrder ]]>
             </query>
         </collectionDatasource>
         <collectionDatasource id="productItemsDs"
@@ -63,10 +63,20 @@
                                       height="100%"
                                       margin="true"
                                       width="100%"/>
-                        <buttonsPanel id="categoryBtnPanel"
-                                      height="100%"
-                                      margin="true"
-                                      width="100%"/>
+                        <grid id="categoryGrid"
+                              height="100%"
+                              margin="true"
+                              responsive="true"
+                              spacing="true"
+                              width="100%">
+                            <columns>
+                                <column flex="1.0"/>
+                                <column flex="1.0"/>
+                            </columns>
+                            <rows>
+                                <row/>
+                            </rows>
+                        </grid>
                     </split>
                 </split>
             </split>
