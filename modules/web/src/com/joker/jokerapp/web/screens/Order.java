@@ -1,11 +1,12 @@
 package com.joker.jokerapp.web.screens;
 
 import com.haulmont.cuba.gui.components.AbstractWindow;
-import com.haulmont.cuba.gui.components.Action;
 import com.haulmont.cuba.gui.components.GridLayout;
+import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebButton;
+import com.joker.jokerapp.entity.ProductItem;
 import com.joker.jokerapp.entity.ProductItemCategory;
 
 import javax.inject.Inject;
@@ -20,10 +21,16 @@ public class Order extends AbstractWindow {
     private CollectionDatasource<ProductItemCategory, UUID> productItemCategoriesDs;
 
     @Inject
+    private CollectionDatasource<ProductItem, UUID> productItemsDs;
+
+    @Inject
     private ComponentsFactory componentsFactory;
 
-    @Named("categoryGrid")
-    private GridLayout categoryGrid;
+    @Named("categoriesGrid")
+    private GridLayout categoriesGrid;
+
+    @Named("itemsGrid")
+    private GridLayout itemsGrid;
 
     @Override
     public void init(Map<String, Object> params) {
@@ -31,25 +38,46 @@ public class Order extends AbstractWindow {
         super.init(params);
 
         productItemCategoriesDs.refresh();
-        Float categoryBtnPanelHeight = categoryGrid.getHeight();
-        Float categoryBtnPanelWidth = categoryGrid.getWidth();
-        Float btnWidth = (categoryBtnPanelWidth+80);
+        Float categoriesGridHeight = categoriesGrid.getHeight();
+        Float categoriesGridWidth = categoriesGrid.getWidth();
+        Float categoryBtnWidth = (categoriesGridWidth + 80);
 
-        for (ProductItemCategory productItemCategory: productItemCategoriesDs.getItems()) {
+        for (ProductItemCategory productItemCategory : productItemCategoriesDs.getItems()) {
 
 
             WebButton btn = componentsFactory.createComponent(WebButton.class);
             btn.setHeight("60px");
-            btn.setWidth(btnWidth.toString());
+            btn.setWidth(categoryBtnWidth.toString());
             btn.setCaption(productItemCategory.getName());
-            btn.setAction(Action showItems);
-            categoryGrid.add(btn);
+            btn.setAction(new BaseAction("showItem".concat(productItemCategory.getName())).withHandler(e -> showProductItems(productItemCategory)));
+            categoriesGrid.add(btn);
 
         }
 
     }
 
-    public Action showItems(String id) {
-        return super.getAction(id);
+    private void showProductItems(ProductItemCategory productItemCategory) {
+
+        itemsGrid.removeAll();
+        productItemsDs.refresh();
+        Float itemsGridHeight = itemsGrid.getHeight();
+        Float itemsGridWidth = itemsGrid.getWidth();
+        Float itemBtnWidth = (itemsGridWidth + 100);
+
+        for (ProductItem productItem : productItemsDs.getItems()) {
+
+            if (productItem.getCategory().getName().equals(productItemCategory.getName()) && productItem.getVisible()) {
+                WebButton btn = componentsFactory.createComponent(WebButton.class);
+                btn.setHeight("60px");
+                btn.setWidth(itemBtnWidth.toString());
+                btn.setCaption(productItem.getName());
+//            btn.setAction(new BaseAction("showItem".concat(productItemCategory.getName())).withHandler(e -> showProductItems(productItemCategory)));
+                itemsGrid.add(btn);
+            }
+
+        }
+
+
     }
+
 }

@@ -15,7 +15,7 @@
                               class="com.joker.jokerapp.entity.ProductItem"
                               view="productItem-view">
             <query>
-                <![CDATA[select e from jokerapp$ProductItem e]]>
+                <![CDATA[select e from jokerapp$ProductItem e order by e.sortOrder]]>
             </query>
         </collectionDatasource>
         <collectionDatasource id="productModifierCategoriesDs"
@@ -52,18 +52,32 @@
                        orientation="horizontal"
                        pos="30"
                        width="100%">
-                    <buttonsPanel height="100%"
-                                  margin="true"
-                                  width="100%"/>
+                    <scrollBox height="100%"
+                               margin="true"
+                               responsive="true"/>
                     <split height="100%"
                            orientation="horizontal"
                            pos="70"
                            width="100%">
-                        <buttonsPanel alwaysVisible="true"
-                                      height="100%"
-                                      margin="true"
-                                      width="100%"/>
-                        <grid id="categoryGrid"
+                        <grid id="itemsGrid"
+                              height="100%"
+                              margin="true"
+                              responsive="true"
+                              spacing="true"
+                              width="100%">
+                            <columns count="4"/>
+                            <rows>
+                                <row/>
+                                <row/>
+                                <row/>
+                                <row/>
+                                <row/>
+                                <row/>
+                                <row/>
+                                <row/>
+                            </rows>
+                        </grid>
+                        <grid id="categoriesGrid"
                               height="100%"
                               margin="true"
                               responsive="true"
