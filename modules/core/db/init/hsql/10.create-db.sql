@@ -106,13 +106,20 @@ create table JOKERAPP_TABLE_ITEM (
     DELETED_BY varchar(50),
     --
     NUMBER_ integer not null,
+    SEATS_CAPACITY integer,
+    ACTUAL_SEATS integer,
+    ORDER_ID integer,
+    PRICE bigint,
+    TAX double precision,
+    DISCOUNT double precision,
     STATUS varchar(255) not null,
     --
     primary key (ID)
 )^
 -- end JOKERAPP_TABLE_ITEM
--- begin JOKERAPP_TICKET
-create table JOKERAPP_TICKET (
+
+-- begin JOKERAPP_ORDER
+create table JOKERAPP_ORDER (
     ID varchar(36) not null,
     VERSION integer not null,
     CREATE_TS timestamp,
@@ -122,6 +129,13 @@ create table JOKERAPP_TICKET (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
+    ORDER_ID_ID varchar(36) not null,
+    TABLE_NUMBER_ID varchar(36) not null,
+    ITEM_NAME varchar(255) not null,
+    ITEM_PRICE double precision,
+    TAX_AMOUNT double precision,
+    STATUS varchar(255) not null,
+    --
     primary key (ID)
 )^
--- end JOKERAPP_TICKET
+-- end JOKERAPP_ORDER

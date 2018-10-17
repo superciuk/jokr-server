@@ -5,8 +5,7 @@
         messagesPack="com.joker.jokerapp.web.screens">
     <dsContext>
         <groupDatasource id="tableItemsDs"
-                         class="com.joker.jokerapp.entity.TableItem"
-                         view="tableItem-view">
+                         class="com.joker.jokerapp.entity.TableItem">
             <query>
                 <![CDATA[select e from jokerapp$TableItem e order by e.number]]>
             </query>

@@ -2,8 +2,11 @@ package com.joker.jokerapp.web.screens;
 
 import com.haulmont.cuba.gui.components.AbstractWindow;
 import com.haulmont.cuba.gui.components.GridLayout;
+import com.haulmont.cuba.gui.components.HBoxLayout;
+import com.haulmont.cuba.gui.components.ScrollBoxLayout;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
+import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebButton;
 import com.joker.jokerapp.entity.ProductItem;
@@ -24,6 +27,9 @@ public class Order extends AbstractWindow {
     private CollectionDatasource<ProductItem, UUID> productItemsDs;
 
     @Inject
+    private Datasource<com.joker.jokerapp.entity.Order> orderDs;
+
+    @Inject
     private ComponentsFactory componentsFactory;
 
     @Named("categoriesGrid")
@@ -32,15 +38,20 @@ public class Order extends AbstractWindow {
     @Named("itemsGrid")
     private GridLayout itemsGrid;
 
+    @Named("orderScrollBox")
+    private ScrollBoxLayout orderScrollBox;
+
+    Integer categoryBtnWidth = 180;
+
     @Override
     public void init(Map<String, Object> params) {
 
         super.init(params);
 
+
         productItemCategoriesDs.refresh();
         Float categoriesGridHeight = categoriesGrid.getHeight();
         Float categoriesGridWidth = categoriesGrid.getWidth();
-        Float categoryBtnWidth = (categoriesGridWidth + 80);
 
         for (ProductItemCategory productItemCategory : productItemCategoriesDs.getItems()) {
 
@@ -71,12 +82,46 @@ public class Order extends AbstractWindow {
                 btn.setHeight("60px");
                 btn.setWidth(itemBtnWidth.toString());
                 btn.setCaption(productItem.getName());
-//            btn.setAction(new BaseAction("showItem".concat(productItemCategory.getName())).withHandler(e -> showProductItems(productItemCategory)));
+                btn.setAction(new BaseAction("addToOrder".concat(productItemCategory.getName())).withHandler(e -> addToOrder(productItem)));
                 itemsGrid.add(btn);
             }
 
         }
 
+    }
+
+    private void addToOrder(ProductItem productItemToAdd) {
+
+        orderDs.refresh();
+        productItemCategoriesDs.refresh();
+        orderScrollBox.removeAll();
+
+        Integer columns = ((int) orderScrollBox.getWidth()*3) / (categoryBtnWidth+5);
+        Integer rowCount = 0;
+
+        HBoxLayout hBoxLayout = componentsFactory.createComponent(HBoxLayout.class);
+        hBoxLayout.setWidth(Integer.toString((180+5)*columns));
+        hBoxLayout.setHeight("60px");
+        orderScrollBox.add(hBoxLayout);
+
+
+
+        for (ProductItemCategory productItemCategory : productItemCategoriesDs.getItems()) {
+
+
+            WebButton btn = componentsFactory.createComponent(WebButton.class);
+            btn.setHeight("60px");
+            btn.setWidth(categoryBtnWidth.toString());
+            btn.setCaption(productItemCategory.getName());
+//            btn.setAction(new BaseAction("showItem".concat(productItemCategory.getName())).withHandler(e -> showProductItems(productItemCategory)));
+            if (rowCount < columns) {
+                hBoxLayout.add(btn);
+                rowCount ++;
+            } else {
+                orderScrollBox.add(componentsFactory.createComponent(HBoxLayout.class));
+                rowCount = 0;
+            }
+        }
 
     }
 

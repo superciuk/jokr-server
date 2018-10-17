@@ -8,6 +8,5 @@
         <item screen="jokerapp$ProductModifier.browse"/>
         <item screen="tableselect"/>
         <item screen="jokerapp$TableItem.browse"/>
-        <item screen="order"/>
     </menu>
 </menu-config>

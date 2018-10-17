@@ -1,0 +1,2 @@
+alter table JOKERAPP_TICKET add constraint FK_JOKERAPP_TICKET_ORDER foreign key (ORDER_ID) references JOKERAPP_ORDER(ID);
+create index IDX_JOKERAPP_TICKET_ORDER on JOKERAPP_TICKET (ORDER_ID);

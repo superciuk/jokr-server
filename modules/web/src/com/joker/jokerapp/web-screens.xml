@@ -11,10 +11,10 @@
             template="com/joker/jokerapp/web/productitemmodifiercategoryassoc/product-item-modifier-category-assoc-edit.xml"/>
     <screen id="jokerapp$ProductModifier.browse"
             template="com/joker/jokerapp/web/productmodifier/product-modifier-browse.xml"/>
-    <screen id="jokerapp$TableItem.browse"
-            template="com/joker/jokerapp/web/tableitem/table-item-browse.xml"/>
     <screen id="tableselect"
             template="com/joker/jokerapp/web/screens/table-select.xml"/>
     <screen id="order"
             template="com/joker/jokerapp/web/screens/order.xml"/>
+    <screen id="jokerapp$TableItem.browse"
+            template="com/joker/jokerapp/web/tableitem/table-item-browse.xml"/>
 </screen-config>

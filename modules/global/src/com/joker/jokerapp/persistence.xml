@@ -9,6 +9,6 @@
         <class>com.joker.jokerapp.entity.ProductModifier</class>
         <class>com.joker.jokerapp.entity.ProductItemModifierCategoryAssoc</class>
         <class>com.joker.jokerapp.entity.TableItem</class>
-        <class>com.joker.jokerapp.entity.Ticket</class>
+        <class>com.joker.jokerapp.entity.Order</class>
     </persistence-unit>
 </persistence>

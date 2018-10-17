@@ -13,12 +13,12 @@
     <dsContext>
         <datasource id="tableItemDs"
                     class="com.joker.jokerapp.entity.TableItem"
-                    view="_local"/>
+                    view="tableItem-view"/>
         <groupDatasource id="tableItemsDs"
                          class="com.joker.jokerapp.entity.TableItem"
-                         view="_local">
+                         view="tableItem-view">
             <query>
-                <![CDATA[select e from jokerapp$TableItem e]]>
+                <![CDATA[select e from jokerapp$TableItem e order by e.number]]>
             </query>
         </groupDatasource>
     </dsContext>
@@ -61,7 +61,7 @@
                     </actions>
                     <columns>
                         <column id="number"/>
-                        <column id="status"/>
+                        <column id="seatsCapacity"/>
                     </columns>
                     <rows datasource="tableItemsDs"/>
                     <rowsCount/>
@@ -86,7 +86,7 @@
                                 datasource="tableItemDs">
                         <column width="250px">
                             <field property="number"/>
-                            <field property="status"/>
+                            <field property="seatsCapacity"/>
                         </column>
                     </fieldGroup>
                 </scrollBox>
@@ -98,18 +98,6 @@
                     <button id="cancelBtn"
                             action="cancel"/>
                 </hbox>
-                <grid id="grid"
-                      spacing="true">
-                    <columns count="6"/>
-                    <rows>
-                        <row/>
-                        <row/>
-                        <row/>
-                        <row/>
-                        <row/>
-                        <row/>
-                    </rows>
-                </grid>
             </vbox>
         </split>
     </layout>

@@ -32,6 +32,9 @@
                 <![CDATA[select e from jokerapp$ProductModifier e]]>
             </query>
         </collectionDatasource>
+        <datasource id="orderDs"
+                    class="com.joker.jokerapp.entity.Order"
+                    view="order-view"/>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
@@ -52,9 +55,11 @@
                        orientation="horizontal"
                        pos="30"
                        width="100%">
-                    <scrollBox height="100%"
+                    <scrollBox id="orderScrollBox"
+                               height="100%"
                                margin="true"
-                               responsive="true"/>
+                               responsive="true"
+                               spacing="true"/>
                     <split height="100%"
                            orientation="horizontal"
                            pos="70"
