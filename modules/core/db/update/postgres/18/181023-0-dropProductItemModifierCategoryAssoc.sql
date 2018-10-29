@@ -1,0 +1,1 @@
+alter table jokerapp_product_item_modifier_category_assoc rename to JOKERAPP_PRODUCT_ITEM_MODIFIER_CATEGORY_ASSOC__U10634 ;

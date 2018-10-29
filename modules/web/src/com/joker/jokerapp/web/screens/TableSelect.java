@@ -41,20 +41,23 @@ public class TableSelect extends AbstractWindow {
           WebButton btn = componentsFactory.createComponent(WebButton.class);
           btn.setWidth("200px");
           btn.setHeight("200px");
-          btn.setId(tableItem.getNumber().toString());
-          btn.setCaption(tableItem.getNumber().toString());
-          btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getNumber().toString())).withHandler(e -> openOrderScreen(tableItem.getNumber(),tableItem.getStatus())));
+          btn.setId(tableItem.getTableNumber().toString());
+          btn.setCaption(tableItem.getTableNumber().toString());
+          btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getTableNumber().toString())).withHandler(e -> openOrderScreen(tableItem)));
           grid.add(btn);
 
         }
 
     }
 
-    private void openOrderScreen(Integer tableNumber, String tableStatus) {
+    private void openOrderScreen(TableItem table) {
 
         Map<String, Object> params = new HashMap<>();
-        params.put("tableNumber", tableNumber);
-        params.put("tableStatus", tableStatus);
+        params.put("table", table);
+        if (table.getStatus() == 0) {
+            table.setOrderId(UUID.randomUUID());
+            table.setStatus(1);
+        }
         openWindow("order", WindowManager.OpenType.THIS_TAB, params);
     }
 

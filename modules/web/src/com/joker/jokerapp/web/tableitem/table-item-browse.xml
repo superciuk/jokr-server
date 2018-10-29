@@ -18,7 +18,7 @@
                          class="com.joker.jokerapp.entity.TableItem"
                          view="tableItem-view">
             <query>
-                <![CDATA[select e from jokerapp$TableItem e order by e.number]]>
+                <![CDATA[select e from jokerapp$TableItem e order by e.tableNumber]]>
             </query>
         </groupDatasource>
     </dsContext>
@@ -60,7 +60,7 @@
                         <action id="remove"/>
                     </actions>
                     <columns>
-                        <column id="number"/>
+                        <column id="tableNumber"/>
                         <column id="seatsCapacity"/>
                     </columns>
                     <rows datasource="tableItemsDs"/>
@@ -85,7 +85,7 @@
                     <fieldGroup id="fieldGroup"
                                 datasource="tableItemDs">
                         <column width="250px">
-                            <field property="number"/>
+                            <field property="tableNumber"/>
                             <field property="seatsCapacity"/>
                         </column>
                     </fieldGroup>

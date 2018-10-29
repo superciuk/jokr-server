@@ -9,6 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
+import java.util.List;
+import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 
 @NamePattern("%s|id")
 @Table(name = "JOKERAPP_ORDER")
@@ -16,40 +19,53 @@ import com.haulmont.chile.core.annotations.NamePattern;
 public class Order extends StandardEntity {
     private static final long serialVersionUID = 7728262321009676563L;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ORDER_ID_ID")
-    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORDER_ID")
     protected TableItem orderId;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "TABLE_NUMBER_ID")
-    protected TableItem tableNumber;
 
     @NotNull
     @Column(name = "ITEM_NAME", nullable = false)
     protected String itemName;
 
-    @Column(name = "ITEM_PRICE")
-    protected Double itemPrice;
+    @Column(name = "ITEM_PRICE", precision = 12, scale = 2)
+    protected BigDecimal itemPrice;
 
-    @Column(name = "TAX_AMOUNT")
-    protected Double taxAmount;
-
-
-    @NotNull
-    @Column(name = "STATUS", nullable = false)
-    protected String status;
+    @Column(name = "TAX_AMOUNT", precision = 12, scale = 2)
+    protected BigDecimal taxAmount;
 
 
+
+    public void setOrderId(TableItem orderId) {
+        this.orderId = orderId;
+    }
 
     public TableItem getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(TableItem orderId) {
-        this.orderId = orderId;
+
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
     }
+
+    public void setTaxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
+
+    public BigDecimal getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(BigDecimal itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+
+
+
+
+
 
 
     public void setItemName(String itemName) {
@@ -60,38 +76,6 @@ public class Order extends StandardEntity {
         return itemName;
     }
 
-    public void setItemPrice(Double itemPrice) {
-        this.itemPrice = itemPrice;
-    }
-
-    public Double getItemPrice() {
-        return itemPrice;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-
-    public void setTableNumber(TableItem tableNumber) {
-        this.tableNumber = tableNumber;
-    }
-
-    public TableItem getTableNumber() {
-        return tableNumber;
-    }
-
-    public void setTaxAmount(Double taxAmount) {
-        this.taxAmount = taxAmount;
-    }
-
-    public Double getTaxAmount() {
-        return taxAmount;
-    }
 
 
 }

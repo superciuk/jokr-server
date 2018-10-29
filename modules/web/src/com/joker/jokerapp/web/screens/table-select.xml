@@ -7,7 +7,7 @@
         <groupDatasource id="tableItemsDs"
                          class="com.joker.jokerapp.entity.TableItem">
             <query>
-                <![CDATA[select e from jokerapp$TableItem e order by e.number]]>
+                <![CDATA[select e from jokerapp$TableItem e order by e.tableNumber]]>
             </query>
         </groupDatasource>
         <datasource id="tableItemDs"

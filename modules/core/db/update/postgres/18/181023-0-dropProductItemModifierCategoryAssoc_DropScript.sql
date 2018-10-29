@@ -1,0 +1,1 @@
+drop table if exists JOKERAPP_PRODUCT_ITEM_MODIFIER_CATEGORY_ASSOC__U10634 cascade ;

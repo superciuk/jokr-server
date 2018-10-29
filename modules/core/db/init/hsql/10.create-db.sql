@@ -12,7 +12,7 @@ create table JOKERAPP_PRODUCT_ITEM (
     NAME varchar(100) not null,
     SORT_ORDER integer,
     CATEGORY_ID varchar(36) not null,
-    PRICE double precision not null,
+    PRICE bigint not null,
     VISIBLE boolean,
     --
     primary key (ID)
@@ -66,8 +66,8 @@ create table JOKERAPP_PRODUCT_MODIFIER (
     DELETED_BY varchar(50),
     --
     NAME varchar(255) not null,
-    ADD_PRICE double precision,
-    SUBTRACT_PRICE double precision,
+    ADD_PRICE bigint,
+    SUBTRACT_PRICE bigint,
     CATEGORY_ID varchar(36) not null,
     SORT_ORDER integer,
     --
@@ -86,10 +86,10 @@ create table JOKERAPP_PRODUCT_ITEM_MODIFIER_CATEGORY_ASSOC (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
-    PRODUCT_ITEM_ID varchar(36) not null,
     PRODUCT_MODIFIER_CATEGORY_ID varchar(36) not null,
     MIN_NUMBER integer not null,
     MAX_NUMBER integer not null,
+    ORDER_ID varchar(36),
     --
     primary key (ID)
 )^
@@ -109,10 +109,10 @@ create table JOKERAPP_TABLE_ITEM (
     SEATS_CAPACITY integer,
     ACTUAL_SEATS integer,
     ORDER_ID integer,
-    PRICE bigint,
+    CHARGE bigint,
     TAX double precision,
     DISCOUNT double precision,
-    STATUS varchar(255) not null,
+    STATUS varchar(255),
     --
     primary key (ID)
 )^
@@ -129,11 +129,10 @@ create table JOKERAPP_ORDER (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
-    ORDER_ID_ID varchar(36) not null,
-    TABLE_NUMBER_ID varchar(36) not null,
+    ORDER_ID varchar(36) not null,
     ITEM_NAME varchar(255) not null,
-    ITEM_PRICE double precision,
-    TAX_AMOUNT double precision,
+    ITEM_PRICE bigint,
+    TAX_AMOUNT bigint,
     STATUS varchar(255) not null,
     --
     primary key (ID)

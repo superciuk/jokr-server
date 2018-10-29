@@ -35,6 +35,13 @@
         <datasource id="orderDs"
                     class="com.joker.jokerapp.entity.Order"
                     view="order-view"/>
+        <collectionDatasource id="ordersDs"
+                              class="com.joker.jokerapp.entity.Order"
+                              view="order-view">
+            <query>
+                <![CDATA[select e from jokerapp$Order e]]>
+            </query>
+        </collectionDatasource>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
@@ -55,11 +62,15 @@
                        orientation="horizontal"
                        pos="30"
                        width="100%">
-                    <scrollBox id="orderScrollBox"
-                               height="100%"
-                               margin="true"
-                               responsive="true"
-                               spacing="true"/>
+                    <dataGrid id="orderDataGrid"
+                              datasource="ordersDs">
+                        <columns>
+                            <column property="itemName"/>
+                            <column property="itemPrice"/>
+                            <column property="taxAmount"/>
+                            <column property="status"/>
+                        </columns>
+                    </dataGrid>
                     <split height="100%"
                            orientation="horizontal"
                            pos="70"

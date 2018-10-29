@@ -11,6 +11,7 @@ import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.annotation.Lookup;
 import com.haulmont.cuba.core.entity.annotation.LookupType;
+import java.math.BigDecimal;
 
 @NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_MODIFIER")
@@ -22,11 +23,11 @@ public class ProductModifier extends StandardEntity {
     @Column(name = "NAME", nullable = false)
     protected String name;
 
-    @Column(name = "ADD_PRICE")
-    protected Double addPrice;
+    @Column(name = "ADD_PRICE", precision = 12, scale = 2)
+    protected BigDecimal addPrice;
 
-    @Column(name = "SUBTRACT_PRICE")
-    protected Double subtractPrice;
+    @Column(name = "SUBTRACT_PRICE", precision = 12, scale = 2)
+    protected BigDecimal subtractPrice;
 
     @Lookup(type = LookupType.DROPDOWN)
     @NotNull
@@ -37,22 +38,26 @@ public class ProductModifier extends StandardEntity {
     @Column(name = "SORT_ORDER")
     protected Integer sortOrder;
 
-    public void setAddPrice(Double addPrice) {
-        this.addPrice = addPrice;
-    }
-
-    public Double getAddPrice() {
+    public BigDecimal getAddPrice() {
         return addPrice;
     }
 
+    public void setAddPrice(BigDecimal addPrice) {
+        this.addPrice = addPrice;
+    }
 
-    public void setSubtractPrice(Double subtractPrice) {
+
+    public BigDecimal getSubtractPrice() {
+        return subtractPrice;
+    }
+
+    public void setSubtractPrice(BigDecimal subtractPrice) {
         this.subtractPrice = subtractPrice;
     }
 
-    public Double getSubtractPrice() {
-        return subtractPrice;
-    }
+
+
+
 
 
     public ProductModifierCategory getCategory() {

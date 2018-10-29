@@ -7,8 +7,6 @@
             template="com/joker/jokerapp/web/productmodifiercategory/product-modifier-category-browse.xml"/>
     <screen id="jokerapp$ProductItemCategory.browse"
             template="com/joker/jokerapp/web/productitemcategory/product-item-category-browse.xml"/>
-    <screen id="jokerapp$ProductItemModifierCategoryAssoc.edit"
-            template="com/joker/jokerapp/web/productitemmodifiercategoryassoc/product-item-modifier-category-assoc-edit.xml"/>
     <screen id="jokerapp$ProductModifier.browse"
             template="com/joker/jokerapp/web/productmodifier/product-modifier-browse.xml"/>
     <screen id="tableselect"

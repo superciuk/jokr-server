@@ -22,15 +22,11 @@ public class ProductItemBrowse extends EntityCombinedScreen {
     @Named("table")
     private Table<ProductItem> table;
 
-    @Named("productItemModifierCategoryAssocsBox")
-    private GroupBoxLayout productItemModifierCategoryAssocsBox;
-
     @Override
     protected void initNewItem(Entity item) {
         super.initNewItem(item);
 
     }
-
 
     @Override
     public void init(Map<String, Object> params) {
@@ -46,13 +42,7 @@ public class ProductItemBrowse extends EntityCombinedScreen {
         }
 
         ProductItem itemToDuplicate = table.getSingleSelected();
-//        ProductItem newProductItem = metadata.create(ProductItem.class);
 
-//        newProductItem.setCategory(itemToDuplicate.getCategory());
-//        newProductItem.setName(itemToDuplicate.getName());
-//        newProductItem.setPrice(itemToDuplicate.getPrice());
-//        newProductItem.setSortOrder(itemToDuplicate.getSortOrder());
-//        newProductItem.setVisible(itemToDuplicate.getVisible());
 
         Action createAction = table.getAction("create");
         createAction.actionPerform(this);
@@ -78,18 +68,6 @@ public class ProductItemBrowse extends EntityCombinedScreen {
         CheckBox visible = (CheckBox) getComponent("fieldGroup.visible");
         visible.setValue(itemToDuplicate.getVisible());
 
-    }
-
-    @Override
-    protected void enableEditControls(boolean creating) {
-        super.enableEditControls(creating);
-        productItemModifierCategoryAssocsBox.setEnabled(true);
-    }
-
-    @Override
-    protected void disableEditControls() {
-        super.disableEditControls();
-        productItemModifierCategoryAssocsBox.setEnabled(false);
     }
 
     public void onBtnPress() {

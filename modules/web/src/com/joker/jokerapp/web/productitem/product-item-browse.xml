@@ -13,23 +13,12 @@
     <dsContext>
         <datasource id="productItemDs"
                     class="com.joker.jokerapp.entity.ProductItem"
-                    view="productItem-view">
-            <collectionDatasource id="productItemModifierCategoryAssocsDs"
-                                  property="productItemModifierCategoryAssocs"/>
-        </datasource>
+                    view="productItem-view"/>
         <groupDatasource id="productItemsDs"
                          class="com.joker.jokerapp.entity.ProductItem"
                          view="productItem-view">
             <query>
                 <![CDATA[select e from jokerapp$ProductItem e]]>
-            </query>
-        </groupDatasource>
-        <datasource id="productItemModifierGroupAssocDs"
-                    class="com.joker.jokerapp.entity.ProductItemModifierCategoryAssoc"/>
-        <groupDatasource id="productItemModifierGroupAssocsDs"
-                         class="com.joker.jokerapp.entity.ProductItemModifierCategoryAssoc">
-            <query>
-                <![CDATA[select e from jokerapp$ProductItemModifierGroupAssoc e]]>
             </query>
         </groupDatasource>
         <collectionDatasource id="categoriesDs"
@@ -132,29 +121,6 @@
                                 <field property="visible"/>
                             </column>
                         </fieldGroup>
-                        <groupBox id="productItemModifierCategoryAssocsBox"
-                                  caption="msg://com.joker.jokerapp.entity/ProductItem.productItemModifierCategoryAssocs">
-                            <table id="productItemModifierCategoryAssocsTable"
-                                   height="200px"
-                                   width="100%">
-                                <actions>
-                                    <action id="create"/>
-                                    <action id="edit"/>
-                                    <action id="remove"/>
-                                </actions>
-                                <columns>
-                                    <column id="productModifierCategory"/>
-                                    <column id="minNumber"/>
-                                    <column id="maxNumber"/>
-                                </columns>
-                                <rows datasource="productItemModifierCategoryAssocsDs"/>
-                                <buttonsPanel>
-                                    <button action="productItemModifierCategoryAssocsTable.create"/>
-                                    <button action="productItemModifierCategoryAssocsTable.edit"/>
-                                    <button action="productItemModifierCategoryAssocsTable.remove"/>
-                                </buttonsPanel>
-                            </table>
-                        </groupBox>
                     </split>
                 </scrollBox>
                 <hbox id="actionsPane"

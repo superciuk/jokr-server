@@ -16,6 +16,7 @@ import java.util.List;
 import javax.persistence.OneToMany;
 import com.haulmont.cuba.core.entity.annotation.Lookup;
 import com.haulmont.cuba.core.entity.annotation.LookupType;
+import java.math.BigDecimal;
 
 @NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_ITEM")
@@ -36,26 +37,27 @@ public class ProductItem extends StandardEntity {
     @JoinColumn(name = "CATEGORY_ID")
     protected ProductItemCategory category;
 
-    @NotNull
-    @Column(name = "PRICE", nullable = false)
-    protected Double price;
-
     @Column(name = "VISIBLE")
     protected Boolean visible;
 
+    @NotNull
+    @Column(name = "PRICE", nullable = false, precision = 12, scale = 2)
+    protected BigDecimal price;
 
-    @Composition
-    @OnDelete(DeletePolicy.CASCADE)
-    @OneToMany(mappedBy = "productItem")
-    protected List<ProductItemModifierCategoryAssoc> productItemModifierCategoryAssocs;
-
-    public void setProductItemModifierCategoryAssocs(List<ProductItemModifierCategoryAssoc> productItemModifierCategoryAssocs) {
-        this.productItemModifierCategoryAssocs = productItemModifierCategoryAssocs;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public List<ProductItemModifierCategoryAssoc> getProductItemModifierCategoryAssocs() {
-        return productItemModifierCategoryAssocs;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
+
+
+
+
+
+
+
 
 
     public void setSortOrder(Integer sortOrder) {
@@ -66,14 +68,6 @@ public class ProductItem extends StandardEntity {
         return sortOrder;
     }
 
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
 
 
     public ProductItemCategory getCategory() {
