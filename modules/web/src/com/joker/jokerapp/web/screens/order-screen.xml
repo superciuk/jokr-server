@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://caption"
-        class="com.joker.jokerapp.web.screens.Order"
+        class="com.joker.jokerapp.web.screens.OrderScreen"
         messagesPack="com.joker.jokerapp.web.screens">
     <dsContext>
         <collectionDatasource id="productItemCategoriesDs"
@@ -35,13 +35,16 @@
         <datasource id="orderDs"
                     class="com.joker.jokerapp.entity.Order"
                     view="order-view"/>
-        <collectionDatasource id="ordersDs"
-                              class="com.joker.jokerapp.entity.Order"
-                              view="order-view">
+        <collectionDatasource id="orderLinesDs"
+                              class="com.joker.jokerapp.entity.OrderLine"
+                              view="order-line-view">
             <query>
-                <![CDATA[select e from jokerapp$Order e]]>
+                <![CDATA[select e from jokerapp$OrderLine e where :param$.order.id = e.order.id]]>
             </query>
         </collectionDatasource>
+        <datasource id="tableItemDs"
+                    class="com.joker.jokerapp.entity.TableItem"
+                    view="tableItem-view"/>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
@@ -63,7 +66,7 @@
                        pos="30"
                        width="100%">
                     <dataGrid id="orderDataGrid"
-                              datasource="ordersDs">
+                              datasource="orderLinesDs">
                         <columns>
                             <column property="itemName"/>
                             <column property="itemPrice"/>

@@ -8,6 +8,11 @@ import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.List;
+import javax.persistence.OneToMany;
+import com.haulmont.chile.core.annotations.MetaProperty;
+import javax.persistence.Transient;
+import javax.persistence.OrderBy;
 
 @NamePattern("%s|tableNumber")
 @Table(name = "JOKERAPP_TABLE_ITEM")
@@ -22,32 +27,23 @@ public class TableItem extends StandardEntity {
     @Column(name = "SEATS_CAPACITY")
     protected Integer seatsCapacity;
 
-    @Column(name = "ACTUAL_SEATS")
-    protected Integer actualSeats;
+    @OrderBy("createTs DESC")
+    @OneToMany(mappedBy = "tableItem")
+    protected List<Order> orders;
 
-    @Column(name = "ORDER_ID")
-    protected UUID orderId;
-
-    @Column(name = "CHARGE", precision = 12, scale = 2)
-    protected BigDecimal charge;
-
-    @Column(name = "TAX", precision = 12, scale = 2)
-    protected BigDecimal tax;
-
-    @Column(name = "DISCOUNT", precision = 12, scale = 2)
-    protected BigDecimal discount;
-
-    @Column(name = "STATUS")
-    protected Integer status;
-
-    public Integer getStatus() {
-        return status;
+    @MetaProperty(related = "orders")
+    public TableItemStatus getStatus() {
+        //return status == null ? null : TableItemStatus.fromId(status);
+        return getCurrentOrder() == null ? TableItemStatus.closed : TableItemStatus.open;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
 
     public void setTableNumber(Integer tableNumber) {
         this.tableNumber = tableNumber;
@@ -57,57 +53,6 @@ public class TableItem extends StandardEntity {
         return tableNumber;
     }
 
-
-    public UUID getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
-    }
-
-
-
-
-    public BigDecimal getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(BigDecimal discount) {
-        this.discount = discount;
-    }
-
-
-    public BigDecimal getCharge() {
-        return charge;
-    }
-
-    public void setCharge(BigDecimal charge) {
-        this.charge = charge;
-    }
-
-
-    public BigDecimal getTax() {
-        return tax;
-    }
-
-    public void setTax(BigDecimal tax) {
-        this.tax = tax;
-    }
-
-
-
-
-
-    public void setActualSeats(Integer actualSeats) {
-        this.actualSeats = actualSeats;
-    }
-
-    public Integer getActualSeats() {
-        return actualSeats;
-    }
-
-
     public void setSeatsCapacity(Integer seatsCapacity) {
         this.seatsCapacity = seatsCapacity;
     }
@@ -116,9 +61,17 @@ public class TableItem extends StandardEntity {
         return seatsCapacity;
     }
 
+    public Order getCurrentOrder() {
 
+        if (orders.size() > 0) {
+            Order lastOrder = orders.get(0);
+            if (lastOrder != null && lastOrder.getStatus() == OrderStatus.open) {
+                return lastOrder;
+            }
+        }
 
-
+        return null;
+    }
 
 
 }

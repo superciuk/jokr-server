@@ -12,6 +12,12 @@ import com.haulmont.chile.core.annotations.NamePattern;
 import java.util.List;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
+import com.haulmont.chile.core.annotations.Composition;
+import com.haulmont.cuba.core.entity.annotation.OnDelete;
+import com.haulmont.cuba.core.global.DeletePolicy;
+import javax.persistence.OrderBy;
+import com.haulmont.chile.core.annotations.MetaProperty;
+import javax.persistence.Transient;
 
 @NamePattern("%s|id")
 @Table(name = "JOKERAPP_ORDER")
@@ -19,46 +25,82 @@ import java.math.BigDecimal;
 public class Order extends StandardEntity {
     private static final long serialVersionUID = 7728262321009676563L;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ORDER_ID")
-    protected TableItem orderId;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "TABLE_ITEM_ID")
+    protected TableItem tableItem;
 
     @NotNull
-    @Column(name = "ITEM_NAME", nullable = false)
-    protected String itemName;
+    @Column(name = "ACTUAL_SEATS", nullable = false)
+    protected Integer actualSeats;
 
-    @Column(name = "ITEM_PRICE", precision = 12, scale = 2)
-    protected BigDecimal itemPrice;
+    @OrderBy("createTs DESC")
+    @Composition
+    @OnDelete(DeletePolicy.CASCADE)
+    @OneToMany(mappedBy = "order")
+    protected List<OrderLine> orderLines;
 
-    @Column(name = "TAX_AMOUNT", precision = 12, scale = 2)
-    protected BigDecimal taxAmount;
+    @Column(name = "DISCOUNT", precision = 12, scale = 2)
+    protected BigDecimal discount;
 
+    @NotNull
+    @Column(name = "STATUS", nullable = false)
+    protected String status;
 
-
-    public void setOrderId(TableItem orderId) {
-        this.orderId = orderId;
+    public void setActualSeats(Integer actualSeats) {
+        this.actualSeats = actualSeats;
     }
 
-    public TableItem getOrderId() {
-        return orderId;
-    }
-
-
-    public BigDecimal getTaxAmount() {
-        return taxAmount;
-    }
-
-    public void setTaxAmount(BigDecimal taxAmount) {
-        this.taxAmount = taxAmount;
+    public Integer getActualSeats() {
+        return actualSeats;
     }
 
 
-    public BigDecimal getItemPrice() {
-        return itemPrice;
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
     }
 
-    public void setItemPrice(BigDecimal itemPrice) {
-        this.itemPrice = itemPrice;
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+
+    public void setStatus(OrderStatus status) {
+        this.status = status == null ? null : status.getId();
+    }
+
+    public OrderStatus getStatus() {
+        return status == null ? null : OrderStatus.fromId(status);
+    }
+
+
+    @NotNull
+    @MetaProperty(mandatory = true)
+    public BigDecimal getCharge() {
+        return null;
+    }
+
+    @NotNull
+    @MetaProperty(mandatory = true)
+    public BigDecimal getTaxes() {
+        return null;
+    }
+
+
+    public void setTableItem(TableItem tableItem) {
+        this.tableItem = tableItem;
+    }
+
+    public TableItem getTableItem() {
+        return tableItem;
+    }
+
+    public void setOrderLines(List<OrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
+
+    public List<OrderLine> getOrderLines() {
+        return orderLines;
     }
 
 
@@ -68,13 +110,10 @@ public class Order extends StandardEntity {
 
 
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
 
-    public String getItemName() {
-        return itemName;
-    }
+
+
+
 
 
 

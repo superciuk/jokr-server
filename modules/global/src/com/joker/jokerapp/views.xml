@@ -22,9 +22,22 @@
           extends="_local"
           name="order-view">
     </view>
+    <view class="com.joker.jokerapp.entity.OrderLine"
+          extends="_local"
+          name="order-line-view">
+    </view>
     <view class="com.joker.jokerapp.entity.TableItem"
           extends="_minimal"
           name="tableItem-view">
         <property name="seatsCapacity"/>
+        <property name="orders"
+                  view="order-view">
+            <property name="orderLines"
+                      view="order-line-view">
+                <property name="productItem"
+                          view="_minimal"/>
+            </property>
+        </property>
+        <property name="status"/>
     </view>
 </views>

@@ -1,22 +1,23 @@
 package com.joker.jokerapp.web.screens;
 
+import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebButton;
+import com.joker.jokerapp.entity.Order;
+import com.joker.jokerapp.entity.OrderLine;
 import com.joker.jokerapp.entity.ProductItem;
 import com.joker.jokerapp.entity.ProductItemCategory;
-import com.joker.jokerapp.entity.TableItem;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
-public class Order extends AbstractWindow {
+public class OrderScreen extends AbstractWindow {
 
 
     @Inject
@@ -26,7 +27,7 @@ public class Order extends AbstractWindow {
     private CollectionDatasource<ProductItem, UUID> productItemsDs;
 
     @Inject
-    private CollectionDatasource<com.joker.jokerapp.entity.Order, UUID> ordersDs;
+    private CollectionDatasource<com.joker.jokerapp.entity.OrderLine, UUID> orderLinesDs;
 
     @Inject
     private Datasource<com.joker.jokerapp.entity.Order> orderDs;
@@ -43,23 +44,23 @@ public class Order extends AbstractWindow {
     @Named("orderDataGrid")
     private DataGrid orderDataGrid;
 
-    Integer categoryBtnWidth = 180;
+    @Inject
+    private Metadata metadata;
 
-    TableItem table = new TableItem();
+    Integer categoryBtnWidth = 180;
 
     @Override
     public void init(Map<String, Object> params) {
 
         super.init(params);
 
-        table = (TableItem) params.get("table");
+        //order = (Order) params.get("order");
         productItemCategoriesDs.refresh();
-        orderDs.refresh();
+        orderDs.setItem((Order) params.get("order"));
         Float categoriesGridHeight = categoriesGrid.getHeight();
         Float categoriesGridWidth = categoriesGrid.getWidth();
 
         for (ProductItemCategory productItemCategory : productItemCategoriesDs.getItems()) {
-
 
             WebButton btn = componentsFactory.createComponent(WebButton.class);
             btn.setHeight("60px");
@@ -97,13 +98,12 @@ public class Order extends AbstractWindow {
 
     private void addToOrder(ProductItem productItemToAdd) {
 
-
-        com.joker.jokerapp.entity.Order item = new com.joker.jokerapp.entity.Order();
-        item.setItemName(productItemToAdd.getName());
-        item.setItemPrice(productItemToAdd.getPrice());
-        item.setOrderId(table);
-        ordersDs.addItem(item);
-        ordersDs.commit();
+        OrderLine newLine = metadata.create(OrderLine.class);
+        newLine.setProductItem(productItemToAdd);
+        newLine.setPrice(productItemToAdd.getPrice());
+        newLine.setOrder(orderDs.getItem());
+        orderLinesDs.addItem(newLine);
+        //orderLinesDs.commit();
 
 
 //        Integer columns = ((int) orderDataGrid.getWidth()*3) / (categoryBtnWidth+5);

@@ -5,13 +5,15 @@
         messagesPack="com.joker.jokerapp.web.screens">
     <dsContext>
         <groupDatasource id="tableItemsDs"
-                         class="com.joker.jokerapp.entity.TableItem">
+                         class="com.joker.jokerapp.entity.TableItem"
+                         view="tableItem-view">
             <query>
                 <![CDATA[select e from jokerapp$TableItem e order by e.tableNumber]]>
             </query>
         </groupDatasource>
         <datasource id="tableItemDs"
-                    class="com.joker.jokerapp.entity.TableItem"/>
+                    class="com.joker.jokerapp.entity.TableItem"
+                    view="tableItem-view"/>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>

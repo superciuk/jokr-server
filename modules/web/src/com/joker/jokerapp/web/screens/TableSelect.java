@@ -1,13 +1,16 @@
 package com.joker.jokerapp.web.screens;
 
-import ch.qos.logback.classic.db.names.TableName;
+import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
+import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.data.GroupDatasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebButton;
 import com.joker.jokerapp.entity.TableItem;
+import com.joker.jokerapp.entity.TableItemStatus;
+import com.joker.jokerapp.entity.Order;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,6 +18,8 @@ import java.util.*;
 
 public class TableSelect extends AbstractWindow {
 
+    @Inject
+    private Datasource<TableItem> tableItemDs;
 
     @Inject
     private GroupDatasource<TableItem, UUID> tableItemsDs;
@@ -22,11 +27,11 @@ public class TableSelect extends AbstractWindow {
     @Inject
     private ComponentsFactory componentsFactory;
 
-    @Named("order")
-    private Window order;
-
     @Named("grid")
     private GridLayout grid;
+
+    @Inject
+    private Metadata metadata;
 
     @Override
     public void init(Map<String, Object> params) {
@@ -43,7 +48,8 @@ public class TableSelect extends AbstractWindow {
           btn.setHeight("200px");
           btn.setId(tableItem.getTableNumber().toString());
           btn.setCaption(tableItem.getTableNumber().toString());
-          btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getTableNumber().toString())).withHandler(e -> openOrderScreen(tableItem)));
+          btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getTableNumber().toString()))
+                  .withHandler(e -> openOrderScreen(tableItem)));
           grid.add(btn);
 
         }
@@ -52,13 +58,23 @@ public class TableSelect extends AbstractWindow {
 
     private void openOrderScreen(TableItem table) {
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("table", table);
-        if (table.getStatus() == 0) {
-            table.setOrderId(UUID.randomUUID());
-            table.setStatus(1);
+        TableItemStatus tableItemStatus = table.getStatus();
+
+        Order currentOrder = null;
+
+        if (tableItemStatus == TableItemStatus.closed || tableItemStatus == TableItemStatus.reserved) {
+            currentOrder =  metadata.create(Order.class);
+
+        } else if (tableItemStatus == TableItemStatus.open) {
+            currentOrder = table.getCurrentOrder();
         }
-        openWindow("order", WindowManager.OpenType.THIS_TAB, params);
+
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("order", currentOrder);
+
+        openWindow("orderscreen", WindowManager.OpenType.THIS_TAB, params);
+
     }
 
 }
