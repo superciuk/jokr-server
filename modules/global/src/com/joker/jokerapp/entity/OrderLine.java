@@ -13,7 +13,6 @@ import com.haulmont.chile.core.annotations.NamePattern;
 import java.math.BigDecimal;
 import javax.persistence.Column;
 
-@NamePattern("%s|productItem")
 @Table(name = "JOKERAPP_ORDER_LINE")
 @Entity(name = "jokerapp$OrderLine")
 public class OrderLine extends StandardEntity {
@@ -33,10 +32,6 @@ public class OrderLine extends StandardEntity {
     @Column(name = "TAXES", nullable = false, precision = 12, scale = 2)
     protected BigDecimal taxes;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "PRODUCT_ITEM_ID")
-    protected ProductItem productItem;
 
     public void setPrice(BigDecimal price) {
         this.price = price;
@@ -64,14 +59,6 @@ public class OrderLine extends StandardEntity {
 
     public Order getOrder() {
         return order;
-    }
-
-    public void setProductItem(ProductItem productItem) {
-        this.productItem = productItem;
-    }
-
-    public ProductItem getProductItem() {
-        return productItem;
     }
 
 

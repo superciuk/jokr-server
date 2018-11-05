@@ -6,12 +6,8 @@ import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
-import java.math.BigDecimal;
-import java.util.UUID;
 import java.util.List;
 import javax.persistence.OneToMany;
-import com.haulmont.chile.core.annotations.MetaProperty;
-import javax.persistence.Transient;
 import javax.persistence.OrderBy;
 
 @NamePattern("%s|tableNumber")
@@ -27,23 +23,34 @@ public class TableItem extends StandardEntity {
     @Column(name = "SEATS_CAPACITY")
     protected Integer seatsCapacity;
 
+
+
     @OrderBy("createTs DESC")
     @OneToMany(mappedBy = "tableItem")
-    protected List<Order> orders;
+    protected List<Order> order;
 
-    @MetaProperty(related = "orders")
-    public TableItemStatus getStatus() {
-        //return status == null ? null : TableItemStatus.fromId(status);
-        return getCurrentOrder() == null ? TableItemStatus.closed : TableItemStatus.open;
+    @NotNull
+    @Column(name = "TABLE_STATUS", nullable = false)
+    protected String tableStatus;
+
+    public void setTableStatus(TableItemStatus tableStatus) {
+        this.tableStatus = tableStatus == null ? null : tableStatus.getId();
     }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
+
+    public void setOrder(List<Order> order) {
+        this.order = order;
     }
 
-    public List<Order> getOrders() {
-        return orders;
+    public List<Order> getOrder() {
+        return order;
     }
+
+
+    public TableItemStatus getTableStatus() {
+        return tableStatus == null ? null : TableItemStatus.fromId(tableStatus);
+    }
+
 
     public void setTableNumber(Integer tableNumber) {
         this.tableNumber = tableNumber;
@@ -63,8 +70,8 @@ public class TableItem extends StandardEntity {
 
     public Order getCurrentOrder() {
 
-        if (orders.size() > 0) {
-            Order lastOrder = orders.get(0);
+        if (order.size() > 0) {
+            Order lastOrder = order.get(0);
             if (lastOrder != null && lastOrder.getStatus() == OrderStatus.open) {
                 return lastOrder;
             }

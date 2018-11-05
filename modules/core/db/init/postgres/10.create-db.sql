@@ -87,6 +87,7 @@ create table JOKERAPP_TABLE_ITEM (
     --
     TABLE_NUMBER integer not null,
     SEATS_CAPACITY integer,
+    TABLE_STATUS varchar(50) not null,
     --
     primary key (ID)
 )^
@@ -124,7 +125,6 @@ create table JOKERAPP_ORDER_LINE (
     ORDER_ID uuid not null,
     PRICE decimal(12, 2) not null,
     TAXES decimal(12, 2) not null,
-    PRODUCT_ITEM_ID uuid not null,
     --
     primary key (ID)
 )^

@@ -99,36 +99,11 @@ public class OrderScreen extends AbstractWindow {
     private void addToOrder(ProductItem productItemToAdd) {
 
         OrderLine newLine = metadata.create(OrderLine.class);
-        newLine.setProductItem(productItemToAdd);
+//        newLine.setName(productItemToAdd.getName());
         newLine.setPrice(productItemToAdd.getPrice());
         newLine.setOrder(orderDs.getItem());
         orderLinesDs.addItem(newLine);
         //orderLinesDs.commit();
-
-
-//        Integer columns = ((int) orderDataGrid.getWidth()*3) / (categoryBtnWidth+5);
-//        Integer rowCount = 0;
-
-//        HBoxLayout hBoxLayout = componentsFactory.createComponent(HBoxLayout.class);
-//        hBoxLayout.setWidth(Integer.toString((180+5)*columns));
-//        hBoxLayout.setHeight("60px");
-
-
-
-//        for (ProductItemCategory productItemCategory : productItemCategoriesDs.getItems()) {
-
-
-//            WebButton btn = componentsFactory.createComponent(WebButton.class);
-//            btn.setHeight("60px");
-//            btn.setWidth(categoryBtnWidth.toString());
-//            btn.setCaption(productItemCategory.getName());
-//            btn.setAction(new BaseAction("showItem".concat(productItemCategory.getName())).withHandler(e -> showProductItems(productItemCategory)));
-//            if (rowCount < columns) {
-//                hBoxLayout.add(btn);
-//                rowCount ++;
-//            } else {
-//                orderDataGrid.add(componentsFactory.createComponent(HBoxLayout.class));
-//                rowCount = 0;
-            }
+    }
 
 }

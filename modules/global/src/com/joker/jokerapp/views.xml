@@ -30,14 +30,6 @@
           extends="_minimal"
           name="tableItem-view">
         <property name="seatsCapacity"/>
-        <property name="orders"
-                  view="order-view">
-            <property name="orderLines"
-                      view="order-line-view">
-                <property name="productItem"
-                          view="_minimal"/>
-            </property>
-        </property>
-        <property name="status"/>
+        <property name="tableStatus"/>
     </view>
 </views>

@@ -62,9 +62,6 @@
                     <columns>
                         <column id="tableNumber"/>
                         <column id="seatsCapacity"/>
-                        <column id="status"/>
-                        <column id="status"/>
-                        <column id="status"/>
                     </columns>
                     <rows datasource="tableItemsDs"/>
                     <rowsCount/>
@@ -90,9 +87,8 @@
                         <column width="250px">
                             <field property="tableNumber"/>
                             <field property="seatsCapacity"/>
-                            <field property="status"/>
-                            <field property="status"/>
-                            <field property="status"/>
+                            <field property="tableStatus"
+                                   visible="false"/>
                         </column>
                     </fieldGroup>
                 </scrollBox>

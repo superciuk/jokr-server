@@ -58,7 +58,7 @@ public class TableSelect extends AbstractWindow {
 
     private void openOrderScreen(TableItem table) {
 
-        TableItemStatus tableItemStatus = table.getStatus();
+        TableItemStatus tableItemStatus = table.getTableStatus();
 
         Order currentOrder = null;
 
