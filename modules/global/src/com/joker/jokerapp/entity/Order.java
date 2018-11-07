@@ -18,7 +18,9 @@ import com.haulmont.cuba.core.global.DeletePolicy;
 import javax.persistence.OrderBy;
 import com.haulmont.chile.core.annotations.MetaProperty;
 import javax.persistence.Transient;
+import com.haulmont.cuba.core.entity.annotation.Listeners;
 
+@Listeners("jokerapp_NewOrderEntityListener")
 @NamePattern("%s|id")
 @Table(name = "JOKERAPP_ORDER")
 @Entity(name = "jokerapp$Order")

@@ -17,7 +17,7 @@ import javax.inject.Named;
 import java.util.Map;
 import java.util.UUID;
 
-public class OrderScreen extends AbstractWindow {
+public class OrderScreen extends AbstractEditor<Order> {
 
 
     @Inject
@@ -54,9 +54,7 @@ public class OrderScreen extends AbstractWindow {
 
         super.init(params);
 
-        //order = (Order) params.get("order");
         productItemCategoriesDs.refresh();
-        orderDs.setItem((Order) params.get("order"));
         Float categoriesGridHeight = categoriesGrid.getHeight();
         Float categoriesGridWidth = categoriesGrid.getWidth();
 
@@ -105,5 +103,7 @@ public class OrderScreen extends AbstractWindow {
         orderLinesDs.addItem(newLine);
         //orderLinesDs.commit();
     }
+
+
 
 }

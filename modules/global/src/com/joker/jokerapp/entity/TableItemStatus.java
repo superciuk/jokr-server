@@ -7,10 +7,9 @@ import javax.annotation.Nullable;
 
 public enum TableItemStatus implements EnumClass<String> {
 
-    free("0"),
-    reserved("10"),
-    open("20"),
-    closed("30");
+    free("free"),
+    open("open"),
+    closed("closed");
 
     private String id;
 

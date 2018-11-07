@@ -15,4 +15,6 @@
             template="com/joker/jokerapp/web/screens/order-screen.xml"/>
     <screen id="jokerapp$TableItem.browse"
             template="com/joker/jokerapp/web/tableitem/table-item-browse.xml"/>
+    <screen id="jokerapp$ActualSeats.dialog"
+            template="com/joker/jokerapp/web/dialogs/actual-seats-dialog.xml"/>
 </screen-config>

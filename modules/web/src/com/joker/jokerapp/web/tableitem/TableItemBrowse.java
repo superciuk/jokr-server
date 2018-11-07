@@ -9,7 +9,7 @@ public class TableItemBrowse extends EntityCombinedScreen {
 
     @Override
     protected void initNewItem(Entity item) {
-        ((TableItem) item).setTableStatus(TableItemStatus.reserved);
+        ((TableItem) item).setTableStatus(TableItemStatus.free);
         super.initNewItem(item);
 
     }

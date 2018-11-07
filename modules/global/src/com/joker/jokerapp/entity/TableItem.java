@@ -27,30 +27,29 @@ public class TableItem extends StandardEntity {
 
     @OrderBy("createTs DESC")
     @OneToMany(mappedBy = "tableItem")
-    protected List<Order> order;
+    protected List<Order> orders;
 
     @NotNull
     @Column(name = "TABLE_STATUS", nullable = false)
     protected String tableStatus;
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
 
     public void setTableStatus(TableItemStatus tableStatus) {
         this.tableStatus = tableStatus == null ? null : tableStatus.getId();
     }
 
 
-    public void setOrder(List<Order> order) {
-        this.order = order;
-    }
-
-    public List<Order> getOrder() {
-        return order;
-    }
-
-
     public TableItemStatus getTableStatus() {
         return tableStatus == null ? null : TableItemStatus.fromId(tableStatus);
     }
-
 
     public void setTableNumber(Integer tableNumber) {
         this.tableNumber = tableNumber;
@@ -70,8 +69,8 @@ public class TableItem extends StandardEntity {
 
     public Order getCurrentOrder() {
 
-        if (order.size() > 0) {
-            Order lastOrder = order.get(0);
+        if (orders.size() > 0) {
+            Order lastOrder = orders.get(0);
             if (lastOrder != null && lastOrder.getStatus() == OrderStatus.open) {
                 return lastOrder;
             }

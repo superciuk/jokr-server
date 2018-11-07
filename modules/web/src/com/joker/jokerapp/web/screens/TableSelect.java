@@ -1,5 +1,6 @@
 package com.joker.jokerapp.web.screens;
 
+import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
@@ -33,6 +34,9 @@ public class TableSelect extends AbstractWindow {
     @Inject
     private Metadata metadata;
 
+    @Inject
+    private DataManager dataManager;
+
     @Override
     public void init(Map<String, Object> params) {
 
@@ -62,19 +66,43 @@ public class TableSelect extends AbstractWindow {
 
         Order currentOrder = null;
 
-        if (tableItemStatus == TableItemStatus.closed || tableItemStatus == TableItemStatus.reserved) {
+        if (tableItemStatus == TableItemStatus.free) {
             currentOrder =  metadata.create(Order.class);
+            currentOrder.setTableItem(table);
+            currentOrder.setActualSeats(getActualSeats(table));
 
         } else if (tableItemStatus == TableItemStatus.open) {
             currentOrder = table.getCurrentOrder();
+            openEditor("orderscreen", currentOrder, WindowManager.OpenType.THIS_TAB);
+        } else if (tableItemStatus == TableItemStatus.closed) {
+            showOptionDialog(
+                    getMessage("freeTableDialog.title"),
+                    getMessage("freeTableDialog.msg"),
+                    MessageType.CONFIRMATION,
+                    new Action[] {
+                            new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY).withHandler(e -> freeTable(table)),
+                            new DialogAction(DialogAction.Type.NO, Action.Status.NORMAL)
+                    }
+            );
         }
 
 
+    }
+
+    private void freeTable(TableItem table) {
+
+        table.setTableStatus(TableItemStatus.free);
+        dataManager.commit(table);
+        tableItemsDs.refresh();
+
+    }
+
+    private Integer getActualSeats(TableItem table) {
         Map<String, Object> params = new HashMap<>();
-        params.put("order", currentOrder);
+        params.put("table", table);
 
-        openWindow("orderscreen", WindowManager.OpenType.THIS_TAB, params);
-
+        openWindow("jokerapp$ActualSeats.dialog", WindowManager.OpenType.DIALOG, params);
+        return 3;
     }
 
 }
