@@ -13,6 +13,11 @@ public class ActualSeatsDialog extends AbstractWindow {
     @Named("seatsText")
     private TextField seatsText;
 
+    public interface CloseHandler {
+        void onClose(int seats);
+    }
+
+    private CloseHandler handler;
 
     @Override
     public void init(Map<String, Object> params) {
@@ -23,6 +28,10 @@ public class ActualSeatsDialog extends AbstractWindow {
             seatsText.setValue(table.getSeatsCapacity().toString());
         }
 
+        if (params.containsKey("handler")) {
+            handler = (CloseHandler) params.get("handler");
+        }
+
     }
 
     public void onCancelBtnClick() {
@@ -31,8 +40,10 @@ public class ActualSeatsDialog extends AbstractWindow {
 
     public void onOkBtnClick() {
 
-        int seatsNum = Integer.parseInt(seatsText.getValue());
-
-
+        if (handler != null) {
+            int seatsNum = Integer.parseInt(seatsText.getValue());
+            handler.onClose(seatsNum);
+        }
+        close("ok");
     }
 }

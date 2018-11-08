@@ -12,6 +12,7 @@ import com.haulmont.cuba.web.gui.components.WebButton;
 import com.joker.jokerapp.entity.TableItem;
 import com.joker.jokerapp.entity.TableItemStatus;
 import com.joker.jokerapp.entity.Order;
+import com.joker.jokerapp.web.dialogs.ActualSeatsDialog;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,12 +65,30 @@ public class TableSelect extends AbstractWindow {
 
         TableItemStatus tableItemStatus = table.getTableStatus();
 
-        Order currentOrder = null;
+        final Order currentOrder;
 
         if (tableItemStatus == TableItemStatus.free) {
             currentOrder =  metadata.create(Order.class);
             currentOrder.setTableItem(table);
-            currentOrder.setActualSeats(getActualSeats(table));
+            Map<String, Object> params = new HashMap<>();
+            params.put("table", table);
+
+            ActualSeatsDialog.CloseHandler handler = new ActualSeatsDialog.CloseHandler() {
+                @Override
+                public void onClose(int seats) {
+                    currentOrder.setActualSeats(seats);
+  //                  openEditor("orderscreen", currentOrder, WindowManager.OpenType.THIS_TAB);
+                }
+            };
+
+            params.put("handler", handler);
+
+            openWindow("jokerapp$ActualSeats.dialog", WindowManager.OpenType.DIALOG, params)
+                    .addCloseListener(closeString -> {
+                        if (closeString.equals("ok")) {
+                            openEditor("orderscreen", currentOrder, WindowManager.OpenType.THIS_TAB);
+                        }
+                    });
 
         } else if (tableItemStatus == TableItemStatus.open) {
             currentOrder = table.getCurrentOrder();
@@ -95,14 +114,6 @@ public class TableSelect extends AbstractWindow {
         dataManager.commit(table);
         tableItemsDs.refresh();
 
-    }
-
-    private Integer getActualSeats(TableItem table) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("table", table);
-
-        openWindow("jokerapp$ActualSeats.dialog", WindowManager.OpenType.DIALOG, params);
-        return 3;
     }
 
 }

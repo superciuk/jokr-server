@@ -4,15 +4,19 @@
         class="com.joker.jokerapp.web.dialogs.ActualSeatsDialog"
         messagesPack="com.joker.jokerapp.web.dialogs">
     <dialogMode forceDialog="true"
-                height="300"
-                width="400"/>
+                height="200"
+                width="250"/>
     <layout margin="true">
-        <vbox spacing="true"
-              width="AUTO">
-            <label id="message"
-                   value="msg://actualSeatsDialog.msg"/>
-            <textField id="seatsText"/>
-            <buttonsPanel>
+        <vbox height="120px"
+              spacing="true"
+              width="250px">
+            <vbox>
+                <label id="message"
+                       value="msg://actualSeatsDialog.msg"/>
+                <textField id="seatsText"
+                           datatype="int"/>
+            </vbox>
+            <buttonsPanel align="BOTTOM_LEFT">
                 <button id="okBtn"
                         caption="msg://OK"
                         invoke="onOkBtnClick"/>
