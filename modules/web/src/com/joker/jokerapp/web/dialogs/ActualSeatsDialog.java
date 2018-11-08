@@ -25,7 +25,7 @@ public class ActualSeatsDialog extends AbstractWindow {
 
         if (params.containsKey("table")) {
             TableItem table = (TableItem) params.get("table");
-            seatsText.setValue(table.getSeatsCapacity().toString());
+            seatsText.setValue(table.getSeatsCapacity());
         }
 
         if (params.containsKey("handler")) {
@@ -41,7 +41,7 @@ public class ActualSeatsDialog extends AbstractWindow {
     public void onOkBtnClick() {
 
         if (handler != null) {
-            int seatsNum = Integer.parseInt(seatsText.getValue());
+            int seatsNum = seatsText.getValue();
             handler.onClose(seatsNum);
         }
         close("ok");
