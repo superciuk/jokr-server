@@ -40,12 +40,15 @@
                               class="com.joker.jokerapp.entity.OrderLine"
                               view="order-line-view">
             <query>
-                <![CDATA[select e from jokerapp$OrderLine e where :param$.order.id = e.order.id]]>
+                <![CDATA[select e from jokerapp$OrderLine e]]>
             </query>
         </collectionDatasource>
         <datasource id="tableItemDs"
                     class="com.joker.jokerapp.entity.TableItem"
                     view="tableItem-view"/>
+        <datasource id="orderLineDs"
+                    class="com.joker.jokerapp.entity.OrderLine"
+                    view="order-line-view"/>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
@@ -65,13 +68,14 @@
                        orientation="horizontal"
                        pos="30"
                        width="100%">
-                    <dataGrid id="orderDataGrid"
-                              datasource="orderLinesDs">
+                    <dataGrid id="orderLineDataGrid"
+                              columnResizeMode="SIMPLE"
+                              datasource="orderLinesDs"
+                              responsive="true">
                         <columns>
                             <column property="itemName"/>
-                            <column property="itemPrice"/>
-                            <column property="taxAmount"/>
-                            <column property="status"/>
+                            <column property="price"/>
+                            <column property="taxes"/>
                         </columns>
                     </dataGrid>
                     <split height="100%"
@@ -118,6 +122,7 @@
                           width="100%"/>
         </split>
         <frame id="windowActions"
+               align="BOTTOM_LEFT"
                screen="editWindowActions"/>
     </layout>
 </window>

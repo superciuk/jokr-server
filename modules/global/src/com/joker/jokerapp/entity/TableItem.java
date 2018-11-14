@@ -9,6 +9,11 @@ import com.haulmont.chile.core.annotations.NamePattern;
 import java.util.List;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import com.haulmont.cuba.core.entity.annotation.OnDelete;
+import com.haulmont.cuba.core.global.DeletePolicy;
 
 @NamePattern("%s|tableNumber")
 @Table(name = "JOKERAPP_TABLE_ITEM")
@@ -20,25 +25,32 @@ public class TableItem extends StandardEntity {
     @Column(name = "TABLE_NUMBER", nullable = false, unique = true)
     protected Integer tableNumber;
 
+    @OnDelete(DeletePolicy.CASCADE)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CURRENT_ORDER_ID")
+    protected Order currentOrder;
+
     @Column(name = "SEATS_CAPACITY")
     protected Integer seatsCapacity;
 
 
 
-    @OrderBy("createTs DESC")
-    @OneToMany(mappedBy = "tableItem")
-    protected List<Order> orders;
-
     @NotNull
     @Column(name = "TABLE_STATUS", nullable = false)
     protected String tableStatus;
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
+
+
+
+
+
+
+    public void setCurrentOrder(Order currentOrder) {
+        this.currentOrder = currentOrder;
     }
 
-    public List<Order> getOrders() {
-        return orders;
+    public Order getCurrentOrder() {
+        return currentOrder;
     }
 
 
@@ -65,18 +77,6 @@ public class TableItem extends StandardEntity {
 
     public Integer getSeatsCapacity() {
         return seatsCapacity;
-    }
-
-    public Order getCurrentOrder() {
-
-        if (orders.size() > 0) {
-            Order lastOrder = orders.get(0);
-            if (lastOrder != null && lastOrder.getStatus() == OrderStatus.open) {
-                return lastOrder;
-            }
-        }
-
-        return null;
     }
 
 

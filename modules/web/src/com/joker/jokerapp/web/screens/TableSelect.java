@@ -9,6 +9,7 @@ import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.data.GroupDatasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebButton;
+import com.joker.jokerapp.entity.OrderStatus;
 import com.joker.jokerapp.entity.TableItem;
 import com.joker.jokerapp.entity.TableItemStatus;
 import com.joker.jokerapp.entity.Order;
@@ -19,9 +20,6 @@ import javax.inject.Named;
 import java.util.*;
 
 public class TableSelect extends AbstractWindow {
-
-    @Inject
-    private Datasource<TableItem> tableItemDs;
 
     @Inject
     private GroupDatasource<TableItem, UUID> tableItemsDs;
@@ -45,39 +43,49 @@ public class TableSelect extends AbstractWindow {
 
         tableItemsDs.refresh();
 
+        if (tableItemsDs.size()>3) grid.setColumns(Math.floorDiv(tableItemsDs.size(),3)+1);
+
         for (TableItem tableItem: tableItemsDs.getItems()) {
 
-          grid.setColumns(Math.floorDiv(tableItemsDs.size(),3));
-          WebButton btn = componentsFactory.createComponent(WebButton.class);
-          btn.setWidth("200px");
-          btn.setHeight("200px");
-          btn.setId(tableItem.getTableNumber().toString());
-          btn.setCaption(tableItem.getTableNumber().toString());
-          btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getTableNumber().toString()))
+
+            WebButton btn = componentsFactory.createComponent(WebButton.class);
+            btn.setWidth("200px");
+            btn.setHeight("200px");
+            btn.setId(tableItem.getTableNumber().toString());
+            btn.setCaption(tableItem.getTableNumber().toString());
+            btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getTableNumber().toString()))
                   .withHandler(e -> openOrderScreen(tableItem)));
-          grid.add(btn);
+            grid.add(btn);
 
         }
 
     }
 
-    private void openOrderScreen(TableItem table) {
+    private void openOrderScreen(TableItem selectedTable) {
 
-        TableItemStatus tableItemStatus = table.getTableStatus();
+        TableItemStatus tableItemStatus = selectedTable.getTableStatus();
 
         final Order currentOrder;
 
         if (tableItemStatus == TableItemStatus.free) {
+
+            selectedTable.setTableStatus(TableItemStatus.open);
+
             currentOrder =  metadata.create(Order.class);
-            currentOrder.setTableItem(table);
+            currentOrder.setStatus(OrderStatus.open);
+            currentOrder.setTableItem(selectedTable);
+            currentOrder.setActualSeats(0);
+
+            selectedTable.setCurrentOrder(currentOrder);
+            dataManager.commit(selectedTable);
+
             Map<String, Object> params = new HashMap<>();
-            params.put("table", table);
+            params.put("table", selectedTable);
 
             ActualSeatsDialog.CloseHandler handler = new ActualSeatsDialog.CloseHandler() {
                 @Override
                 public void onClose(int seats) {
                     currentOrder.setActualSeats(seats);
-  //                  openEditor("orderscreen", currentOrder, WindowManager.OpenType.THIS_TAB);
                 }
             };
 
@@ -91,7 +99,8 @@ public class TableSelect extends AbstractWindow {
                     });
 
         } else if (tableItemStatus == TableItemStatus.open) {
-            currentOrder = table.getCurrentOrder();
+
+            currentOrder = selectedTable.getCurrentOrder();
             openEditor("orderscreen", currentOrder, WindowManager.OpenType.THIS_TAB);
         } else if (tableItemStatus == TableItemStatus.closed) {
             showOptionDialog(
@@ -99,7 +108,7 @@ public class TableSelect extends AbstractWindow {
                     getMessage("freeTableDialog.msg"),
                     MessageType.CONFIRMATION,
                     new Action[] {
-                            new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY).withHandler(e -> freeTable(table)),
+                            new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY).withHandler(e -> freeTable(selectedTable)),
                             new DialogAction(DialogAction.Type.NO, Action.Status.NORMAL)
                     }
             );

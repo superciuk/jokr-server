@@ -19,6 +19,8 @@ import javax.persistence.OrderBy;
 import com.haulmont.chile.core.annotations.MetaProperty;
 import javax.persistence.Transient;
 import com.haulmont.cuba.core.entity.annotation.Listeners;
+import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
+import javax.persistence.OneToOne;
 
 @Listeners("jokerapp_NewOrderEntityListener")
 @NamePattern("%s|id")
@@ -28,16 +30,10 @@ public class Order extends StandardEntity {
     private static final long serialVersionUID = 7728262321009676563L;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "TABLE_ITEM_ID")
-    protected TableItem tableItem;
-
-    @NotNull
     @Column(name = "ACTUAL_SEATS", nullable = false)
     protected Integer actualSeats;
 
     @OrderBy("createTs DESC")
-    @Composition
     @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "order")
     protected List<OrderLine> orderLines;
@@ -48,6 +44,20 @@ public class Order extends StandardEntity {
     @NotNull
     @Column(name = "STATUS", nullable = false)
     protected String status;
+
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "currentOrder")
+    protected TableItem tableItem;
+
+    public void setTableItem(TableItem tableItem) {
+        this.tableItem = tableItem;
+    }
+
+
+    public TableItem getTableItem() {
+        return tableItem;
+    }
+
 
     public void setActualSeats(Integer actualSeats) {
         this.actualSeats = actualSeats;
@@ -88,14 +98,6 @@ public class Order extends StandardEntity {
         return null;
     }
 
-
-    public void setTableItem(TableItem tableItem) {
-        this.tableItem = tableItem;
-    }
-
-    public TableItem getTableItem() {
-        return tableItem;
-    }
 
     public void setOrderLines(List<OrderLine> orderLines) {
         this.orderLines = orderLines;

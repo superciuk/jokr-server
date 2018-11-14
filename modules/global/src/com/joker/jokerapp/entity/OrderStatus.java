@@ -7,9 +7,9 @@ import javax.annotation.Nullable;
 
 public enum OrderStatus implements EnumClass<String> {
 
-    open("0"),
-    paid("10"),
-    cancelled("20");
+    open("open"),
+    paid("paid"),
+    cancelled("cancelled");
 
     private String id;
 

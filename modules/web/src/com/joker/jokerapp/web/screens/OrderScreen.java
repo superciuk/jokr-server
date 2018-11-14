@@ -1,5 +1,6 @@
 package com.joker.jokerapp.web.screens;
 
+import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
@@ -14,6 +15,7 @@ import com.joker.jokerapp.entity.ProductItemCategory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,6 +32,9 @@ public class OrderScreen extends AbstractEditor<Order> {
     private CollectionDatasource<com.joker.jokerapp.entity.OrderLine, UUID> orderLinesDs;
 
     @Inject
+    private Datasource<com.joker.jokerapp.entity.OrderLine> orderLineDs;
+
+    @Inject
     private Datasource<com.joker.jokerapp.entity.Order> orderDs;
 
     @Inject
@@ -41,8 +46,8 @@ public class OrderScreen extends AbstractEditor<Order> {
     @Named("itemsGrid")
     private GridLayout itemsGrid;
 
-    @Named("orderDataGrid")
-    private DataGrid orderDataGrid;
+    @Named("orderLineDataGrid")
+    private DataGrid orderLineDataGrid;
 
     @Inject
     private Metadata metadata;
@@ -55,6 +60,8 @@ public class OrderScreen extends AbstractEditor<Order> {
         super.init(params);
 
         productItemCategoriesDs.refresh();
+        orderDs.setItem((Order)params.get("currentOrder"));
+        orderLineDataGrid.setDatasource(orderLinesDs);
         Float categoriesGridHeight = categoriesGrid.getHeight();
         Float categoriesGridWidth = categoriesGrid.getWidth();
 
@@ -97,11 +104,13 @@ public class OrderScreen extends AbstractEditor<Order> {
     private void addToOrder(ProductItem productItemToAdd) {
 
         OrderLine newLine = metadata.create(OrderLine.class);
-//        newLine.setName(productItemToAdd.getName());
+        newLine.setItemName(productItemToAdd.getName());
         newLine.setPrice(productItemToAdd.getPrice());
+        newLine.setTaxes(BigDecimal.ONE);
         newLine.setOrder(orderDs.getItem());
-        orderLinesDs.addItem(newLine);
-        //orderLinesDs.commit();
+        orderLineDs.setItem(newLine);
+        orderLineDs.commit();
+        orderLinesDs.refresh();
     }
 
 
