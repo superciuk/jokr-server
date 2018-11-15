@@ -1,6 +1,5 @@
 package com.joker.jokerapp.web.screens;
 
-import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
@@ -115,4 +114,7 @@ public class OrderScreen extends AbstractEditor<Order> {
 
 
 
+
+    public void onRemove(Component source) {
+    }
 }

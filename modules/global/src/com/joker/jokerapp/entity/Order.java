@@ -33,7 +33,7 @@ public class Order extends StandardEntity {
     @Column(name = "ACTUAL_SEATS", nullable = false)
     protected Integer actualSeats;
 
-    @OrderBy("createTs DESC")
+    @Composition
     @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "order")
     protected List<OrderLine> orderLines;
@@ -46,16 +46,27 @@ public class Order extends StandardEntity {
     protected String status;
 
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "currentOrder")
-    protected TableItem tableItem;
 
-    public void setTableItem(TableItem tableItem) {
-        this.tableItem = tableItem;
+
+
+    @Column(name = "TABLE_ITEM_NUMBER")
+    protected Integer tableItemNumber;
+
+    public void setOrderLines(List<OrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
+
+    public List<OrderLine> getOrderLines() {
+        return orderLines;
     }
 
 
-    public TableItem getTableItem() {
-        return tableItem;
+    public void setTableItemNumber(Integer tableItemNumber) {
+        this.tableItemNumber = tableItemNumber;
+    }
+
+    public Integer getTableItemNumber() {
+        return tableItemNumber;
     }
 
 
@@ -98,14 +109,6 @@ public class Order extends StandardEntity {
         return null;
     }
 
-
-    public void setOrderLines(List<OrderLine> orderLines) {
-        this.orderLines = orderLines;
-    }
-
-    public List<OrderLine> getOrderLines() {
-        return orderLines;
-    }
 
 
 

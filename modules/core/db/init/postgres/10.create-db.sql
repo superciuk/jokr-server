@@ -107,6 +107,7 @@ create table JOKERAPP_ORDER (
     ACTUAL_SEATS integer not null,
     DISCOUNT decimal(12, 2),
     STATUS varchar(50) not null,
+    TABLE_ITEM_NUMBER integer,
     --
     primary key (ID)
 )^
@@ -122,10 +123,10 @@ create table JOKERAPP_ORDER_LINE (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
-    ORDER_ID uuid not null,
     ITEM_NAME varchar(255) not null,
     PRICE decimal(12, 2) not null,
     TAXES decimal(12, 2) not null,
+    ORDER_ID uuid,
     --
     primary key (ID)
 )^

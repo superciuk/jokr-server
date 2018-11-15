@@ -13,7 +13,10 @@
         </groupDatasource>
         <datasource id="tableItemDs"
                     class="com.joker.jokerapp.entity.TableItem"
-                    view="tableItem-view"/>
+                    view="tableItem-view">
+            <datasource id="currentOrderDs"
+                        property="currentOrder"/>
+        </datasource>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>

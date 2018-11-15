@@ -40,7 +40,7 @@
                               class="com.joker.jokerapp.entity.OrderLine"
                               view="order-line-view">
             <query>
-                <![CDATA[select e from jokerapp$OrderLine e]]>
+                <![CDATA[select e from jokerapp$OrderLine e where e.order.id = :ds$orderDs order by e.createTs]]>
             </query>
         </collectionDatasource>
         <datasource id="tableItemDs"
@@ -53,7 +53,7 @@
     <dialogMode height="600"
                 width="800"/>
     <layout margin="true">
-        <split height="100%"
+        <split height="298px"
                orientation="vertical"
                pos="90%"
                responsive="true"
@@ -72,10 +72,17 @@
                               columnResizeMode="SIMPLE"
                               datasource="orderLinesDs"
                               responsive="true">
+                        <actions>
+                            <action id="remove"
+                                    invoke="onRemove"/>
+                        </actions>
                         <columns>
                             <column property="itemName"/>
                             <column property="price"/>
                             <column property="taxes"/>
+                            <column id="X"
+                                    caption="Delete"
+                                    editable="false"/>
                         </columns>
                     </dataGrid>
                     <split height="100%"

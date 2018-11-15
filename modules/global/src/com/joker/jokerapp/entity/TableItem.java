@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
 import com.haulmont.cuba.core.global.DeletePolicy;
+import com.haulmont.chile.core.annotations.Composition;
+import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
 
 @NamePattern("%s|tableNumber")
 @Table(name = "JOKERAPP_TABLE_ITEM")
@@ -24,11 +26,6 @@ public class TableItem extends StandardEntity {
     @NotNull
     @Column(name = "TABLE_NUMBER", nullable = false, unique = true)
     protected Integer tableNumber;
-
-    @OnDelete(DeletePolicy.CASCADE)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CURRENT_ORDER_ID")
-    protected Order currentOrder;
 
     @Column(name = "SEATS_CAPACITY")
     protected Integer seatsCapacity;
@@ -44,6 +41,14 @@ public class TableItem extends StandardEntity {
 
 
 
+
+
+    @Composition
+    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @OnDelete(DeletePolicy.DENY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CURRENT_ORDER_ID")
+    protected Order currentOrder;
 
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;

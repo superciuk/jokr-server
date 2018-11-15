@@ -62,7 +62,6 @@
                     <columns>
                         <column id="tableNumber"/>
                         <column id="seatsCapacity"/>
-                        <column id="currentOrder"/>
                     </columns>
                     <rows datasource="tableItemsDs"/>
                     <rowsCount/>
@@ -90,7 +89,6 @@
                             <field property="seatsCapacity"/>
                             <field property="tableStatus"
                                    visible="false"/>
-                            <field property="currentOrder"/>
                         </column>
                     </fieldGroup>
                 </scrollBox>

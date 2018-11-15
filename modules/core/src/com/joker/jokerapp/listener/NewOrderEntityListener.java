@@ -19,7 +19,7 @@ public class NewOrderEntityListener implements AfterInsertEntityListener<Order> 
 
     @Override
     public void onAfterInsert(Order entity, Connection connection) {
-        TableItem table = entity.getTableItem();
+/*        TableItem table = (entity.getTableItemNumber());
 
         TableItemStatus tableItemStatus = table.getTableStatus();
 
@@ -27,7 +27,7 @@ public class NewOrderEntityListener implements AfterInsertEntityListener<Order> 
             table.setTableStatus(TableItemStatus.open);
             dataManager.commit(table);
         }
-
+*/
     }
 
 }

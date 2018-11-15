@@ -5,7 +5,6 @@ import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
-import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.data.GroupDatasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebButton;
@@ -73,7 +72,7 @@ public class TableSelect extends AbstractWindow {
 
             currentOrder =  metadata.create(Order.class);
             currentOrder.setStatus(OrderStatus.open);
-            currentOrder.setTableItem(selectedTable);
+            currentOrder.setTableItemNumber(selectedTable.getTableNumber());
             currentOrder.setActualSeats(0);
 
             selectedTable.setCurrentOrder(currentOrder);

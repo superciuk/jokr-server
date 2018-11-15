@@ -12,18 +12,13 @@ import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
 import java.math.BigDecimal;
 import javax.persistence.Column;
+import com.haulmont.cuba.core.entity.annotation.OnDelete;
 
 @NamePattern("%s|id")
 @Table(name = "JOKERAPP_ORDER_LINE")
 @Entity(name = "jokerapp$OrderLine")
 public class OrderLine extends StandardEntity {
     private static final long serialVersionUID = 2123398643400124806L;
-
-    @NotNull
-    @OnDeleteInverse(DeletePolicy.CASCADE)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ORDER_ID")
-    protected Order order;
 
     @NotNull
     @Column(name = "ITEM_NAME", nullable = false)
@@ -36,6 +31,20 @@ public class OrderLine extends StandardEntity {
     @NotNull
     @Column(name = "TAXES", nullable = false, precision = 12, scale = 2)
     protected BigDecimal taxes;
+
+
+    @OnDelete(DeletePolicy.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORDER_ID")
+    protected Order order;
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
 
 
     public void setItemName(String itemName) {
@@ -66,14 +75,6 @@ public class OrderLine extends StandardEntity {
         return price;
     }
 
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
 
 
 }
