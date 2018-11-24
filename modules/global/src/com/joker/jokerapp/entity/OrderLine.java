@@ -33,7 +33,8 @@ public class OrderLine extends StandardEntity {
     protected BigDecimal taxes;
 
 
-    @OnDelete(DeletePolicy.CASCADE)
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @OnDelete(DeletePolicy.UNLINK)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_ID")
     protected Order order;

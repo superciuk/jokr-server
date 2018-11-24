@@ -1,17 +1,14 @@
 package com.joker.jokerapp.web.screens;
 
-import com.haulmont.cuba.core.global.DataManager;
-import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
+import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.data.GroupDatasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebButton;
-import com.joker.jokerapp.entity.OrderStatus;
 import com.joker.jokerapp.entity.TableItem;
 import com.joker.jokerapp.entity.TableItemStatus;
-import com.joker.jokerapp.entity.Order;
 import com.joker.jokerapp.web.dialogs.ActualSeatsDialog;
 
 import javax.inject.Inject;
@@ -21,6 +18,9 @@ import java.util.*;
 public class TableSelect extends AbstractWindow {
 
     @Inject
+    private Datasource<TableItem> tableItemDs;
+
+    @Inject
     private GroupDatasource<TableItem, UUID> tableItemsDs;
 
     @Inject
@@ -28,12 +28,6 @@ public class TableSelect extends AbstractWindow {
 
     @Named("grid")
     private GridLayout grid;
-
-    @Inject
-    private Metadata metadata;
-
-    @Inject
-    private DataManager dataManager;
 
     @Override
     public void init(Map<String, Object> params) {
@@ -46,14 +40,12 @@ public class TableSelect extends AbstractWindow {
 
         for (TableItem tableItem: tableItemsDs.getItems()) {
 
-
             WebButton btn = componentsFactory.createComponent(WebButton.class);
             btn.setWidth("200px");
             btn.setHeight("200px");
             btn.setId(tableItem.getTableNumber().toString());
             btn.setCaption(tableItem.getTableNumber().toString());
-            btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getTableNumber().toString()))
-                  .withHandler(e -> openOrderScreen(tableItem)));
+            btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getTableNumber().toString())).withHandler(e -> openOrderScreen(tableItem)));
             grid.add(btn);
 
         }
@@ -62,66 +54,71 @@ public class TableSelect extends AbstractWindow {
 
     private void openOrderScreen(TableItem selectedTable) {
 
-        TableItemStatus tableItemStatus = selectedTable.getTableStatus();
+        tableItemDs.setItem(selectedTable);
+        tableItemDs.refresh();
 
-        final Order currentOrder;
+        TableItemStatus tableItemStatus = tableItemDs.getItem().getTableStatus();
+
+        Map<String, Object> orderParams = new HashMap<>();
+        orderParams.put("tableNumber",selectedTable.getTableNumber());
 
         if (tableItemStatus == TableItemStatus.free) {
 
-            selectedTable.setTableStatus(TableItemStatus.open);
-
-            currentOrder =  metadata.create(Order.class);
-            currentOrder.setStatus(OrderStatus.open);
-            currentOrder.setTableItemNumber(selectedTable.getTableNumber());
-            currentOrder.setActualSeats(0);
-
-            selectedTable.setCurrentOrder(currentOrder);
-            dataManager.commit(selectedTable);
-
             Map<String, Object> params = new HashMap<>();
-            params.put("table", selectedTable);
+            params.put("table", tableItemDs.getItem());
 
             ActualSeatsDialog.CloseHandler handler = new ActualSeatsDialog.CloseHandler() {
                 @Override
                 public void onClose(int seats) {
-                    currentOrder.setActualSeats(seats);
+                    orderParams.put("actualSeats", seats);
                 }
             };
 
             params.put("handler", handler);
 
-            openWindow("jokerapp$ActualSeats.dialog", WindowManager.OpenType.DIALOG, params)
-                    .addCloseListener(closeString -> {
-                        if (closeString.equals("ok")) {
-                            openEditor("orderscreen", currentOrder, WindowManager.OpenType.THIS_TAB);
-                        }
-                    });
+            openWindow("jokerapp$ActualSeats.dialog", WindowManager.OpenType.DIALOG, params).addCloseListener(closeString -> {
+
+                if (closeString.equals("ok")) {
+                    openWindow("orderScreen", WindowManager.OpenType.THIS_TAB, orderParams);
+                }
+
+            });
+
 
         } else if (tableItemStatus == TableItemStatus.open) {
 
-            currentOrder = selectedTable.getCurrentOrder();
-            openEditor("orderscreen", currentOrder, WindowManager.OpenType.THIS_TAB);
+            openWindow("orderScreen", WindowManager.OpenType.THIS_TAB, orderParams);
+
         } else if (tableItemStatus == TableItemStatus.closed) {
+
             showOptionDialog(
                     getMessage("freeTableDialog.title"),
                     getMessage("freeTableDialog.msg"),
                     MessageType.CONFIRMATION,
                     new Action[] {
-                            new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY).withHandler(e -> freeTable(selectedTable)),
+                            new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY).withHandler(e -> freeTable(tableItemDs.getItem())),
                             new DialogAction(DialogAction.Type.NO, Action.Status.NORMAL)
                     }
             );
+
         }
 
+    }
+
+    private void freeTable(TableItem tableToFree) {
+
+        tableItemDs.setItem(tableToFree);
+        tableItemDs.refresh();
+        tableItemDs.getItem().setTableStatus(TableItemStatus.free);
+        tableItemDs.getItem().setCurrentOrder(null);
+        tableItemDs.commit();
 
     }
 
-    private void freeTable(TableItem table) {
 
-        table.setTableStatus(TableItemStatus.free);
-        dataManager.commit(table);
-        tableItemsDs.refresh();
+    public void onEmptyClick() {
+        tableItemsDs.clear();
+        tableItemsDs.commit();
 
     }
-
 }

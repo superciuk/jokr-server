@@ -87,8 +87,8 @@ create table JOKERAPP_TABLE_ITEM (
     --
     TABLE_NUMBER integer not null,
     SEATS_CAPACITY integer,
-    CURRENT_ORDER_ID uuid,
     TABLE_STATUS varchar(50) not null,
+    CURRENT_ORDER_ID uuid,
     --
     primary key (ID)
 )^

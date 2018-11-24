@@ -22,7 +22,6 @@ import com.haulmont.cuba.core.entity.annotation.Listeners;
 import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
 import javax.persistence.OneToOne;
 
-@Listeners("jokerapp_NewOrderEntityListener")
 @NamePattern("%s|id")
 @Table(name = "JOKERAPP_ORDER")
 @Entity(name = "jokerapp$Order")
@@ -33,6 +32,7 @@ public class Order extends StandardEntity {
     @Column(name = "ACTUAL_SEATS", nullable = false)
     protected Integer actualSeats;
 
+    @OnDeleteInverse(DeletePolicy.UNLINK)
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "order")

@@ -2,7 +2,6 @@
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://caption"
         class="com.joker.jokerapp.web.screens.OrderScreen"
-        datasource="orderDs"
         messagesPack="com.joker.jokerapp.web.screens">
     <dsContext>
         <collectionDatasource id="productItemCategoriesDs"
@@ -38,22 +37,14 @@
                     view="order-view"/>
         <collectionDatasource id="orderLinesDs"
                               class="com.joker.jokerapp.entity.OrderLine"
-                              view="order-line-view">
-            <query>
-                <![CDATA[select e from jokerapp$OrderLine e where e.order.id = :ds$orderDs order by e.createTs]]>
-            </query>
-        </collectionDatasource>
-        <datasource id="tableItemDs"
-                    class="com.joker.jokerapp.entity.TableItem"
-                    view="tableItem-view"/>
-        <datasource id="orderLineDs"
-                    class="com.joker.jokerapp.entity.OrderLine"
-                    view="order-line-view"/>
+                              refreshMode="NEVER"
+                              view="order-line-view"/>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
-    <layout margin="true">
-        <split height="298px"
+    <layout margin="true"
+            spacing="true">
+        <split height="800px"
                orientation="vertical"
                pos="90%"
                responsive="true"
@@ -63,26 +54,26 @@
                    pos="10%"
                    width="100%">
                 <buttonsPanel height="100%"
-                              width="100%"/>
-                <split height="100%"
+                              width="100%">
+                    <button id="removeBtn"
+                            caption="REMOVE"
+                            invoke="onRemoveBtnClick"/>
+                    <button/>
+                    <button/>
+                </buttonsPanel>
+                <split height="662px"
                        orientation="horizontal"
                        pos="30"
                        width="100%">
                     <dataGrid id="orderLineDataGrid"
                               columnResizeMode="SIMPLE"
                               datasource="orderLinesDs"
+                              height="100%"
                               responsive="true">
-                        <actions>
-                            <action id="remove"
-                                    invoke="onRemove"/>
-                        </actions>
                         <columns>
                             <column property="itemName"/>
                             <column property="price"/>
                             <column property="taxes"/>
-                            <column id="X"
-                                    caption="Delete"
-                                    editable="false"/>
                         </columns>
                     </dataGrid>
                     <split height="100%"
@@ -95,15 +86,8 @@
                               responsive="true"
                               spacing="true"
                               width="100%">
-                            <columns count="4"/>
+                            <columns count="1"/>
                             <rows>
-                                <row/>
-                                <row/>
-                                <row/>
-                                <row/>
-                                <row/>
-                                <row/>
-                                <row/>
                                 <row/>
                             </rows>
                         </grid>
@@ -113,10 +97,7 @@
                               responsive="true"
                               spacing="true"
                               width="100%">
-                            <columns>
-                                <column flex="1.0"/>
-                                <column flex="1.0"/>
-                            </columns>
+                            <columns count="1"/>
                             <rows>
                                 <row/>
                             </rows>
@@ -126,10 +107,10 @@
             </split>
             <buttonsPanel height="100%"
                           responsive="true"
-                          width="100%"/>
+                          width="100%">
+                <button id="saveBtn"
+                        invoke="onSaveBtnClick"/>
+            </buttonsPanel>
         </split>
-        <frame id="windowActions"
-               align="BOTTOM_LEFT"
-               screen="editWindowActions"/>
     </layout>
 </window>

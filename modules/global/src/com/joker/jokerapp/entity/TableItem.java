@@ -43,11 +43,10 @@ public class TableItem extends StandardEntity {
 
 
 
-    @Composition
     @OnDeleteInverse(DeletePolicy.UNLINK)
     @OnDelete(DeletePolicy.DENY)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CURRENT_ORDER_ID")
+    @JoinColumn(name = "CURRENT_ORDER_ID", unique = true)
     protected Order currentOrder;
 
     public void setCurrentOrder(Order currentOrder) {
