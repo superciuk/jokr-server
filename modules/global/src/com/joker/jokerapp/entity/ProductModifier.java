@@ -12,6 +12,13 @@ import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.annotation.Lookup;
 import com.haulmont.cuba.core.entity.annotation.LookupType;
 import java.math.BigDecimal;
+import com.haulmont.cuba.core.entity.annotation.OnDelete;
+import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
+import com.haulmont.cuba.core.global.DeletePolicy;
+import java.util.List;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 
 @NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_MODIFIER")
@@ -23,10 +30,10 @@ public class ProductModifier extends StandardEntity {
     @Column(name = "NAME", nullable = false)
     protected String name;
 
-    @Column(name = "ADD_PRICE", precision = 12, scale = 2)
+    @Column(name = "ADD_PRICE")
     protected BigDecimal addPrice;
 
-    @Column(name = "SUBTRACT_PRICE", precision = 12, scale = 2)
+    @Column(name = "SUBTRACT_PRICE")
     protected BigDecimal subtractPrice;
 
     @Lookup(type = LookupType.DROPDOWN)
@@ -37,6 +44,7 @@ public class ProductModifier extends StandardEntity {
 
     @Column(name = "SORT_ORDER")
     protected Integer sortOrder;
+
 
     public BigDecimal getAddPrice() {
         return addPrice;
@@ -54,6 +62,10 @@ public class ProductModifier extends StandardEntity {
     public void setSubtractPrice(BigDecimal subtractPrice) {
         this.subtractPrice = subtractPrice;
     }
+
+
+
+
 
 
 

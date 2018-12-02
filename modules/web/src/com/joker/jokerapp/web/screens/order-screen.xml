@@ -58,7 +58,8 @@
                     <button id="removeBtn"
                             caption="REMOVE"
                             invoke="onRemoveBtnClick"/>
-                    <button/>
+                    <button id="printBtn"
+                            invoke="onPrintBtnClick"/>
                     <button/>
                 </buttonsPanel>
                 <split height="662px"
@@ -68,12 +69,14 @@
                     <dataGrid id="orderLineDataGrid"
                               columnResizeMode="SIMPLE"
                               datasource="orderLinesDs"
+                              editorEnabled="true"
                               height="100%"
-                              responsive="true">
+                              responsive="true"
+                              selectionMode="MULTI_CHECK"
+                              sortable="false">
                         <columns>
                             <column property="itemName"/>
                             <column property="price"/>
-                            <column property="taxes"/>
                         </columns>
                     </dataGrid>
                     <split height="100%"

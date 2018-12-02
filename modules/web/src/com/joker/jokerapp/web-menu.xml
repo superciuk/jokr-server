@@ -2,11 +2,11 @@
 <menu-config xmlns="http://schemas.haulmont.com/cuba/menu.xsd">
     <menu id="application-jokerapp"
           insertBefore="administration">
-        <item screen="jokerapp$ProductItem.browse"/>
-        <item screen="jokerapp$ProductModifierCategory.browse"/>
         <item screen="jokerapp$ProductItemCategory.browse"/>
         <item screen="jokerapp$ProductModifier.browse"/>
         <item screen="tableselect"/>
         <item screen="jokerapp$TableItem.browse"/>
+        <item screen="jokerapp$ProductModifierCategory.browse"/>
+        <item screen="jokerapp$ProductItem.browse"/>
     </menu>
 </menu-config>

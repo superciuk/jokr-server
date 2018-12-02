@@ -1,0 +1,1 @@
+alter table jokerapp_product_modifier_product_item_link rename to JOKERAPP_PRODUCT_MODIFIER_PRODUCT_ITEM_LINK__U32439 ;

@@ -8,6 +8,8 @@
           name="productItem-view">
         <property name="category"
                   view="_minimal"/>
+        <property name="modifierCategories"
+                  view="_minimal"/>
     </view>
     <view class="com.joker.jokerapp.entity.ProductModifierCategory"
           extends="_local"

@@ -31,16 +31,9 @@ public class TableItem extends StandardEntity {
     protected Integer seatsCapacity;
 
 
-
     @NotNull
     @Column(name = "TABLE_STATUS", nullable = false)
     protected String tableStatus;
-
-
-
-
-
-
 
 
     @OnDeleteInverse(DeletePolicy.UNLINK)

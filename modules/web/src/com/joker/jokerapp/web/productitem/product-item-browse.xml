@@ -13,17 +13,25 @@
     <dsContext>
         <datasource id="productItemDs"
                     class="com.joker.jokerapp.entity.ProductItem"
-                    view="productItem-view"/>
-        <groupDatasource id="productItemsDs"
-                         class="com.joker.jokerapp.entity.ProductItem"
-                         view="productItem-view">
+                    view="productItem-view">
+            <collectionDatasource id="modifierCategoriesDs"
+                                  property="modifierCategories"/>
+        </datasource>
+        <collectionDatasource id="productItemsDs"
+                              class="com.joker.jokerapp.entity.ProductItem"
+                              view="productItem-view">
             <query>
                 <![CDATA[select e from jokerapp$ProductItem e]]>
             </query>
-        </groupDatasource>
-        <collectionDatasource id="categoriesDs"
-                              class="com.joker.jokerapp.entity.ProductItemCategory"
-                              view="_minimal">
+        </collectionDatasource>
+        <collectionDatasource id="productModifierCategoriesDs"
+                              class="com.joker.jokerapp.entity.ProductModifierCategory">
+            <query>
+                <![CDATA[select e from jokerapp$ProductModifierCategory e]]>
+            </query>
+        </collectionDatasource>
+        <collectionDatasource id="productItemCategoriesDs"
+                              class="com.joker.jokerapp.entity.ProductItemCategory">
             <query>
                 <![CDATA[select e from jokerapp$ProductItemCategory e]]>
             </query>
@@ -46,33 +54,35 @@
     <layout>
         <split id="split"
                height="100%"
-               orientation="vertical"
+               orientation="horizontal"
+               responsive="true"
                reversePosition="true"
                width="100%">
             <vbox id="lookupBox"
                   expand="table"
                   height="100%"
                   margin="true"
+                  responsive="true"
                   spacing="true">
                 <filter id="filter"
                         applyTo="table"
                         datasource="productItemsDs">
                     <properties include=".*"/>
                 </filter>
-                <groupTable id="table"
-                            multiselect="true"
-                            width="100%">
+                <table id="table"
+                       editable="true"
+                       multiselect="true"
+                       width="100%">
                     <actions>
                         <action id="create"/>
                         <action id="edit"/>
                         <action id="remove"/>
-                        <action id="excel"/>
                     </actions>
                     <columns>
                         <column id="name"/>
-                        <column id="sortOrder"/>
                         <column id="category"/>
                         <column id="price"/>
+                        <column id="sortOrder"/>
                         <column id="visible"/>
                     </columns>
                     <rows datasource="productItemsDs"/>
@@ -85,15 +95,11 @@
                                 action="table.edit"/>
                         <button id="removeBtn"
                                 action="table.remove"/>
-                        <button id="excelBtn"
-                                action="table.excel"/>
                         <button id="duplicateBtn"
                                 caption="msg://Duplicate"
-                                icon="icons/copy.png"
                                 invoke="onDuplicateBtnClick"/>
-                        <button invoke="onBtnPress"/>
                     </buttonsPanel>
-                </groupTable>
+                </table>
             </vbox>
             <vbox id="editBox"
                   expand="fieldGroupBox"
@@ -102,26 +108,28 @@
                   spacing="true">
                 <scrollBox id="fieldGroupBox"
                            margin="true"
-                           responsive="true"
-                           spacing="true">
-                    <split id="split_1"
-                           orientation="horizontal"
-                           responsive="true"
-                           width="100%">
-                        <fieldGroup id="fieldGroup"
-                                    border="visible"
-                                    datasource="productItemDs"
-                                    responsive="true">
-                            <column width="250px">
-                                <field property="name"/>
-                                <field property="sortOrder"/>
-                                <field optionsDatasource="categoriesDs"
-                                       property="category"/>
-                                <field property="price"/>
-                                <field property="visible"/>
-                            </column>
-                        </fieldGroup>
-                    </split>
+                           responsive="true">
+                    <fieldGroup id="fieldGroup"
+                                datasource="productItemDs"
+                                width="100%">
+                        <column width="100%">
+                            <field property="name"/>
+                            <field optionsDatasource="productItemCategoriesDs"
+                                   property="category"/>
+                            <field property="price"/>
+                            <field property="sortOrder"/>
+                            <field property="visible"/>
+                        </column>
+                    </fieldGroup>
+                    <split height="20px"
+                           orientation="vertical"
+                           width="100%"/>
+                    <optionsGroup id="modifierCategories"
+                                  caption="Modifiers Categories"
+                                  datasource="modifierCategoriesDs"
+                                  multiselect="true"
+                                  optionsDatasource="productModifierCategoriesDs"
+                                  property="name"/>
                 </scrollBox>
                 <hbox id="actionsPane"
                       spacing="true"

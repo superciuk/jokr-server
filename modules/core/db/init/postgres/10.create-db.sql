@@ -65,8 +65,8 @@ create table JOKERAPP_PRODUCT_MODIFIER (
     DELETED_BY varchar(50),
     --
     NAME varchar(255) not null,
-    ADD_PRICE decimal(12, 2),
-    SUBTRACT_PRICE decimal(12, 2),
+    ADD_PRICE decimal(19, 2),
+    SUBTRACT_PRICE decimal(19, 2),
     CATEGORY_ID uuid not null,
     SORT_ORDER integer,
     --
@@ -131,3 +131,10 @@ create table JOKERAPP_ORDER_LINE (
     primary key (ID)
 )^
 -- end JOKERAPP_ORDER_LINE
+-- begin JOKERAPP_PRODUCT_ITEM_PRODUCT_MODIFIER_CATEGORY_LINK
+create table JOKERAPP_PRODUCT_ITEM_PRODUCT_MODIFIER_CATEGORY_LINK (
+    PRODUCT_MODIFIER_CATEGORY_ID uuid,
+    PRODUCT_ITEM_ID uuid,
+    primary key (PRODUCT_MODIFIER_CATEGORY_ID, PRODUCT_ITEM_ID)
+)^
+-- end JOKERAPP_PRODUCT_ITEM_PRODUCT_MODIFIER_CATEGORY_LINK

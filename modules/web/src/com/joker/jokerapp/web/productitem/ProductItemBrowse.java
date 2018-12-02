@@ -1,39 +1,21 @@
 package com.joker.jokerapp.web.productitem;
 
-import com.haulmont.cuba.gui.components.EntityCombinedScreen;
-import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.gui.components.*;
-import com.haulmont.cuba.gui.data.GroupDatasource;
+import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.web.gui.components.WebLookupPickerField;
 import com.joker.jokerapp.entity.ProductItem;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.print.*;
-import java.awt.print.PrinterJob;
-import java.util.Map;
 import java.util.UUID;
 
 public class ProductItemBrowse extends EntityCombinedScreen {
 
     @Inject
-    private GroupDatasource<ProductItem, UUID> productItemsDs;
+    private CollectionDatasource<ProductItem, UUID> productItemsDs;
 
     @Named("table")
     private Table<ProductItem> table;
-
-    @Override
-    protected void initNewItem(Entity item) {
-        super.initNewItem(item);
-
-    }
-
-    @Override
-    public void init(Map<String, Object> params) {
-
-        super.init(params);
-
-    }
 
     public void onDuplicateBtnClick() {
 
@@ -69,22 +51,4 @@ public class ProductItemBrowse extends EntityCombinedScreen {
         visible.setValue(itemToDuplicate.getVisible());
 
     }
-
-    public void onBtnPress() {
-
-        PrintService printService = PrinterJob.lookupPrintServices()[0];
-        byte[] arr = new byte[2];
-        arr[0] = 0x2;
-        arr[1] = 0x2;
-
-        Doc doc = new SimpleDoc(arr, DocFlavor.BYTE_ARRAY.AUTOSENSE, null);
-
-        try {
-            printService.createPrintJob().print(doc, null);
-        } catch (PrintException e) {
-            e.printStackTrace();
-        }
-
-    }
-
 }

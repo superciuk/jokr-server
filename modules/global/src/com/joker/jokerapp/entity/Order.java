@@ -32,15 +32,6 @@ public class Order extends StandardEntity {
     @Column(name = "ACTUAL_SEATS", nullable = false)
     protected Integer actualSeats;
 
-    @OnDeleteInverse(DeletePolicy.UNLINK)
-    @Composition
-    @OnDelete(DeletePolicy.CASCADE)
-    @OneToMany(mappedBy = "order")
-    protected List<OrderLine> orderLines;
-
-    @Column(name = "DISCOUNT", precision = 12, scale = 2)
-    protected BigDecimal discount;
-
     @NotNull
     @Column(name = "STATUS", nullable = false)
     protected String status;
@@ -51,6 +42,15 @@ public class Order extends StandardEntity {
 
     @Column(name = "TABLE_ITEM_NUMBER")
     protected Integer tableItemNumber;
+
+    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @Composition
+    @OnDelete(DeletePolicy.CASCADE)
+    @OneToMany(mappedBy = "order")
+    protected List<OrderLine> orderLines;
+
+    @Column(name = "DISCOUNT", precision = 12, scale = 2)
+    protected BigDecimal discount;
 
     public void setOrderLines(List<OrderLine> orderLines) {
         this.orderLines = orderLines;

@@ -9,14 +9,15 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import com.haulmont.chile.core.annotations.NamePattern;
-import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
 import com.haulmont.cuba.core.global.DeletePolicy;
 import java.util.List;
-import javax.persistence.OneToMany;
 import com.haulmont.cuba.core.entity.annotation.Lookup;
 import com.haulmont.cuba.core.entity.annotation.LookupType;
 import java.math.BigDecimal;
+import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 @NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_ITEM")
@@ -43,6 +44,27 @@ public class ProductItem extends StandardEntity {
     @NotNull
     @Column(name = "PRICE", nullable = false, precision = 12, scale = 2)
     protected BigDecimal price;
+
+
+
+
+
+    @JoinTable(name = "JOKERAPP_PRODUCT_ITEM_PRODUCT_MODIFIER_CATEGORY_LINK",
+        joinColumns = @JoinColumn(name = "PRODUCT_ITEM_ID"),
+        inverseJoinColumns = @JoinColumn(name = "PRODUCT_MODIFIER_CATEGORY_ID"))
+    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @OnDelete(DeletePolicy.UNLINK)
+    @ManyToMany
+    protected List<ProductModifierCategory> modifierCategories;
+
+    public void setModifierCategories(List<ProductModifierCategory> modifierCategories) {
+        this.modifierCategories = modifierCategories;
+    }
+
+    public List<ProductModifierCategory> getModifierCategories() {
+        return modifierCategories;
+    }
+
 
     public BigDecimal getPrice() {
         return price;

@@ -36,16 +36,16 @@
     </actions>
     <dialogMode height="600"
                 width="800"/>
-    <layout>
+    <layout margin="true">
         <split id="split"
                height="100%"
-               orientation="vertical"
+               orientation="horizontal"
                reversePosition="true"
                width="100%">
             <vbox id="lookupBox"
                   expand="table"
                   height="100%"
-                  margin="true"
+                  margin="false,true,false,false"
                   spacing="true">
                 <filter id="filter"
                         applyTo="table"
@@ -53,6 +53,7 @@
                     <properties include=".*"/>
                 </filter>
                 <groupTable id="table"
+                            multiselect="true"
                             width="100%">
                     <actions>
                         <action id="create"/>
@@ -81,10 +82,8 @@
                   height="100%"
                   margin="false,false,false,true"
                   spacing="true">
-                <scrollBox id="fieldGroupBox"
-                           margin="true">
+                <scrollBox id="fieldGroupBox">
                     <fieldGroup id="fieldGroup"
-                                border="visible"
                                 datasource="productModifierCategoryDs">
                         <column width="250px">
                             <field property="name"/>

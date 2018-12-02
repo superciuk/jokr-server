@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <screen-config xmlns="http://schemas.haulmont.com/cuba/screens.xsd">
     <include file="com/joker/jokerapp/screens.xml"/>
-    <screen id="jokerapp$ProductItem.browse"
-            template="com/joker/jokerapp/web/productitem/product-item-browse.xml"/>
-    <screen id="jokerapp$ProductModifierCategory.browse"
-            template="com/joker/jokerapp/web/productmodifiercategory/product-modifier-category-browse.xml"/>
     <screen id="jokerapp$ProductItemCategory.browse"
             template="com/joker/jokerapp/web/productitemcategory/product-item-category-browse.xml"/>
     <screen id="jokerapp$ProductModifier.browse"
@@ -17,4 +13,8 @@
             template="com/joker/jokerapp/web/dialogs/actual-seats-dialog.xml"/>
     <screen id="orderScreen"
             template="com/joker/jokerapp/web/screens/order-screen.xml"/>
+    <screen id="jokerapp$ProductModifierCategory.browse"
+            template="com/joker/jokerapp/web/productmodifiercategory/product-modifier-category-browse.xml"/>
+    <screen id="jokerapp$ProductItem.browse"
+            template="com/joker/jokerapp/web/productitem/product-item-browse.xml"/>
 </screen-config>

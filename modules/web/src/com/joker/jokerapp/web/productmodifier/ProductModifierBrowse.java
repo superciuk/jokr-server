@@ -8,6 +8,7 @@ import com.joker.jokerapp.entity.ProductModifier;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -29,17 +30,17 @@ public class ProductModifierBrowse extends EntityCombinedScreen {
     public void init(Map<String, Object> params) {
         super.init(params);
         addPrice.addValueChangeListener(e -> {
-            if ((subtractPrice.getValue() != null ) && ((double)subtractPrice.getValue()==0)) subtractPrice.setValue(addPrice.getValue());
+            if ((subtractPrice.getValue() != null ) && (subtractPrice.getValue()==BigDecimal.valueOf(0))) subtractPrice.setValue(addPrice.getValue());
         });
         subtractPrice.addValueChangeListener(e -> {
-            if ((subtractPrice.getValue() != null ) && ((double)addPrice.getValue()==0)) addPrice.setValue(subtractPrice.getValue());
+            if ((subtractPrice.getValue() != null ) && (addPrice.getValue()==BigDecimal.valueOf(0))) addPrice.setValue(subtractPrice.getValue());
         });
     }
 
     @Override
     protected void initNewItem(Entity item) {
-        item.setValue("addPrice" , 0.0);
-        item.setValue("subtractPrice" , 0.0);
+        item.setValue("addPrice", BigDecimal.valueOf(0));
+        item.setValue("subtractPrice", BigDecimal.valueOf(0));
         super.initNewItem(item);
     }
 

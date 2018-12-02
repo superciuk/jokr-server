@@ -1,0 +1,1 @@
+drop table if exists JOKERAPP_PRODUCT_MODIFIER_PRODUCT_ITEM_LINK__U32439 cascade ;
