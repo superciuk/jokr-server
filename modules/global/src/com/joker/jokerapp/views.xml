@@ -29,6 +29,7 @@
     <view class="com.joker.jokerapp.entity.OrderLine"
           extends="_local"
           name="order-line-view">
+        <property name="createTs"/>
     </view>
     <view class="com.joker.jokerapp.entity.TableItem"
           extends="_minimal"

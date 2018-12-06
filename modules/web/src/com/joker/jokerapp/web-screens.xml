@@ -17,4 +17,6 @@
             template="com/joker/jokerapp/web/productmodifiercategory/product-modifier-category-browse.xml"/>
     <screen id="jokerapp$ProductItem.browse"
             template="com/joker/jokerapp/web/productitem/product-item-browse.xml"/>
+    <screen id="jokerapp$ItemModifier.dialog"
+            template="com/joker/jokerapp/web/dialogs/item-modifier-dialog.xml"/>
 </screen-config>

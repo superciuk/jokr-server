@@ -5,6 +5,7 @@ import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.web.gui.components.WebLookupPickerField;
 import com.joker.jokerapp.entity.ProductItem;
 
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.UUID;
@@ -49,6 +50,9 @@ public class ProductItemBrowse extends EntityCombinedScreen {
         price.setValue(itemToDuplicate.getPrice());
         CheckBox visible = (CheckBox) getComponent("fieldGroup.visible");
         visible.setValue(itemToDuplicate.getVisible());
+
+        OptionsGroup optionsGroup = (OptionsGroup)getComponent("modifierCategories");
+        optionsGroup.setValue(itemToDuplicate.getModifierCategories());
 
     }
 }

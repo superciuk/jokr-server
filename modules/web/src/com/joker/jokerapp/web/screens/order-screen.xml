@@ -44,44 +44,78 @@
                 width="800"/>
     <layout margin="true"
             spacing="true">
-        <split height="800px"
+        <split height="100%"
                orientation="vertical"
-               pos="90%"
+               pos="95%"
                responsive="true"
                width="100%">
             <split height="100%"
                    orientation="vertical"
-                   pos="10%"
+                   pos="5%"
                    width="100%">
                 <buttonsPanel height="100%"
                               width="100%">
                     <button id="removeBtn"
                             caption="REMOVE"
                             invoke="onRemoveBtnClick"/>
+                    <button id="addBtn"
+                            caption="+"
+                            invoke="onAddBtnClick"/>
+                    <button id="subtractBtn"
+                            caption="-"
+                            invoke="onSubtractBtnClick"/>
                     <button id="printBtn"
+                            caption="PRINT"
                             invoke="onPrintBtnClick"/>
-                    <button/>
+                    <button id="addModifier"
+                            caption="MODIFY"
+                            invoke="onAddModifierClick"/>
                 </buttonsPanel>
                 <split height="662px"
                        orientation="horizontal"
                        pos="30"
                        width="100%">
-                    <dataGrid id="orderLineDataGrid"
-                              columnResizeMode="SIMPLE"
-                              datasource="orderLinesDs"
-                              editorEnabled="true"
-                              height="100%"
-                              responsive="true"
-                              selectionMode="MULTI_CHECK"
-                              sortable="false">
-                        <columns>
-                            <column property="itemName"/>
-                            <column property="price"/>
-                        </columns>
-                    </dataGrid>
+                    <scrollBox height="100%"
+                               margin="true">
+                        <dataGrid id="orderLineDataGrid"
+                                  columnResizeMode="SIMPLE"
+                                  columnsCollapsingAllowed="false"
+                                  datasource="orderLinesDs"
+                                  editorEnabled="true"
+                                  reorderingAllowed="false"
+                                  responsive="true"
+                                  selectionMode="MULTI"
+                                  settingsEnabled="false"
+                                  sortable="false"
+                                  width="100%">
+                            <columns>
+                                <column id="quantity"
+                                        caption="Qty"
+                                        collapsible="false"
+                                        maximumWidth="40"
+                                        minimumWidth="30"
+                                        property="quantity"
+                                        resizable="false"
+                                        sortable="false"/>
+                                <column collapsible="false"
+                                        maximumWidth="500"
+                                        minimumWidth="300"
+                                        property="itemName"
+                                        resizable="false"
+                                        sortable="false"/>
+                                <column caption="Price"
+                                        collapsible="false"
+                                        maximumWidth="100"
+                                        minimumWidth="80"
+                                        property="price"
+                                        resizable="false"
+                                        sortable="false"/>
+                            </columns>
+                        </dataGrid>
+                    </scrollBox>
                     <split height="100%"
                            orientation="horizontal"
-                           pos="70"
+                           pos="65"
                            width="100%">
                         <grid id="itemsGrid"
                               height="100%"
@@ -94,17 +128,19 @@
                                 <row/>
                             </rows>
                         </grid>
-                        <grid id="categoriesGrid"
-                              height="100%"
-                              margin="true"
-                              responsive="true"
-                              spacing="true"
-                              width="100%">
-                            <columns count="1"/>
-                            <rows>
-                                <row/>
-                            </rows>
-                        </grid>
+                        <scrollBox height="100%"
+                                   margin="true">
+                            <grid id="categoriesGrid"
+                                  margin="true"
+                                  responsive="true"
+                                  spacing="true"
+                                  width="100%">
+                                <columns count="1"/>
+                                <rows>
+                                    <row/>
+                                </rows>
+                            </grid>
+                        </scrollBox>
                     </split>
                 </split>
             </split>

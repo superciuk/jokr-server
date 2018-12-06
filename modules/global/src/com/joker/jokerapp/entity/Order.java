@@ -45,7 +45,7 @@ public class Order extends StandardEntity {
 
     @OnDeleteInverse(DeletePolicy.UNLINK)
     @Composition
-    @OnDelete(DeletePolicy.CASCADE)
+    @OnDelete(DeletePolicy.UNLINK)
     @OneToMany(mappedBy = "order")
     protected List<OrderLine> orderLines;
 

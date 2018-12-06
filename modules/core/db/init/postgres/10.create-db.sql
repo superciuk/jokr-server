@@ -123,10 +123,17 @@ create table JOKERAPP_ORDER_LINE (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
+    QUANTITY integer,
     ITEM_NAME varchar(255) not null,
+    UNIT_PRICE decimal(19, 2),
     PRICE decimal(12, 2) not null,
     TAXES decimal(12, 2) not null,
     ORDER_ID uuid,
+    POSITION_ integer,
+    HAS_MODIFIER boolean not null,
+    IS_MODIFIER boolean not null,
+    ITEM_TO_MDIFY_ID uuid,
+    IS_SENDED boolean not null,
     --
     primary key (ID)
 )^

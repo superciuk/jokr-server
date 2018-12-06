@@ -39,7 +39,7 @@
     <layout>
         <split id="split"
                height="100%"
-               orientation="vertical"
+               orientation="horizontal"
                reversePosition="true"
                width="100%">
             <vbox id="lookupBox"
@@ -83,14 +83,17 @@
                   margin="false,false,false,true"
                   spacing="true">
                 <scrollBox id="fieldGroupBox"
-                           margin="true">
+                           margin="true"
+                           spacing="true">
                     <fieldGroup id="fieldGroup"
                                 border="visible"
-                                datasource="productItemCategoryDs">
-                        <column width="250px">
+                                datasource="productItemCategoryDs"
+                                responsive="true"
+                                width="100%">
+                        <column width="100%">
                             <field property="name"/>
-                            <field property="visible"/>
                             <field property="sortOrder"/>
+                            <field property="visible"/>
                         </column>
                     </fieldGroup>
                 </scrollBox>

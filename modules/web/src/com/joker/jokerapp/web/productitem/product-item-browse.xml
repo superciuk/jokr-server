@@ -125,11 +125,11 @@
                            orientation="vertical"
                            width="100%"/>
                     <optionsGroup id="modifierCategories"
-                                  caption="Modifiers Categories"
-                                  datasource="modifierCategoriesDs"
+                                  caption="Modifier Categories"
+                                  datasource="productItemDs"
                                   multiselect="true"
                                   optionsDatasource="productModifierCategoriesDs"
-                                  property="name"/>
+                                  property="modifierCategories"/>
                 </scrollBox>
                 <hbox id="actionsPane"
                       spacing="true"
