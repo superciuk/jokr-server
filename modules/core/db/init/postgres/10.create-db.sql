@@ -130,9 +130,10 @@ create table JOKERAPP_ORDER_LINE (
     TAXES decimal(12, 2) not null,
     ORDER_ID uuid,
     POSITION_ integer,
+    NEXT_MODIFIER_POSITION integer,
     HAS_MODIFIER boolean not null,
     IS_MODIFIER boolean not null,
-    ITEM_TO_MDIFY_ID uuid,
+    ITEM_TO_MODIFY_ID uuid,
     IS_SENDED boolean not null,
     --
     primary key (ID)

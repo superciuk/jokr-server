@@ -1,0 +1,1 @@
+alter table JOKERAPP_ORDER_LINE drop column LAST_MODIFIER_POSITION__U59450 cascade ;

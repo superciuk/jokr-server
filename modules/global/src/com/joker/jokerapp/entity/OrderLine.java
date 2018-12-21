@@ -1,5 +1,6 @@
 package com.joker.jokerapp.entity;
 
+// import javax.inject.Inject;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
@@ -13,11 +14,15 @@ import com.haulmont.chile.core.annotations.NamePattern;
 import java.math.BigDecimal;
 import javax.persistence.Column;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
+
+// import com.haulmont.cuba.core.global.DataManager;
+
 import java.util.UUID;
 
 @NamePattern("%s|id")
 @Table(name = "JOKERAPP_ORDER_LINE")
 @Entity(name = "jokerapp$OrderLine")
+
 public class OrderLine extends StandardEntity {
     private static final long serialVersionUID = 2123398643400124806L;
 
@@ -49,6 +54,9 @@ public class OrderLine extends StandardEntity {
     @Column(name = "POSITION_")
     protected Integer position;
 
+    @Column(name = "NEXT_MODIFIER_POSITION")
+    protected Integer nextModifierPosition;
+
     @NotNull
     @Column(name = "HAS_MODIFIER", nullable = false)
     protected Boolean hasModifier = false;
@@ -57,12 +65,38 @@ public class OrderLine extends StandardEntity {
     @Column(name = "IS_MODIFIER", nullable = false)
     protected Boolean isModifier = false;
 
-    @Column(name = "ITEM_TO_MDIFY_ID")
-    protected UUID itemToMdifyId;
+    @Column(name = "ITEM_TO_MODIFY_ID")
+    protected UUID itemToModifyId;
 
     @NotNull
     @Column(name = "IS_SENDED", nullable = false)
     protected Boolean isSended = false;
+
+/*
+
+    @Inject
+    private DataManager dataManager;
+*/
+
+
+
+    public void setNextModifierPosition(Integer nextModifierPosition) {
+        this.nextModifierPosition = nextModifierPosition;
+    }
+
+    public Integer getNextModifierPosition() {
+        return nextModifierPosition;
+    }
+
+
+    public void setItemToModifyId(UUID itemToModifyId) {
+        this.itemToModifyId = itemToModifyId;
+    }
+
+    public UUID getItemToModifyId() {
+        return itemToModifyId;
+    }
+
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
@@ -100,14 +134,6 @@ public class OrderLine extends StandardEntity {
         return quantity;
     }
 
-
-    public void setItemToMdifyId(UUID itemToMdifyId) {
-        this.itemToMdifyId = itemToMdifyId;
-    }
-
-    public UUID getItemToMdifyId() {
-        return itemToMdifyId;
-    }
 
 
     public void setIsModifier(Boolean isModifier) {
@@ -165,6 +191,15 @@ public class OrderLine extends StandardEntity {
         return price;
     }
 
+/*    public List<OrderLine> getModifiers() {
 
+        List <OrderLine> orderModifierLines = dataManager.load(OrderLine.class)
+                .query("select e from jokerapp$OrderLine e where e.itemToModifyId = :selectedLineId")
+                .parameter("selectedLineId", this)
+                .view("order-line-view")
+                .list();
+
+        return  orderModifierLines;
+    }*/
 
 }

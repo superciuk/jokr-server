@@ -3,33 +3,129 @@
         caption="msg://caption"
         class="com.joker.jokerapp.web.dialogs.ItemModifierDialog"
         messagesPack="com.joker.jokerapp.web.dialogs">
-    <dialogMode forceDialog="true"
-                height="300"
-                width="650"/>
-    <layout margin="true">
-        <vbox height="250px"
-              margin="true"
-              spacing="true"
-              width="600px">
-            <vbox height="180px">
-                <label id="message"
-                       value="msg://itemModifier.msg"/>
-                <textField id="modifierText"
-                           datatype="string"
-                           width="100%"/>
-                <textField id="modifierPrice"
-                           caption="Price"
-                           datatype="decimal"
-                           width="200px"/>
+    <dsContext>
+        <collectionDatasource id="modifierOrderLinesDs"
+                              class="com.joker.jokerapp.entity.OrderLine">
+            <query>
+                <![CDATA[select e from jokerapp$OrderLine e where e.itemToModifyId = :param$selectedLine.id]]>
+            </query>
+        </collectionDatasource>
+        <collectionDatasource id="productModifiersDs"
+                              class="com.joker.jokerapp.entity.ProductModifier">
+            <query>
+                <![CDATA[select e from jokerapp$ProductModifier e]]>
+            </query>
+        </collectionDatasource>
+        <collectionDatasource id="productItemsDs"
+                              class="com.joker.jokerapp.entity.ProductItem">
+            <query>
+                <![CDATA[select e from jokerapp$ProductItem e]]>
+            </query>
+        </collectionDatasource>
+    </dsContext>
+    <dialogMode height="800"
+                width="1600"/>
+    <layout margin="true"
+            spacing="true">
+        <split id="firstSplit"
+               height="100%"
+               maxSplitPosition="30%"
+               minSplitPosition="30%"
+               orientation="horizontal"
+               pos="30%"
+               responsive="true"
+               width="100%">
+            <vbox id="modifierOrderLinesBox"
+                  expand="modifierOrderLinesDataGrid"
+                  height="100%"
+                  margin="true">
+                <dataGrid id="modifierOrderLinesDataGrid"
+                          columnResizeMode="SIMPLE"
+                          columnsCollapsingAllowed="false"
+                          datasource="modifierOrderLinesDs"
+                          sortable="false"
+                          width="100%">
+                    <columns>
+                        <column editable="false"
+                                property="quantity"
+                                resizable="false"
+                                sortable="false"/>
+                        <column editable="false"
+                                property="itemName"
+                                resizable="false"
+                                sortable="false"/>
+                        <column editable="false"
+                                property="price"
+                                resizable="false"
+                                sortable="false"/>
+                    </columns>
+                </dataGrid>
+                <buttonsPanel id="modifierOrderLinesButtonPanel"
+                              align="BOTTOM_LEFT"
+                              width="100%">
+                    <button id="modifierOrderLinesRemoveBtn"
+                            caption="REMOVE"
+                            invoke="onModifierOrderLinesRemoveBtnClick"/>
+                    <button id="okBtn"
+                            align="BOTTOM_CENTER"
+                            caption="msg://OK"
+                            invoke="onOkBtnClick"/>
+                    <button id="cancelBtn"
+                            align="BOTTOM_RIGHT"
+                            caption="msg://Cancel"
+                            invoke="onCancelBtnClick"/>
+                </buttonsPanel>
             </vbox>
-            <buttonsPanel align="BOTTOM_LEFT">
-                <button id="okBtn"
-                        caption="msg://OK"
-                        invoke="onOkBtnClick"/>
-                <button id="cancelBtn"
-                        caption="msg://Cancel"
-                        invoke="onCancelBtnClick"/>
-            </buttonsPanel>
-        </vbox>
+            <split id="secondSplit"
+                   height="100%"
+                   maxSplitPosition="80%"
+                   minSplitPosition="80%"
+                   orientation="horizontal"
+                   pos="80%"
+                   responsive="true"
+                   width="100%">
+                <vbox id="modifierItemBox"
+                      expand="modifierItemGrid"
+                      height="100%"
+                      margin="true"
+                      spacing="true">
+                    <grid id="modifierItemGrid"
+                          margin="true"
+                          spacing="true"
+                          width="100%">
+                        <columns count="1"/>
+                        <rows>
+                            <row/>
+                        </rows>
+                    </grid>
+                    <buttonsPanel id="modifierItemsButtonPanel"
+                                  align="BOTTOM_LEFT"
+                                  width="100%">
+                        <checkBox id="addCheckBox"
+                                  align="BOTTOM_LEFT"
+                                  caption="Add Modifier"
+                                  height="50px"
+                                  width="50px"/>
+                        <checkBox id="removeCheckBox"
+                                  align="BOTTOM_LEFT"
+                                  caption="Remove Modifier"
+                                  height="50px"
+                                  width="50px"/>
+                    </buttonsPanel>
+                </vbox>
+                <scrollBox height="100%"
+                           margin="true">
+                    <grid id="modifierCategoriesGrid"
+                          margin="true"
+                          spacing="true"
+                          width="100%">
+                        <columns count="1"/>
+                        <rows>
+                            <row/>
+                        </rows>
+                    </grid>
+                </scrollBox>
+            </split>
+        </split>
     </layout>
 </window>

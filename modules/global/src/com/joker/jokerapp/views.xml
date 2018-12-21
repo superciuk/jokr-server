@@ -30,6 +30,8 @@
           extends="_local"
           name="order-line-view">
         <property name="createTs"/>
+        <property name="order"
+                  view="_minimal"/>
     </view>
     <view class="com.joker.jokerapp.entity.TableItem"
           extends="_minimal"
