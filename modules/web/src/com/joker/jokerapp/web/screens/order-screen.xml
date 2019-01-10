@@ -79,79 +79,172 @@
                             invoke="onPrintBtnClick"/>
                 </buttonsPanel>
                 <split height="662px"
-                       maxSplitPosition="30%"
-                       minSplitPosition="30%"
+                       maxSplitPosition="32%"
+                       minSplitPosition="32%"
                        orientation="horizontal"
-                       pos="30%"
+                       pos="32%"
                        width="100%">
-                    <scrollBox height="100%"
-                               margin="true">
-                        <dataGrid id="orderLineDataGrid"
-                                  columnResizeMode="SIMPLE"
-                                  columnsCollapsingAllowed="false"
-                                  datasource="orderLinesDs"
-                                  editorEnabled="true"
-                                  reorderingAllowed="false"
-                                  responsive="true"
-                                  selectionMode="MULTI"
-                                  settingsEnabled="false"
-                                  sortable="false"
-                                  width="100%">
-                            <columns>
-                                <column id="quantity"
-                                        caption="Qty"
-                                        collapsible="false"
-                                        maximumWidth="40"
-                                        minimumWidth="30"
-                                        property="quantity"
-                                        resizable="false"
-                                        sortable="false"/>
-                                <column collapsible="false"
-                                        maximumWidth="500"
-                                        minimumWidth="300"
-                                        property="itemName"
-                                        resizable="false"
-                                        sortable="false"/>
-                                <column caption="Price"
-                                        collapsible="false"
-                                        maximumWidth="100"
-                                        minimumWidth="80"
-                                        property="price"
-                                        resizable="false"
-                                        sortable="false"/>
-                            </columns>
-                        </dataGrid>
-                    </scrollBox>
+                    <vbox expand="orderLineScrollBox_groupBox"
+                          height="100%">
+                        <groupBox id="orderLineScrollBox_groupBox">
+                            <scrollBox id="orderLineScrollBox"
+                                       height="100%">
+                                <dataGrid id="orderLineDataGrid"
+                                          columnResizeMode="SIMPLE"
+                                          columnsCollapsingAllowed="false"
+                                          datasource="orderLinesDs"
+                                          editorBuffered="false"
+                                          headerVisible="false"
+                                          height="520px"
+                                          reorderingAllowed="false"
+                                          selectionMode="MULTI"
+                                          settingsEnabled="false"
+                                          sortable="false"
+                                          width="100%">
+                                    <columns>
+                                        <column id="quantity"
+                                                collapsible="false"
+                                                maximumWidth="40"
+                                                minimumWidth="40"
+                                                property="quantity"
+                                                resizable="false"
+                                                sortable="false"/>
+                                        <column id="itemName"
+                                                collapsible="false"
+                                                maximumWidth="460"
+                                                minimumWidth="460"
+                                                property="itemName"
+                                                resizable="false"
+                                                sortable="false"/>
+                                        <column id="price"
+                                                collapsible="false"
+                                                maximumWidth="50"
+                                                minimumWidth="50"
+                                                property="price"
+                                                resizable="false"
+                                                sortable="false"/>
+                                    </columns>
+                                </dataGrid>
+                            </scrollBox>
+                        </groupBox>
+                        <hbox id="sumGroupBox"
+                              align="BOTTOM_RIGHT"
+                              height="110px"
+                              width="100%">
+                            <groupBox align="TOP_RIGHT"
+                                      height="100%"
+                                      settingsEnabled="false"
+                                      width="450px">
+                                <label align="MIDDLE_RIGHT"
+                                       value="Subtotal"/>
+                                <label align="MIDDLE_RIGHT"
+                                       value="Service 10%"/>
+                                <label align="MIDDLE_RIGHT"
+                                       value="Total"/>
+                            </groupBox>
+                            <groupBox align="TOP_RIGHT"
+                                      height="100%"
+                                      settingsEnabled="false"
+                                      width="140px">
+                                <currencyField id="subTotalField"
+                                               align="MIDDLE_RIGHT"
+                                               currency="€"
+                                               editable="false"
+                                               width="110px"/>
+                                <currencyField id="serviceField"
+                                               align="MIDDLE_RIGHT"
+                                               currency="€"
+                                               editable="false"
+                                               width="110px"/>
+                                <currencyField id="totalField"
+                                               align="MIDDLE_RIGHT"
+                                               currency="€"
+                                               editable="false"
+                                               width="110px"/>
+                            </groupBox>
+                        </hbox>
+                    </vbox>
                     <split height="100%"
                            maxSplitPosition="65%"
                            minSplitPosition="65%"
                            orientation="horizontal"
                            pos="65%"
                            width="100%">
-                        <grid id="itemsGrid"
-                              height="100%"
-                              margin="true"
-                              responsive="true"
-                              spacing="true"
-                              width="100%">
-                            <columns count="1"/>
-                            <rows>
-                                <row/>
-                            </rows>
-                        </grid>
-                        <scrollBox height="100%"
-                                   margin="true">
-                            <grid id="categoriesGrid"
-                                  margin="true"
-                                  responsive="true"
-                                  spacing="true"
-                                  width="100%">
-                                <columns count="1"/>
-                                <rows>
-                                    <row/>
-                                </rows>
-                            </grid>
-                        </scrollBox>
+                        <groupBox height="100%">
+                            <split id="itemsSplit"
+                                   height="100%"
+                                   maxSplitPosition="90%"
+                                   minSplitPosition="90%"
+                                   orientation="vertical"
+                                   pos="90%"
+                                   settingsEnabled="false"
+                                   width="100%">
+                                <grid id="itemsGrid"
+                                      margin="true"
+                                      spacing="true"
+                                      width="100%">
+                                    <columns count="4"/>
+                                    <rows>
+                                        <row/>
+                                        <row/>
+                                        <row/>
+                                        <row/>
+                                    </rows>
+                                </grid>
+                                <buttonsPanel height="100%"
+                                              width="100%">
+                                    <button id="itemsBackBtn"
+                                            align="MIDDLE_LEFT"
+                                            caption="PREV"
+                                            height="50px"
+                                            invoke="onItemsBackBtnClick"
+                                            width="380px"/>
+                                    <button id="itemsNextBtn"
+                                            align="MIDDLE_RIGHT"
+                                            caption="NEXT"
+                                            height="50px"
+                                            invoke="onItemsNextBtnClick"
+                                            width="380px"/>
+                                </buttonsPanel>
+                            </split>
+                        </groupBox>
+                        <groupBox height="100%">
+                            <split id="categoriesSplit"
+                                   height="100%"
+                                   maxSplitPosition="90%"
+                                   minSplitPosition="90%"
+                                   orientation="vertical"
+                                   pos="90%"
+                                   settingsEnabled="false"
+                                   width="100%">
+                                <grid id="categoriesGrid"
+                                      margin="true"
+                                      responsive="true"
+                                      spacing="true"
+                                      width="100%">
+                                    <columns count="1"/>
+                                    <rows>
+                                        <row/>
+                                    </rows>
+                                </grid>
+                                <buttonsPanel id="buttonPanel"
+                                              height="100%"
+                                              width="100%">
+                                    <button id="categoriesBackBtn"
+                                            align="MIDDLE_LEFT"
+                                            caption="PREV"
+                                            height="50px"
+                                            invoke="onCategoriesBackBtnClick"
+                                            width="200px"/>
+                                    <button id="categoriesNextBtn"
+                                            align="MIDDLE_RIGHT"
+                                            caption="NEXT"
+                                            height="50px"
+                                            invoke="onCategoriesNextBtnClick"
+                                            width="200px"/>
+                                </buttonsPanel>
+                            </split>
+                        </groupBox>
                     </split>
                 </split>
             </split>
@@ -159,7 +252,11 @@
                           responsive="true"
                           width="100%">
                 <button id="saveBtn"
+                        caption="Close"
                         invoke="onSaveBtnClick"/>
+                <button id="billBtn"
+                        caption="Bill"
+                        invoke="onBillBtnClick"/>
             </buttonsPanel>
         </split>
     </layout>

@@ -29,6 +29,9 @@ public class OrderLine extends StandardEntity {
     @Column(name = "QUANTITY")
     protected Integer quantity;
 
+    @Column(name = "PRINTER_GROUP")
+    protected String printerGroup;
+
     @NotNull
     @Column(name = "ITEM_NAME", nullable = false)
     protected String itemName;
@@ -78,6 +81,15 @@ public class OrderLine extends StandardEntity {
     private DataManager dataManager;
 */
 
+
+
+    public void setPrinterGroup(String printerGroup) {
+        this.printerGroup = printerGroup;
+    }
+
+    public String getPrinterGroup() {
+        return printerGroup;
+    }
 
 
     public void setNextModifierPosition(Integer nextModifierPosition) {

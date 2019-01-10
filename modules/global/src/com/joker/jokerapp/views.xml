@@ -23,8 +23,6 @@
     <view class="com.joker.jokerapp.entity.Order"
           extends="_local"
           name="order-view">
-        <property name="charge"/>
-        <property name="taxes"/>
     </view>
     <view class="com.joker.jokerapp.entity.OrderLine"
           extends="_local"

@@ -32,6 +32,7 @@ create table JOKERAPP_PRODUCT_ITEM (
     CATEGORY_ID uuid not null,
     VISIBLE boolean,
     PRICE decimal(12, 2) not null,
+    PRINTER_GROUP integer,
     --
     primary key (ID)
 )^
@@ -105,9 +106,11 @@ create table JOKERAPP_ORDER (
     DELETED_BY varchar(50),
     --
     ACTUAL_SEATS integer not null,
-    DISCOUNT decimal(12, 2),
     STATUS varchar(50) not null,
     TABLE_ITEM_NUMBER integer,
+    DISCOUNT decimal(12, 2),
+    CHARGE decimal(19, 2),
+    TAXES decimal(19, 2),
     --
     primary key (ID)
 )^
@@ -124,6 +127,7 @@ create table JOKERAPP_ORDER_LINE (
     DELETED_BY varchar(50),
     --
     QUANTITY integer,
+    PRINTER_GROUP varchar(255),
     ITEM_NAME varchar(255) not null,
     UNIT_PRICE decimal(19, 2),
     PRICE decimal(12, 2) not null,

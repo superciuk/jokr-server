@@ -18,15 +18,23 @@
     <dialogMode height="600"
                 width="800"/>
     <layout margin="true">
-        <grid id="grid"
-              margin="true"
-              spacing="true">
-            <columns count="1"/>
-            <rows>
-                <row/>
-            </rows>
-        </grid>
-        <button id="empty"
-                invoke="onEmptyClick"/>
+        <split height="100%"
+               maxSplitPosition="90%"
+               minSplitPosition="90%"
+               orientation="vertical"
+               pos="90%"
+               width="100%">
+            <grid id="grid"
+                  margin="true"
+                  spacing="true">
+                <columns count="1"/>
+                <rows>
+                    <row/>
+                </rows>
+            </grid>
+            <button id="empty"
+                    caption="EMPTY"
+                    invoke="onEmptyClick"/>
+        </split>
     </layout>
 </window>

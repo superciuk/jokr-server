@@ -52,6 +52,29 @@ public class Order extends StandardEntity {
     @Column(name = "DISCOUNT", precision = 12, scale = 2)
     protected BigDecimal discount;
 
+    @Column(name = "CHARGE")
+    protected BigDecimal charge;
+
+    @Column(name = "TAXES")
+    protected BigDecimal taxes;
+
+    public void setCharge(BigDecimal charge) {
+        this.charge = charge;
+    }
+
+    public BigDecimal getCharge() {
+        return charge;
+    }
+
+    public void setTaxes(BigDecimal taxes) {
+        this.taxes = taxes;
+    }
+
+    public BigDecimal getTaxes() {
+        return taxes;
+    }
+
+
     public void setOrderLines(List<OrderLine> orderLines) {
         this.orderLines = orderLines;
     }
@@ -97,31 +120,4 @@ public class Order extends StandardEntity {
     }
 
 
-    @NotNull
-    @MetaProperty(mandatory = true)
-    public BigDecimal getCharge() {
-        return null;
     }
-
-    @NotNull
-    @MetaProperty(mandatory = true)
-    public BigDecimal getTaxes() {
-        return null;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}

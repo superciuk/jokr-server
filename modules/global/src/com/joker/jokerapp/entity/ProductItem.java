@@ -57,6 +57,18 @@ public class ProductItem extends StandardEntity {
     @ManyToMany
     protected List<ProductModifierCategory> modifierCategories;
 
+    @Column(name = "PRINTER_GROUP")
+    protected Integer printerGroup;
+
+    public void setPrinterGroup(PrinterGroup printerGroup) {
+        this.printerGroup = printerGroup == null ? null : printerGroup.getId();
+    }
+
+    public PrinterGroup getPrinterGroup() {
+        return printerGroup == null ? null : PrinterGroup.fromId(printerGroup);
+    }
+
+
     public void setModifierCategories(List<ProductModifierCategory> modifierCategories) {
         this.modifierCategories = modifierCategories;
     }

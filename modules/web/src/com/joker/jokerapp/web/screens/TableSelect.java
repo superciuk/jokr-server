@@ -26,6 +26,9 @@ public class TableSelect extends AbstractWindow {
     @Inject
     private ComponentsFactory componentsFactory;
 
+    @Inject
+    protected HtmlAttributes html;
+
     @Named("grid")
     private GridLayout grid;
 
@@ -36,13 +39,18 @@ public class TableSelect extends AbstractWindow {
 
         tableItemsDs.refresh();
 
-        if (tableItemsDs.size()>3) grid.setColumns(Math.floorDiv(tableItemsDs.size(),3)+1);
+//        if (tableItemsDs.size()>3) grid.setColumns(Math.floorDiv(tableItemsDs.size(),3)+1);
+        grid.setColumns(9);
+        grid.setRows(3);
 
         for (TableItem tableItem: tableItemsDs.getItems()) {
 
             WebButton btn = componentsFactory.createComponent(WebButton.class);
-            btn.setWidth("200px");
-            btn.setHeight("200px");
+            btn.setWidth("196px");
+            btn.setHeight("196px");
+            if (tableItem.getTableStatus().toString().equals("free")) btn.setStyleName("v-button-backgroundColorGreen");
+            if (tableItem.getTableStatus().toString().equals("open")) btn.setStyleName("v-button-backgroundColorRed");
+            if (tableItem.getTableStatus().toString().equals("closed")) btn.setStyleName("v-button-backgroundColorBrown");
             btn.setId(tableItem.getTableNumber().toString());
             btn.setCaption(tableItem.getTableNumber().toString());
             btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getTableNumber().toString())).withHandler(e -> openOrderScreen(tableItem)));

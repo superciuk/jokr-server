@@ -179,7 +179,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
             if (addCheckBox.isChecked()) {
 
-                if (line.getItemName().equals("  + ".concat(productModifierToAdd.getName()))) {
+                if (line.getItemName().equals(" + ".concat(productModifierToAdd.getName()))) {
 
                     line.setQuantity(line.getQuantity() + 1);
                     line.setPrice(line.getPrice().add(productModifierToAdd.getAddPrice()));
@@ -190,7 +190,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
             } else if (removeCheckBox.isChecked()) {
 
-                if (line.getItemName().equals("  - ".concat(productModifierToAdd.getName()))) {
+                if (line.getItemName().equals(" - ".concat(productModifierToAdd.getName()))) {
 
                     line.setQuantity(line.getQuantity() + 1);
                     line.setPrice(line.getPrice().add(BigDecimal.valueOf(-((productModifierToAdd.getSubtractPrice()).doubleValue()))));
@@ -208,13 +208,13 @@ public class ItemModifierDialog extends AbstractWindow {
         newLine.setQuantity(1);
         if (addCheckBox.isChecked()) {
 
-            newLine.setItemName("  + ".concat(productModifierToAdd.getName()));
+            newLine.setItemName(" + ".concat(productModifierToAdd.getName()));
             newLine.setUnitPrice(productModifierToAdd.getAddPrice());
             newLine.setPrice(productModifierToAdd.getAddPrice());
 
         } else if (removeCheckBox.isChecked()) {
 
-            newLine.setItemName("  - ".concat(productModifierToAdd.getName()));
+            newLine.setItemName(" - ".concat(productModifierToAdd.getName()));
             newLine.setUnitPrice(BigDecimal.valueOf(-((productModifierToAdd.getSubtractPrice()).doubleValue())));
             newLine.setPrice(BigDecimal.valueOf(-((productModifierToAdd.getSubtractPrice()).doubleValue())));
 
@@ -227,6 +227,7 @@ public class ItemModifierDialog extends AbstractWindow {
         newLine.setHasModifier(Boolean.FALSE);
         newLine.setIsModifier(Boolean.TRUE);
         newLine.setItemToModifyId(selectedLine.getId());
+        newLine.setPrinterGroup(selectedLine.getPrinterGroup());
         newLine.setIsSended(Boolean.FALSE);
 
         if (selectedLine.getHasModifier().equals(Boolean.FALSE)) selectedLine.setHasModifier(Boolean.TRUE);

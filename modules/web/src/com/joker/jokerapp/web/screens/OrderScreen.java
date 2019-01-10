@@ -4,6 +4,8 @@ import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
+import com.haulmont.cuba.gui.components.Action;
+import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.gui.components.GridLayout;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
@@ -12,16 +14,22 @@ import com.haulmont.cuba.web.gui.components.WebButton;
 import com.joker.jokerapp.entity.*;
 import com.joker.jokerapp.web.dialogs.ItemManualModifierDialog;
 import com.joker.jokerapp.web.dialogs.ItemModifierDialog;
-import org.atmosphere.interceptor.AtmosphereResourceStateRecovery;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.print.*;
+import javax.print.attribute.*;
+import javax.print.attribute.standard.*;
 import java.awt.*;
-import java.awt.font.TextAttribute;
-import java.awt.print.PrinterJob;
+
+import java.awt.image.BufferedImage;
+import java.awt.print.*;
+
+import java.io.File;
 import java.math.BigDecimal;
-import java.text.AttributedString;
+
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
@@ -48,9 +56,6 @@ public class OrderScreen extends AbstractWindow {
     @Inject
     private Metadata metadata;
 
-    @Inject
-    protected HtmlAttributes html;
-
     @Named("categoriesGrid")
     private GridLayout categoriesGrid;
 
@@ -60,15 +65,57 @@ public class OrderScreen extends AbstractWindow {
     @Named("orderLineDataGrid")
     private DataGrid orderLineDataGrid;
 
-    String categoryBtnWidth = "180px";
-    String categoryBtnHeight = "120px";
+    @Named("subTotalField")
+    private CurrencyField subTotalField;
 
-    String itemBtnWidth = "180px";
-    String itemBtnHeight = "120px";
+    @Named("serviceField")
+    private CurrencyField serviceField;
 
-    private Order currentOrder = null;
+    @Named("totalField")
+    private CurrencyField totalField;
+
+    @Named("categoriesBackBtn")
+    private Button categoriesBackBtn;
+
+    @Named("categoriesNextBtn")
+    private Button categoriesNextBtn;
+
+    @Named("itemsBackBtn")
+    private Button itemsBackBtn;
+
+    @Named("itemsNextBtn")
+    private Button itemsNextBtn;
+
+
+
+
+    private String categoryBtnWidth = "180px";
+    private String categoryBtnHeight = "120px";
+
+    private String itemBtnWidth = "180px";
+    private String itemBtnHeight = "120px";
+
+    private Order currentOrder;
     private TableItem table;
     private List <OrderLine> modifierOrderLinesToAdd = new ArrayList<>();
+
+    private BigDecimal subTotal = new BigDecimal(0.0);
+    private BigDecimal service = new BigDecimal(0.0);
+    private BigDecimal total = new BigDecimal(0.0);
+
+    private String printerGroupToSendTicket;
+
+    private Integer categorySize = 0;
+    private Integer categoriesPages = 0;
+    private Integer categoriesActualPage = 1;
+
+    private Integer productItemSize = 0;
+    private Integer productItemsPages = 0;
+    private Integer productItemsActualPage = 1;
+
+    private ProductItemCategory categoryProductItemsToShow;
+
+    private ArrayList <ProductItem> productItemsToShow = new ArrayList<>();
 
     @Override
     public void init(Map<String, Object> params) {
@@ -82,59 +129,123 @@ public class OrderScreen extends AbstractWindow {
                 .one();
 
         if (table.getTableStatus().equals(TableItemStatus.free)) {
+
             currentOrder = metadata.create(Order.class);
             currentOrder.setStatus(OrderStatus.open);
             currentOrder.setTableItemNumber((Integer)params.get("tableNumber"));
             currentOrder.setActualSeats((Integer)params.get("actualSeats"));
+            currentOrder.setCharge(BigDecimal.valueOf(0));
+            currentOrder.setTaxes(BigDecimal.valueOf(0));
+
             table.setCurrentOrder(currentOrder);
             table.setTableStatus(TableItemStatus.open);
 
+            dataManager.commit(currentOrder,table);
+
+            currentOrder = dataManager.load(Order.class)
+                    .query("select e from jokerapp$Order e where e.id = :currentOrder")
+                    .parameter("currentOrder", table.getCurrentOrder())
+                    .view("order-view")
+                    .one();
+
+
         } else if (table.getTableStatus().equals(TableItemStatus.open)) {
-            currentOrder = table.getCurrentOrder();
+
+            currentOrder = dataManager.load(Order.class)
+                    .query("select e from jokerapp$Order e where e.id = :currentOrder")
+                    .parameter("currentOrder", table.getCurrentOrder())
+                    .view("order-view")
+                    .one();
+
         }
 
-        if (currentOrder != null) {
-            List<OrderLine> lines = dataManager.load(OrderLine.class)
-                    .query("select e from jokerapp$OrderLine e where e.order.id = :currentOrder order by e.position")
-                    .parameter("currentOrder", currentOrder.getId())
-                    .view("order-line-view")
-                    .list();
+        List<OrderLine> lines = dataManager.load(OrderLine.class)
+                .query("select e from jokerapp$OrderLine e where e.order.id = :currentOrder order by e.position")
+                .parameter("currentOrder", currentOrder.getId())
+                .view("order-line-view")
+                .list();
 
-            for (OrderLine line : lines) {
+        for (OrderLine line : lines) {
 
-                orderLinesDs.includeItem(line);
+            orderLinesDs.includeItem(line);
 
-            }
         }
+
+        refreshBill();
+
+        itemsBackBtn.setVisible(Boolean.FALSE);
+        itemsNextBtn.setVisible(Boolean.FALSE);
 
         productItemCategoriesDs.refresh();
 
+        if (productItemCategoriesDs!=null) categorySize = productItemCategoriesDs.getItems().size();
+
+        categoriesPages = (categorySize - 1) / 8 + 1;
+
         categoriesGrid.setColumns(2);
 
-        Integer btnNumber = 1;
+        if (categorySize!=0) {
 
-        for (ProductItemCategory productItemCategory : productItemCategoriesDs.getItems()) {
+        } if (categorySize<=8) {
 
-            WebButton btn = componentsFactory.createComponent(WebButton.class);
+            categoriesBackBtn.setVisible(Boolean.FALSE);
+            categoriesNextBtn.setVisible(Boolean.FALSE);
+            showProductCategories(0, categorySize-1);
 
-            btn.setId("btn".concat(btnNumber.toString()));
-//            html.setCssProperty(categoriesGrid, HtmlAttributes.CSS.BACKGROUND_COLOR , "red");
-            btn.setWidth(categoryBtnWidth);
-            btn.setHeight(categoryBtnHeight);
-            btn.setCaptionAsHtml(Boolean.TRUE);
+        } else {
 
-            Integer nameLength = productItemCategory.getName().length();
-            String categoryName = productItemCategory.getName();
+            categoriesBackBtn.setVisible(Boolean.FALSE);
+            categoriesNextBtn.setVisible(Boolean.TRUE);
+            showProductCategories(0, 7);
+
+        }
+
+    }
+
+    private void showProductCategories(int start, int end) {
+
+        Integer btnNumber = start;
+
+        ProductItemCategory [] productItemCategoryToShow = productItemCategoriesDs.getItems().toArray(new ProductItemCategory[productItemCategoriesDs.getItems().size()]);
+
+        for (int c = start; c<=end; c++) {
+
+            WebButton cBtn = componentsFactory.createComponent(WebButton.class);
+
+            cBtn.setId("cBtn".concat(btnNumber.toString()));
+            cBtn.setWidth(categoryBtnWidth);
+            cBtn.setHeight(categoryBtnHeight);
+            cBtn.setCaptionAsHtml(Boolean.TRUE);
+
+            Integer nameLength = productItemCategoryToShow[c].getName().length();
+            String categoryName = productItemCategoryToShow[c].getName();
             if (nameLength>16 && categoryName.contains(" ")) {
 
-                categoryName = categoryName.replace(" ", "<br>");
-                btn.setCaption(categoryName);
+                int spacePosition = 0;
 
-            } else btn.setCaption(categoryName);
+                for (int l = 0; l<categoryName.length(); l++) {
 
-            btn.setAction(new BaseAction("showItem".concat(productItemCategory.getName())).withHandler(e -> showProductItems(productItemCategory)));
+                    Character ch = categoryName.charAt(l);
 
-            categoriesGrid.add(btn);
+                    if (Character.isSpace(ch)) {
+
+                        if (l > 16) break;
+
+                        spacePosition = l;
+
+                    }
+
+                }
+
+                categoryName = categoryName.substring(0,spacePosition).concat("<br>").concat(categoryName.substring(spacePosition+1));
+                cBtn.setCaption(categoryName);
+
+            } else cBtn.setCaption(categoryName);
+
+            ProductItemCategory toShow = productItemCategoryToShow[c];
+            cBtn.setAction(new BaseAction("showItem".concat(productItemCategoryToShow[c].getName())).withHandler(e -> showProductItems(toShow)));
+
+            categoriesGrid.add(cBtn);
 
             btnNumber ++;
 
@@ -147,23 +258,106 @@ public class OrderScreen extends AbstractWindow {
         itemsGrid.removeAll();
         itemsGrid.setColumns(4);
         productItemsDs.refresh();
+        productItemsActualPage = 1;
+        productItemsToShow.clear();
 
-        for (ProductItem productItem : productItemsDs.getItems()) {
+        for (ProductItem item : productItemsDs.getItems()) {
 
-            if (productItem.getCategory().getName().equals(productItemCategory.getName()) && productItem.getVisible()) {
+            if (item.getCategory().getName().equals(productItemCategory.getName()) && item.getVisible()) productItemsToShow.add(item);
 
-                WebButton btn = componentsFactory.createComponent(WebButton.class);
-                btn.setWidth(itemBtnWidth);
-                btn.setHeight(itemBtnHeight);
-                btn.setCaption(productItem.getName());
-                btn.setAction(new BaseAction("addToOrder".concat(productItem.getName())).withHandler(e -> addToOrder(productItem)));
-                itemsGrid.add(btn);
+        }
+
+        if (productItemsToShow!=null) productItemSize = productItemsToShow.size();
+
+        productItemsPages = (productItemSize - 1) / 16 + 1;
+
+        if (productItemSize!=0) {
+
+            categoryProductItemsToShow = productItemCategory;
+
+            if (productItemSize <= 16) {
+
+                itemsBackBtn.setVisible(Boolean.FALSE);
+                itemsNextBtn.setVisible(Boolean.FALSE);
+                showProductItemsPaged(0, productItemSize-1);
+
+            } else {
+
+                itemsBackBtn.setVisible(Boolean.FALSE);
+                itemsNextBtn.setVisible(Boolean.TRUE);
+                showProductItemsPaged(0, 15);
 
             }
 
         }
 
     }
+
+    private void showProductItemsPaged(int start, int end) {
+
+        Integer btnNumber = start;
+        ArrayList<Integer> spacePositions = new ArrayList<>();
+        ArrayList<Integer> spaceToConvert = new ArrayList<>();
+        int actualSpace;
+        int prevSpaceConverted;
+
+        for (int c = start; c<=end; c++) {
+
+            WebButton pBtn = componentsFactory.createComponent(WebButton.class);
+            pBtn.setId("pBtn".concat(btnNumber.toString()));
+            pBtn.setWidth(itemBtnWidth);
+            pBtn.setHeight(itemBtnHeight);
+            pBtn.setCaptionAsHtml(Boolean.TRUE);
+
+            Integer nameLength = productItemsToShow.get(c).getName().length();
+            String productName = productItemsToShow.get(c).getName();
+
+            if (nameLength > 16 && productName.contains(" ")) {
+
+                spacePositions.clear();
+
+                for (int l = 0; l < productName.length(); l++) {
+
+                    Character ch = productName.charAt(l);
+                    if (Character.isSpace(ch)) spacePositions.add(l);
+
+                }
+
+                spaceToConvert.clear();
+                actualSpace = spacePositions.get(0);
+                prevSpaceConverted = 0;
+
+                for (int o = 0; o<spacePositions.size(); o++) {
+
+                    if (spacePositions.get(o) - prevSpaceConverted > 16) {
+
+                        spaceToConvert.add(actualSpace);
+                        prevSpaceConverted = actualSpace;
+                        actualSpace = spacePositions.get(o);
+
+                    } else actualSpace = spacePositions.get(o);
+
+                }
+
+                for (int n = 0; n<spaceToConvert.size(); n++) {
+
+                    productName = productName.substring(0, spaceToConvert.get(n) + (n*3)).concat("<br>").concat(productName.substring(spaceToConvert.get(n) + (n*3) + 1));
+
+                }
+
+                pBtn.setCaption(productName);
+
+            } else pBtn.setCaption(productItemsToShow.get(c).getName());
+
+            btnNumber ++;
+
+            ProductItem toAdd = productItemsToShow.get(c);
+            pBtn.setAction(new BaseAction("addToOrder".concat(productItemsToShow.get(c).getName())).withHandler(e -> addToOrder(toAdd)));
+            itemsGrid.add(pBtn);
+
+            }
+
+        }
 
     private void addToOrder(ProductItem productItemToAdd) {
 
@@ -175,6 +369,8 @@ public class OrderScreen extends AbstractWindow {
                 line.setPrice(line.getPrice().add(productItemToAdd.getPrice()));
 
                 orderLinesDs.commit();
+
+                refreshBill();
 
                 return;
 
@@ -209,67 +405,69 @@ public class OrderScreen extends AbstractWindow {
             newLine.setHasModifier(Boolean.FALSE);
             newLine.setIsModifier(Boolean.FALSE);
             newLine.setItemToModifyId(null);
+            newLine.setPrinterGroup(productItemToAdd.getPrinterGroup().toString());
             newLine.setIsSended(Boolean.FALSE);
 
             orderLinesDs.addItem(newLine);
+
             orderLinesDs.commit();
+
+            refreshBill();
 
     }
 
     public void onPrintBtnClick() {
 
-        PrintService printService = PrinterJob.lookupPrintServices()[0];
+        for (PrinterGroup printerGroup : PrinterGroup.values()) {
 
-        AttributedString atString = new AttributedString("PROVA");
-        Font normalFont = new Font ("serif", Font.PLAIN, 18);
-        Font boldFont = new Font ("serif", Font.BOLD, 12);
+            printerGroupToSendTicket = printerGroup.toString();
 
-        atString.addAttribute(TextAttribute.FONT, normalFont);
+            Boolean printerGroupLinesExixts = Boolean.FALSE;
 
-        String printString = null;
+            for (OrderLine line : orderLinesDs.getItems()) {
 
-        printString = "          TAVOLO ".concat(table.getTableNumber().toString()).concat("\n\n\n");
+                if (line.getOrder().equals(currentOrder) && line.getPrinterGroup().equals(printerGroupToSendTicket))
+                    printerGroupLinesExixts = Boolean.TRUE;
 
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        printString = printString.concat("Time: ").concat(sdf.format(cal.getTime())).concat("\n\n");
+            }
 
-        for (OrderLine line : orderLinesDs.getItems()) {
+            if (printerGroupLinesExixts) {
 
-            if (line.getItemName().length() > 28) {
+                DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
 
-                String lineName = line.getItemName();
-                Integer spacePosition = 0;
+                PrintService[] printServices = PrintServiceLookup.lookupPrintServices(flavor, null);
 
-                for (int i = 0;i<line.getItemName().length();i++) {
+                if (printServices[0] != null) {
 
-                    Character c = lineName.charAt(i);
+                    MediaPrintableArea mpa = new MediaPrintableArea(1,1,74,2000,MediaPrintableArea.MM);
 
-                    if (Character.isSpace(c)) {
+                    PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
+                    printRequestAttributeSet.add(MediaSizeName.ISO_A0);
+                    printRequestAttributeSet.add(mpa);
 
-                        if (i>28) break;
+                    DocAttributeSet docAttributeSet = new HashDocAttributeSet();
+                    docAttributeSet.add(MediaSizeName.ISO_A0);
 
-                        spacePosition = i;
+                    docAttributeSet.add(mpa);
+
+                    Ticket ticket = new Ticket();
+
+                    DocPrintJob docPrintJob = printServices[0].createPrintJob();
+                    SimpleDoc doc1 = new SimpleDoc(ticket, flavor, docAttributeSet);
+
+                    try {
+
+                        docPrintJob.print(doc1, printRequestAttributeSet);
+
+                    } catch (PrintException e) {
+
+                        e.printStackTrace();
 
                     }
 
                 }
 
-                printString = printString.concat(lineName.substring(0,spacePosition)).concat("\n ").concat(lineName.substring(spacePosition).concat("\n\n"));
-
-            } else printString = printString.concat(line.getItemName().concat("\n\n"));
-
-        }
-
-        Doc ticket= new SimpleDoc(printString, DocFlavor.STRING.TEXT_PLAIN, null);
-
-        try {
-
-            printService.createPrintJob().print(ticket, null);
-
-        } catch (PrintException e) {
-
-            e.printStackTrace();
+            }
 
         }
 
@@ -382,6 +580,8 @@ public class OrderScreen extends AbstractWindow {
 
                 orderLinesDs.commit();
 
+                refreshBill();
+
                 orderLinesDs.clear();
 
                 List<OrderLine> lines = dataManager.load(OrderLine.class)
@@ -462,6 +662,7 @@ public class OrderScreen extends AbstractWindow {
                     selectedLine.setHasModifier(Boolean.TRUE);
                     newModifierLine.setIsModifier(Boolean.TRUE);
                     newModifierLine.setItemToModifyId(selectedLine.getId());
+                    newModifierLine.setPrinterGroup(selectedLine.getPrinterGroup());
                     newModifierLine.setIsSended(Boolean.FALSE);
                     orderLinesDs.addItem(newModifierLine);
 
@@ -471,6 +672,8 @@ public class OrderScreen extends AbstractWindow {
                         add(newModifierLine.getUnitPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity()))));
 
                 orderLinesDs.commit();
+
+                refreshBill();
 
                 orderLinesDs.clear();
 
@@ -502,12 +705,14 @@ public class OrderScreen extends AbstractWindow {
 
         if (selectedLine.getIsModifier()) return;
 
-        BigDecimal itemSinglePrice = selectedLine.getPrice().divide(BigDecimal.valueOf(selectedLine.getQuantity()));
+        BigDecimal itemSinglePrice = selectedLine.getPrice().divide(BigDecimal.valueOf(selectedLine.getQuantity()), RoundingMode.FLOOR);
 
         selectedLine.setQuantity(selectedLine.getQuantity()+1);
         selectedLine.setPrice(selectedLine.getPrice().add(itemSinglePrice));
 
         orderLinesDs.commit();
+
+        refreshBill();
 
     }
 
@@ -540,6 +745,8 @@ public class OrderScreen extends AbstractWindow {
                 orderLinesDs.removeItem(selectedLine);
                 orderLinesDs.commit();
 
+                refreshBill();
+
                 return;
 
             }
@@ -559,8 +766,9 @@ public class OrderScreen extends AbstractWindow {
         if (selectedLine.getQuantity().equals(1)) {
 
             orderLinesDs.removeItem(selectedLine);
-
             orderLinesDs.commit();
+
+            refreshBill();
 
             } else {
 
@@ -568,6 +776,8 @@ public class OrderScreen extends AbstractWindow {
             selectedLine.setPrice(selectedLine.getPrice().subtract(selectedLine.getUnitPrice()));
 
             orderLinesDs.commit();
+
+            refreshBill();
 
         }
 
@@ -640,7 +850,10 @@ public class OrderScreen extends AbstractWindow {
             }
 
             for (OrderLine line : toRemove) orderLinesDs.removeItem(line);
+
             orderLinesDs.commit();
+
+            refreshBill();
 
         } else {
 
@@ -654,8 +867,403 @@ public class OrderScreen extends AbstractWindow {
 
     public void onSaveBtnClick() {
 
-        dataManager.commit(table,currentOrder);
         getWindowManager().close(this);
+
     }
 
+    private void refreshBill() {
+
+        subTotal = BigDecimal.ZERO;
+
+        for (OrderLine line : orderLinesDs.getItems()) {
+
+            if (line.getOrder().getId().equals(currentOrder.getId())) {
+
+                subTotal = subTotal.add(line.getPrice());
+
+            }
+
+        }
+
+        service = BigDecimal.valueOf(Math.round(subTotal.multiply(BigDecimal.valueOf(0.1)).subtract(BigDecimal.valueOf(0.2)).
+                multiply(BigDecimal.valueOf(2)).doubleValue()) / 2.0f).setScale(2);
+        total = subTotal.add(service);
+
+        subTotalField.setValue(subTotal);
+        serviceField.setValue(service);
+        totalField.setValue(total);
+
+        currentOrder = dataManager.load(Order.class)
+                .query("select e from jokerapp$Order e where e.id = :currentOrder")
+                .parameter("currentOrder", table.getCurrentOrder())
+                .view("order-view")
+                .one();
+
+        currentOrder.setCharge(subTotal);
+        currentOrder.setTaxes(service);
+
+        dataManager.commit(currentOrder);
+
+    }
+
+    public void onBillBtnClick() {
+
+        DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
+
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(flavor, null);
+
+        if (printServices[0] != null) {
+
+            MediaPrintableArea mpa = new MediaPrintableArea(1,1,74,2000,MediaPrintableArea.MM);
+
+            PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
+            printRequestAttributeSet.add(MediaSizeName.ISO_A0);
+            printRequestAttributeSet.add(mpa);
+
+            DocAttributeSet docAttributeSet = new HashDocAttributeSet();
+            docAttributeSet.add(MediaSizeName.ISO_A0);
+
+            docAttributeSet.add(mpa);
+
+            Bill bill = new Bill();
+
+            DocPrintJob docPrintJob = printServices[0].createPrintJob();
+            SimpleDoc doc1 = new SimpleDoc(bill, flavor, docAttributeSet);
+
+            try {
+
+                docPrintJob.print(doc1, printRequestAttributeSet);
+
+            } catch (PrintException e) {
+
+                e.printStackTrace();
+
+            }
+
+        }
+
+
+    }
+
+    class Ticket implements Printable {
+
+        @Override
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+
+            if (pageIndex == 0) {
+
+
+
+                Font font1 = new Font("ZapfDingbats", Font.BOLD, 20);
+                Font font2 = new Font("ZapfDingbats", Font.PLAIN, 10);
+                Font font3 = new Font("ZapfDingbats", Font.BOLD, 11);
+
+                int x;
+                int xMin = (int) pageFormat.getImageableX()+1;
+                int y = 20;
+                int paperWidth = (int) pageFormat.getImageableWidth();
+
+                int yInc1 = font1.getSize()/2;
+                int yInc2 = font1.getSize()/2;
+                int yInc3 = font1.getSize()/2;
+
+                Graphics2D graphics2D = (Graphics2D) graphics;
+                graphics2D.setFont(font1);
+                graphics2D.drawString(printerGroupToSendTicket, xMin, y);
+                y += 30;
+                graphics2D.drawString("TAVOLO ".concat(table.getTableNumber().toString()), xMin, y);
+                y += 20;
+                graphics2D.setFont(font3);
+                graphics2D.drawString("Coperti: ".concat(currentOrder.getActualSeats().toString()), xMin, y);
+                y += 20;
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                graphics2D.drawString("Time: ".concat(sdf.format(cal.getTime())), xMin, y);
+                y += 20;
+                graphics2D.setFont(font2);
+
+                for (OrderLine line : orderLinesDs.getItems()) {
+
+                    if (line.getOrder().equals(currentOrder) && line.getPrinterGroup().equals(printerGroupToSendTicket)) {
+
+                        graphics2D.drawString(line.getQuantity().toString(),xMin, y);
+
+                        Integer linesToDraw = Math.round(line.getItemName().length()/34) + 1 ;
+
+                        int spacePosition = 0;
+                        int currentSpacePosition = 0;
+
+                        for (int l=1; l<linesToDraw; l++) {
+
+                            String lineName = line.getItemName();
+
+                            for (int i = spacePosition; i<line.getItemName().length(); i++) {
+
+                                Character c = lineName.charAt(i);
+
+                                if (Character.isSpace(c)) {
+
+                                    if (i > 34*l) break;
+
+                                    spacePosition = i;
+
+                                }
+
+                            }
+
+                            graphics2D.drawString(lineName.substring(currentSpacePosition, spacePosition),xMin+font2.getSize(), y);
+
+                            currentSpacePosition = spacePosition;
+
+                            y = y + yInc2 + 1;
+
+                        }
+
+                        graphics2D.drawString(line.getItemName().substring(currentSpacePosition),xMin+font2.getSize(), y);
+
+                    y = y + yInc2 + 4;
+
+                    }
+
+                }
+
+                return Printable.PAGE_EXISTS;
+            }
+
+            return Printable.NO_SUCH_PAGE;
+
+        }
+
+    }
+
+    class Bill implements Printable {
+
+        @Override
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+
+            if (pageIndex == 0) {
+
+                Font font1 = new Font("ZapfDingbats", Font.BOLD, 20);
+                Font font2 = new Font("ZapfDingbats", Font.PLAIN, 10);
+                Font font3 = new Font("ZapfDingbats", Font.BOLD, 11);
+
+                int x;
+                int xMin = (int) pageFormat.getImageableX()+1;
+                int y = 20;
+                int paperWidth = (int) pageFormat.getImageableWidth();
+
+                int yInc1 = font1.getSize()/2;
+                int yInc2 = font1.getSize()/2;
+                int yInc3 = font1.getSize()/2;
+
+                Graphics2D graphics2D = (Graphics2D) graphics;
+
+                BufferedImage bufferedImage = null;
+
+                try {
+
+                    bufferedImage = ImageIO.read(new File("/home/joker/Desktop/logo3.jpg"));
+
+                } catch (Exception e) { System.err.println(e); }
+
+                graphics2D.drawImage(bufferedImage, null, 30, -10);
+
+                y += 60;
+                graphics2D.setFont(font2);
+                graphics2D.drawString("PRECONTO TAVOLO: ".concat(currentOrder.getTableItemNumber().toString()), xMin, y);
+                y += 20;
+
+                graphics2D.drawLine(xMin, y, paperWidth, y);
+
+                y = y + 2*yInc2;
+
+                for (OrderLine line : orderLinesDs.getItems()) {
+
+                    if (line.getOrder().equals(currentOrder)) {
+
+                        if (!line.getIsModifier()) {
+
+                            graphics2D.drawString(line.getQuantity().toString(),xMin, y);
+
+                        }
+
+                        Integer linesToDraw = Math.round(line.getItemName().length()/24) + 1 ;
+
+                        String stringToDraw = "";
+
+                        int spacePosition = 0;
+                        int currentSpacePosition = 0;
+
+                        for (int l=1; l<linesToDraw; l++) {
+
+                            String lineName = line.getItemName();
+
+                            for (int i = spacePosition; i<line.getItemName().length(); i++) {
+
+                                Character c = lineName.charAt(i);
+
+                                if (Character.isSpace(c)) {
+
+                                    if (i > 24*l) break;
+
+                                    spacePosition = i;
+
+                                }
+
+                            }
+
+                            graphics2D.drawString(lineName.substring(currentSpacePosition, spacePosition),xMin+font2.getSize(), y);
+
+                            currentSpacePosition = spacePosition;
+
+                            if (l==1 && !line.getIsModifier()) {
+
+                                x = paperWidth - Math.multiplyExact(line.getPrice().toString().length(), font2.getSize() - 3);
+                                graphics2D.drawString(line.getPrice().toString(), x, y);
+
+                            }
+
+                            y = y + yInc2 + 1;
+
+                        }
+
+                        graphics2D.drawString(line.getItemName().substring(currentSpacePosition),xMin+font2.getSize(), y);
+
+                        if (currentSpacePosition == 0 && !line.getIsModifier()) {
+
+                            x = paperWidth - Math.multiplyExact(line.getPrice().toString().length(), font2.getSize() - 3);
+                            graphics2D.drawString(line.getPrice().toString(), x, y);
+
+                        }
+
+                        y = y + yInc2 + 4;
+
+                    }
+
+                }
+
+                graphics2D.drawLine(xMin, y, paperWidth, y);
+                y = y + 2*yInc2;
+                graphics2D.setFont(font3);
+                graphics2D.drawString("SUBTOTALE", xMin, y);
+                x = paperWidth - Math.multiplyExact(currentOrder.getCharge().toString().length(), font3.getSize()-3);
+                graphics2D.drawString(currentOrder.getCharge().toString(), x, y);
+                y = y + yInc3 +3;
+                graphics2D.drawString("SERVIZIO", xMin, y);
+                x = paperWidth - Math.multiplyExact(currentOrder.getTaxes().toString().length(), font3.getSize()-3);
+                graphics2D.drawString(currentOrder.getTaxes().toString(), x, y);
+                y = y + yInc3 +20;
+
+                graphics2D.setFont(font1);
+
+                graphics2D.drawString("TOTALE", xMin, y);
+                x = paperWidth -2 - Math.multiplyExact(currentOrder.getCharge().add(currentOrder.getTaxes()).toString().length(), font1.getSize()-7);
+                graphics2D.drawString(currentOrder.getCharge().add(currentOrder.getTaxes()).toString(), x, y);
+                y = y + yInc3 +10;
+
+                graphics2D.setFont(font2);
+
+                graphics2D.drawString("Coperti: ".concat(currentOrder.getActualSeats().toString()), xMin, y);
+                y = y + 2*yInc3;
+                graphics2D.setFont(font2);
+                graphics2D.drawString("NON FISCALE", 60, y);
+
+                return Printable.PAGE_EXISTS;
+            }
+
+            return Printable.NO_SUCH_PAGE;
+
+        }
+
+    }
+
+    public void onCategoriesBackBtnClick() {
+
+        categoriesGrid.removeAll();
+
+        categoriesActualPage--;
+
+        if (categoriesActualPage>1) {
+
+            categoriesBackBtn.setVisible(Boolean.TRUE);
+            categoriesNextBtn.setVisible(Boolean.TRUE);
+            showProductCategories((categoriesActualPage-1)*8, ((categoriesActualPage-1)*8)+7);
+
+        } else {
+
+            categoriesActualPage = 1;
+            categoriesBackBtn.setVisible(Boolean.FALSE);
+            categoriesNextBtn.setVisible(Boolean.TRUE);
+            showProductCategories(0, 7);
+
+        }
+
+    }
+
+    public void onCategoriesNextBtnClick() {
+
+        categoriesGrid.removeAll();
+
+        categoriesActualPage++;
+
+        if (categoriesActualPage>1 && categoriesActualPage<categoriesPages) {
+
+            categoriesBackBtn.setVisible(Boolean.TRUE);
+            categoriesNextBtn.setVisible(Boolean.TRUE);
+            showProductCategories((categoriesActualPage-1)*8, ((categoriesActualPage-1)*8)+7);
+
+        } else {
+
+            categoriesBackBtn.setVisible(Boolean.TRUE);
+            categoriesNextBtn.setVisible(Boolean.FALSE);
+            showProductCategories((categoriesActualPage-1)*8, categorySize-1);
+
+        }
+
+    }
+
+    public void onItemsBackBtnClick() {
+
+        itemsGrid.removeAll();
+
+        productItemsActualPage--;
+
+        if (productItemsActualPage>1) {
+
+            itemsBackBtn.setVisible(Boolean.TRUE);
+            itemsNextBtn.setVisible(Boolean.TRUE);
+            showProductItemsPaged((productItemsActualPage-1)*16, ((productItemsActualPage-1)*16)+15);
+
+        } else {
+
+            productItemsActualPage = 1;
+            itemsBackBtn.setVisible(Boolean.FALSE);
+            itemsNextBtn.setVisible(Boolean.TRUE);
+            showProductItemsPaged(0, 15);
+
+        }
+
+    }
+
+    public void onItemsNextBtnClick() {
+
+        itemsGrid.removeAll();
+
+        productItemsActualPage++;
+
+        if (productItemsActualPage>1 && productItemsActualPage<productItemsPages) {
+
+            itemsBackBtn.setVisible(Boolean.TRUE);
+            itemsNextBtn.setVisible(Boolean.TRUE);
+            showProductItemsPaged((productItemsActualPage-1)*16, ((productItemsActualPage-1)*16)+15);
+
+        } else {
+
+            itemsBackBtn.setVisible(Boolean.TRUE);
+            itemsNextBtn.setVisible(Boolean.FALSE);
+            showProductItemsPaged((productItemsActualPage-1)*16, productItemSize-1);
+
+        }
+
+    }
 }

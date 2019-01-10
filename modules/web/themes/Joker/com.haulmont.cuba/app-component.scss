@@ -1,0 +1,5 @@
+@import "../Joker";
+
+@mixin com_haulmont_cuba {
+  @include Joker;
+}
