@@ -36,6 +36,9 @@ public class OrderLine extends StandardEntity {
     @Column(name = "ITEM_NAME", nullable = false)
     protected String itemName;
 
+    @Column(name = "ITEM_ID")
+    protected UUID itemId;
+
     @Column(name = "UNIT_PRICE")
     protected BigDecimal unitPrice;
 
@@ -48,7 +51,7 @@ public class OrderLine extends StandardEntity {
     protected BigDecimal taxes;
 
 
-    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @OnDeleteInverse(DeletePolicy.CASCADE)
     @OnDelete(DeletePolicy.UNLINK)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_ID")
@@ -81,6 +84,39 @@ public class OrderLine extends StandardEntity {
     private DataManager dataManager;
 */
 
+
+
+    @Column(name = "IS_SELECTED")
+    protected Boolean isSelected;
+
+    @Column(name = "TICKET_NUMBER")
+    protected Integer ticketNumber;
+
+    public void setItemId(UUID itemId) {
+        this.itemId = itemId;
+    }
+
+    public UUID getItemId() {
+        return itemId;
+    }
+
+
+    public void setIsSelected(Boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    public Boolean getIsSelected() {
+        return isSelected;
+    }
+
+
+    public void setTicketNumber(Integer ticketNumber) {
+        this.ticketNumber = ticketNumber;
+    }
+
+    public Integer getTicketNumber() {
+        return ticketNumber;
+    }
 
 
     public void setPrinterGroup(String printerGroup) {

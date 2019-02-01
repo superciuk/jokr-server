@@ -14,27 +14,157 @@
         <datasource id="tableItemDs"
                     class="com.joker.jokerapp.entity.TableItem"
                     view="tableItem-view"/>
+        <collectionDatasource id="ordersDs"
+                              class="com.joker.jokerapp.entity.Order"
+                              view="_minimal">
+            <query>
+                <![CDATA[select e from jokerapp$Order e]]>
+            </query>
+        </collectionDatasource>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
-    <layout margin="true">
+    <layout margin="true"
+            stylename="mainLayout">
         <split height="100%"
                maxSplitPosition="90%"
                minSplitPosition="90%"
                orientation="vertical"
                pos="90%"
                width="100%">
-            <grid id="grid"
+            <split height="100%"
+                   maxSplitPosition="10%"
+                   minSplitPosition="10%"
+                   orientation="vertical"
+                   pos="10%"
+                   settingsEnabled="false"
+                   width="100%">
+                <hbox id="upperHBox"
+                      height="100%"
+                      margin="true"
+                      width="100%">
+                    <buttonsPanel align="MIDDLE_CENTER"
+                                  height="100%">
+                        <button id="splitTableBtn"
+                                caption="SPLIT TABLE"
+                                height="100%"
+                                width="120px"/>
+                        <button id="mergeTableBtn"
+                                caption="MERGE TABLE"
+                                height="100%"
+                                width="120px"/>
+                        <button id="moveTableBtn"
+                                caption="MOVE TABLE"
+                                height="100%"
+                                width="120px"/>
+                        <button id="reservationBtn"
+                                caption="RESERVATION"
+                                height="100%"
+                                width="120px"/>
+                    </buttonsPanel>
+                    <timeField id="currentTimeField"
+                               align="TOP_CENTER"
+                               editable="false"
+                               height="100%"
+                               width="160px"/>
+                    <buttonsPanel align="MIDDLE_CENTER"
+                                  height="100%">
+                        <button id="reopenTableBtn"
+                                caption="REOPEN TABLE"
+                                height="100%"
+                                width="120px"/>
+                        <button id="reprintTicket"
+                                caption="REPRINT TICKET"
+                                height="100%"
+                                width="120px"/>
+                        <button id="backEndBtn"
+                                caption="BACK END"
+                                height="100%"
+                                width="120px"/>
+                        <button id="logOutBtn"
+                                caption="LOG OUT"
+                                height="100%"
+                                width="120px"/>
+                    </buttonsPanel>
+                </hbox>
+                <vbox id="tableBtnsContainer"
+                      height="100%"
+                      margin="true,false,true,false"
+                      stylename="tableBtnsContainer">
+                    <grid id="tableFirstGrid"
+                          align="TOP_CENTER"
+                          height="200px"
+                          width="100%">
+                        <columns count="9"/>
+                        <rows>
+                            <row/>
+                        </rows>
+                    </grid>
+                    <grid id="tableSecondGrid"
+                          align="TOP_CENTER"
+                          height="200px"
+                          width="100%">
+                        <columns count="9"/>
+                        <rows>
+                            <row/>
+                        </rows>
+                    </grid>
+                    <grid id="tableThirdGrid"
+                          align="TOP_CENTER"
+                          height="200px"
+                          width="100%">
+                        <columns count="9"/>
+                        <rows>
+                            <row/>
+                        </rows>
+                    </grid>
+                </vbox>
+            </split>
+            <hbox id="bottomHBox"
+                  height="90%"
                   margin="true"
-                  spacing="true">
-                <columns count="1"/>
-                <rows>
-                    <row/>
-                </rows>
-            </grid>
-            <button id="empty"
-                    caption="EMPTY"
-                    invoke="onEmptyClick"/>
+                  width="100%">
+                <buttonsPanel align="MIDDLE_CENTER"
+                              height="100%">
+                    <button id="billBtn"
+                            caption="BILL"
+                            height="100%"
+                            invoke="onEmptyClick"
+                            width="120px"/>
+                    <button id="cancelBtn"
+                            caption="CANCEL"
+                            height="100%"
+                            invoke="onCancelBtnClick"
+                            width="120px"/>
+                    <button caption="PLUTO"
+                            height="100%"
+                            width="120px"/>
+                </buttonsPanel>
+                <buttonsPanel align="MIDDLE_CENTER"
+                              height="100%">
+                    <button caption="PAPERINO"
+                            height="100%"
+                            width="120px"/>
+                    <button caption="NONNA PAPERA"
+                            height="100%"
+                            width="120px"/>
+                    <button caption="GASTONE"
+                            height="100%"
+                            width="120px"/>
+                </buttonsPanel>
+                <buttonsPanel align="MIDDLE_CENTER"
+                              height="100%">
+                    <button caption="QUI"
+                            height="100%"
+                            width="120px"/>
+                    <button caption="QUO"
+                            height="100%"
+                            width="120px"/>
+                    <button caption="QUA"
+                            height="100%"
+                            width="120px"/>
+                </buttonsPanel>
+            </hbox>
         </split>
     </layout>
 </window>

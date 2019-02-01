@@ -23,108 +23,142 @@
             </query>
         </collectionDatasource>
     </dsContext>
-    <dialogMode height="800"
+    <dialogMode height="840"
                 width="1600"/>
     <layout margin="true"
-            spacing="true">
+            spacing="true"
+            stylename="mainLayout">
         <split id="firstSplit"
                height="100%"
-               maxSplitPosition="30%"
-               minSplitPosition="30%"
+               maxSplitPosition="33%"
+               minSplitPosition="33%"
                orientation="horizontal"
-               pos="30%"
-               responsive="true"
+               pos="33%"
+               settingsEnabled="false"
                width="100%">
-            <vbox id="modifierOrderLinesBox"
-                  expand="modifierOrderLinesDataGrid"
-                  height="100%"
-                  margin="true">
-                <dataGrid id="modifierOrderLinesDataGrid"
-                          columnResizeMode="SIMPLE"
-                          columnsCollapsingAllowed="false"
-                          datasource="modifierOrderLinesDs"
-                          sortable="false"
-                          width="100%">
-                    <columns>
-                        <column editable="false"
-                                property="quantity"
-                                resizable="false"
-                                sortable="false"/>
-                        <column editable="false"
-                                property="itemName"
-                                resizable="false"
-                                sortable="false"/>
-                        <column editable="false"
-                                property="price"
-                                resizable="false"
-                                sortable="false"/>
-                    </columns>
-                </dataGrid>
+            <groupBox id="modifierOrderLinesGroupBox"
+                      expand="modifierOrderLinesScrollBox"
+                      height="100%"
+                      settingsEnabled="false"
+                      spacing="true">
+                <scrollBox id="modifierOrderLinesScrollBox">
+                    <dataGrid id="modifierOrderLinesDataGrid"
+                              columnResizeMode="SIMPLE"
+                              columnsCollapsingAllowed="false"
+                              datasource="modifierOrderLinesDs"
+                              sortable="false"
+                              visible="false"
+                              width="100%">
+                        <columns>
+                            <column collapsible="false"
+                                    editable="false"
+                                    property="quantity"
+                                    resizable="false"
+                                    sortable="false"
+                                    width="20"/>
+                            <column editable="false"
+                                    property="itemName"
+                                    resizable="false"
+                                    sortable="false"
+                                    width="200"/>
+                            <column collapsible="false"
+                                    editable="false"
+                                    property="price"
+                                    resizable="false"
+                                    sortable="false"
+                                    width="20"/>
+                        </columns>
+                    </dataGrid>
+                </scrollBox>
                 <buttonsPanel id="modifierOrderLinesButtonPanel"
                               align="BOTTOM_LEFT"
+                              height="80px"
                               width="100%">
-                    <button id="modifierOrderLinesRemoveBtn"
-                            caption="REMOVE"
-                            invoke="onModifierOrderLinesRemoveBtnClick"/>
                     <button id="okBtn"
-                            align="BOTTOM_CENTER"
+                            align="BOTTOM_LEFT"
                             caption="msg://OK"
-                            invoke="onOkBtnClick"/>
+                            height="60px"
+                            invoke="onOkBtnClick"
+                            width="100px"/>
                     <button id="cancelBtn"
-                            align="BOTTOM_RIGHT"
+                            align="BOTTOM_LEFT"
                             caption="msg://Cancel"
-                            invoke="onCancelBtnClick"/>
+                            height="60px"
+                            invoke="onCancelBtnClick"
+                            width="100px"/>
+                    <button id="modifierOrderLinesRemoveBtn"
+                            align="BOTTOM_RIGHT"
+                            caption="REMOVE"
+                            height="60px"
+                            invoke="onModifierOrderLinesRemoveBtnClick"
+                            width="120px"/>
                 </buttonsPanel>
-            </vbox>
+            </groupBox>
             <split id="secondSplit"
                    height="100%"
                    maxSplitPosition="80%"
                    minSplitPosition="80%"
                    orientation="horizontal"
                    pos="80%"
-                   responsive="true"
+                   settingsEnabled="false"
                    width="100%">
-                <vbox id="modifierItemBox"
-                      expand="modifierItemGrid"
-                      height="100%"
-                      margin="true"
-                      spacing="true">
-                    <grid id="modifierItemGrid"
-                          margin="true"
-                          spacing="true"
-                          width="100%">
-                        <columns count="1"/>
-                        <rows>
-                            <row/>
-                        </rows>
-                    </grid>
+                <groupBox id="modifierItemGroupBox"
+                          expand="modifierItemGridScrollBox"
+                          height="100%"
+                          settingsEnabled="false"
+                          spacing="true">
+                    <scrollBox id="modifierItemGridScrollBox">
+                        <grid id="modifierItemGrid"
+                              spacing="true"
+                              width="100%">
+                            <columns count="4"/>
+                            <rows>
+                                <row/>
+                                <row/>
+                                <row/>
+                                <row/>
+                                <row/>
+                            </rows>
+                        </grid>
+                    </scrollBox>
                     <buttonsPanel id="modifierItemsButtonPanel"
                                   align="BOTTOM_LEFT"
-                                  width="100%">
-                        <checkBox id="addCheckBox"
-                                  align="BOTTOM_LEFT"
-                                  caption="Add Modifier"
-                                  height="50px"
-                                  width="50px"/>
-                        <checkBox id="removeCheckBox"
-                                  align="BOTTOM_LEFT"
-                                  caption="Remove Modifier"
-                                  height="50px"
-                                  width="50px"/>
+                                  height="80px"
+                                  width="350px">
+                        <button id="addModifierBtn"
+                                align="BOTTOM_LEFT"
+                                caption="Add Modifier"
+                                height="60px"
+                                invoke="onAddModifierBtnClick"
+                                width="160px"/>
+                        <button id="removeModifierBtn"
+                                align="BOTTOM_LEFT"
+                                caption="Remove Modifier"
+                                height="60px"
+                                invoke="onRemoveModifierBtnClick"
+                                width="160px"/>
                     </buttonsPanel>
-                </vbox>
-                <scrollBox height="100%"
-                           margin="true">
-                    <grid id="modifierCategoriesGrid"
-                          margin="true"
-                          spacing="true"
-                          width="100%">
-                        <columns count="1"/>
-                        <rows>
-                            <row/>
-                        </rows>
-                    </grid>
-                </scrollBox>
+                </groupBox>
+                <groupBox id="modifierCategoriesGroupBox"
+                          height="100%"
+                          settingsEnabled="false"
+                          spacing="true">
+                    <scrollBox height="100%"
+                               margin="true">
+                        <grid id="modifierCategoriesGrid"
+                              spacing="true"
+                              width="100%">
+                            <columns count="1"/>
+                            <rows>
+                                <row/>
+                                <row/>
+                                <row/>
+                                <row/>
+                                <row/>
+                            </rows>
+                        </grid>
+                    </scrollBox>
+                </groupBox>
             </split>
         </split>
     </layout>

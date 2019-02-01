@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://caption"
+        class="com.joker.jokerapp.web.dialogs.ItemPriceManualModifierDialog"
+        messagesPack="com.joker.jokerapp.web.dialogs">
+    <dialogMode forceDialog="true"
+                height="200"
+                width="250"/>
+    <layout margin="true">
+        <vbox height="120px"
+              spacing="true"
+              width="250px">
+            <vbox>
+                <label id="message"
+                       value="msg://priceModifier"/>
+                <textField id="priceModifier"
+                           caseConversion="LOWER"
+                           datatype="decimal"/>
+            </vbox>
+            <buttonsPanel align="BOTTOM_LEFT">
+                <button id="okBtn"
+                        caption="msg://OK"
+                        invoke="onOkBtnClick"/>
+                <button id="cancelBtn"
+                        caption="msg://Cancel"
+                        invoke="onCancelBtnClick"/>
+            </buttonsPanel>
+        </vbox>
+    </layout>
+</window>

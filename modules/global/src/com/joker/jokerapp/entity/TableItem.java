@@ -42,6 +42,19 @@ public class TableItem extends StandardEntity {
     @JoinColumn(name = "CURRENT_ORDER_ID", unique = true)
     protected Order currentOrder;
 
+    @NotNull
+    @Column(name = "WITH_SERVICE_BY_DEFAULT", nullable = false)
+    protected Boolean withServiceByDefault = false;
+
+    public void setWithServiceByDefault(Boolean withServiceByDefault) {
+        this.withServiceByDefault = withServiceByDefault;
+    }
+
+    public Boolean getWithServiceByDefault() {
+        return withServiceByDefault;
+    }
+
+
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;
     }

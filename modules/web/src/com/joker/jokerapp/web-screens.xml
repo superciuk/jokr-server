@@ -21,4 +21,6 @@
             template="com/joker/jokerapp/web/dialogs/item-manual-modifier-dialog.xml"/>
     <screen id="jokerapp$ItemModifier.dialog"
             template="com/joker/jokerapp/web/dialogs/item-modifier-dialog.xml"/>
+    <screen id="jokerapp$itemPriceManualModifier.dialog"
+            template="com/joker/jokerapp/web/dialogs/item-price-manual-modifier-dialog.xml"/>
 </screen-config>

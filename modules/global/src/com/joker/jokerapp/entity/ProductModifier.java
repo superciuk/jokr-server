@@ -30,10 +30,12 @@ public class ProductModifier extends StandardEntity {
     @Column(name = "NAME", nullable = false)
     protected String name;
 
-    @Column(name = "ADD_PRICE")
+    @NotNull
+    @Column(name = "ADD_PRICE", nullable = false)
     protected BigDecimal addPrice;
 
-    @Column(name = "SUBTRACT_PRICE")
+    @NotNull
+    @Column(name = "SUBTRACT_PRICE", nullable = false)
     protected BigDecimal subtractPrice;
 
     @Lookup(type = LookupType.DROPDOWN)

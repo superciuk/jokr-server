@@ -2,6 +2,7 @@ package com.joker.jokerapp.web.productitem;
 
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
+import com.haulmont.cuba.web.gui.components.WebLookupField;
 import com.haulmont.cuba.web.gui.components.WebLookupPickerField;
 import com.joker.jokerapp.entity.ProductItem;
 
@@ -50,6 +51,8 @@ public class ProductItemBrowse extends EntityCombinedScreen {
         price.setValue(itemToDuplicate.getPrice());
         CheckBox visible = (CheckBox) getComponent("fieldGroup.visible");
         visible.setValue(itemToDuplicate.getVisible());
+        WebLookupField printerGroup = (WebLookupField) getComponent("fieldGroup.printerGroup");
+        printerGroup.setValue(itemToDuplicate.getPrinterGroup());
 
         OptionsGroup optionsGroup = (OptionsGroup)getComponent("modifierCategories");
         optionsGroup.setValue(itemToDuplicate.getModifierCategories());

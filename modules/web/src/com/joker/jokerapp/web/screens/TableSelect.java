@@ -2,17 +2,22 @@ package com.joker.jokerapp.web.screens;
 
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
+import com.haulmont.cuba.gui.components.Timer;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
+import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.data.GroupDatasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebButton;
+import com.haulmont.cuba.web.gui.components.WebGroupBox;
+import com.joker.jokerapp.entity.Order;
 import com.joker.jokerapp.entity.TableItem;
 import com.joker.jokerapp.entity.TableItemStatus;
 import com.joker.jokerapp.web.dialogs.ActualSeatsDialog;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.time.Instant;
 import java.util.*;
 
 public class TableSelect extends AbstractWindow {
@@ -21,16 +26,33 @@ public class TableSelect extends AbstractWindow {
     private Datasource<TableItem> tableItemDs;
 
     @Inject
+    private CollectionDatasource<Order, UUID> ordersDs;
+
+    @Inject
     private GroupDatasource<TableItem, UUID> tableItemsDs;
 
     @Inject
     private ComponentsFactory componentsFactory;
 
-    @Inject
-    protected HtmlAttributes html;
+    @Named("upperHBox")
+    private HBoxLayout upperHBox;
 
-    @Named("grid")
-    private GridLayout grid;
+    @Named("bottomHBox")
+    private HBoxLayout bottomHBox;
+
+    @Named("tableFirstGrid")
+    private GridLayout tableBtnFirstGrid;
+
+    @Named("tableSecondGrid")
+    private GridLayout tableBtnSecondGrid;
+
+    @Named("tableThirdGrid")
+    private GridLayout tableBtnThirdGrid;
+
+    @Named("currentTimeField")
+    private TimeField currentTimeField;
+
+    private Boolean isCancelBtnPressed = Boolean.FALSE;
 
     @Override
     public void init(Map<String, Object> params) {
@@ -39,77 +61,94 @@ public class TableSelect extends AbstractWindow {
 
         tableItemsDs.refresh();
 
-//        if (tableItemsDs.size()>3) grid.setColumns(Math.floorDiv(tableItemsDs.size(),3)+1);
-        grid.setColumns(9);
-        grid.setRows(3);
+        upperHBox.setStyleName("upperHBox");
+        bottomHBox.setStyleName("bottomHBox");
 
-        for (TableItem tableItem: tableItemsDs.getItems()) {
+        currentTimeField.setStyleName("currentTimeField");
 
-            WebButton btn = componentsFactory.createComponent(WebButton.class);
-            btn.setWidth("196px");
-            btn.setHeight("196px");
-            if (tableItem.getTableStatus().toString().equals("free")) btn.setStyleName("v-button-backgroundColorGreen");
-            if (tableItem.getTableStatus().toString().equals("open")) btn.setStyleName("v-button-backgroundColorRed");
-            if (tableItem.getTableStatus().toString().equals("closed")) btn.setStyleName("v-button-backgroundColorBrown");
-            btn.setId(tableItem.getTableNumber().toString());
-            btn.setCaption(tableItem.getTableNumber().toString());
-            btn.setAction(new BaseAction("openOrderScreen".concat(tableItem.getTableNumber().toString())).withHandler(e -> openOrderScreen(tableItem)));
-            grid.add(btn);
+        currentTimeField.setValue(Date.from(Instant.now()));
 
-        }
+        drawTableElements();
+
+        Timer clockTimer = componentsFactory.createTimer();
+        addTimer(clockTimer);
+        clockTimer.setDelay(5000);
+        clockTimer.setRepeating(true);
+        clockTimer.addActionListener(timer -> refreshData());
+
+        clockTimer.start();
 
     }
 
-    private void openOrderScreen(TableItem selectedTable) {
+    private void buttonAction(TableItem selectedTable) {
 
-        tableItemDs.setItem(selectedTable);
-        tableItemDs.refresh();
+        if (isCancelBtnPressed) {
 
-        TableItemStatus tableItemStatus = tableItemDs.getItem().getTableStatus();
+            if (selectedTable.getCurrentOrder()!=null) ordersDs.removeItem(selectedTable.getCurrentOrder());
+            selectedTable.setCurrentOrder(null);
+            selectedTable.setTableStatus(TableItemStatus.free);
+            ordersDs.commit();
+            tableItemDs.setItem(selectedTable);
+            tableItemDs.commit();
+            getWindowManager().close(this);
+            openWindow("tableselect", WindowManager.OpenType.THIS_TAB);
 
-        Map<String, Object> orderParams = new HashMap<>();
-        orderParams.put("tableNumber",selectedTable.getTableNumber());
+        } else {
 
-        if (tableItemStatus == TableItemStatus.free) {
+            tableItemDs.setItem(selectedTable);
+            tableItemDs.refresh();
 
-            Map<String, Object> params = new HashMap<>();
-            params.put("table", tableItemDs.getItem());
+            TableItemStatus tableItemStatus = tableItemDs.getItem().getTableStatus();
 
-            ActualSeatsDialog.CloseHandler handler = new ActualSeatsDialog.CloseHandler() {
-                @Override
-                public void onClose(int seats) {
-                    orderParams.put("actualSeats", seats);
-                }
-            };
+            Map<String, Object> orderParams = new HashMap<>();
+            orderParams.put("tableNumber",selectedTable.getTableNumber());
 
-            params.put("handler", handler);
+            if (tableItemStatus == TableItemStatus.free) {
 
-            openWindow("jokerapp$ActualSeats.dialog", WindowManager.OpenType.DIALOG, params).addCloseListener(closeString -> {
+                Map<String, Object> params = new HashMap<>();
+                params.put("table", tableItemDs.getItem());
 
-                if (closeString.equals("ok")) {
-                    openWindow("orderScreen", WindowManager.OpenType.THIS_TAB, orderParams);
-                }
-
-            });
-
-
-        } else if (tableItemStatus == TableItemStatus.open) {
-
-            openWindow("orderScreen", WindowManager.OpenType.THIS_TAB, orderParams);
-
-        } else if (tableItemStatus == TableItemStatus.closed) {
-
-            showOptionDialog(
-                    getMessage("freeTableDialog.title"),
-                    getMessage("freeTableDialog.msg"),
-                    MessageType.CONFIRMATION,
-                    new Action[] {
-                            new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY).withHandler(e -> freeTable(tableItemDs.getItem())),
-                            new DialogAction(DialogAction.Type.NO, Action.Status.NORMAL)
+                ActualSeatsDialog.CloseHandler handler = new ActualSeatsDialog.CloseHandler() {
+                    @Override
+                    public void onClose(int seats) {
+                        orderParams.put("actualSeats", seats);
                     }
-            );
+                };
+
+                params.put("handler", handler);
+
+                openWindow("jokerapp$ActualSeats.dialog", WindowManager.OpenType.DIALOG, params).addCloseListener(closeString -> {
+
+                    if (closeString.equals("ok")) {
+
+                        getWindowManager().close(this);
+                        openWindow("orderScreen", WindowManager.OpenType.THIS_TAB, orderParams);
+                    }
+
+                });
+
+
+            } else if (tableItemStatus == TableItemStatus.open) {
+
+                getWindowManager().close(this);
+                openWindow("orderScreen", WindowManager.OpenType.THIS_TAB, orderParams);
+
+            } else if (tableItemStatus == TableItemStatus.closed) {
+
+                showOptionDialog(
+                        getMessage("freeTableDialog.title"),
+                        getMessage("freeTableDialog.msg"),
+                        MessageType.CONFIRMATION,
+                        new Action[] {
+                                new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY).withHandler(e -> freeTable(tableItemDs.getItem())),
+                                new DialogAction(DialogAction.Type.NO, Action.Status.NORMAL)
+                        }
+                );
+
+            }
 
         }
+
 
     }
 
@@ -123,10 +162,123 @@ public class TableSelect extends AbstractWindow {
 
     }
 
-
     public void onEmptyClick() {
+
         tableItemsDs.clear();
         tableItemsDs.commit();
 
     }
+
+    public void onCancelBtnClick() {
+
+        isCancelBtnPressed = Boolean.TRUE;
+
+    }
+
+    private void refreshData () {
+
+        currentTimeField.setValue(Date.from(Instant.now()));
+
+        tableItemsDs.refresh();
+
+        tableBtnFirstGrid.removeAll();
+        tableBtnSecondGrid.removeAll();
+        tableBtnThirdGrid.removeAll();
+
+        drawTableElements();
+
+    }
+
+    private void drawTableElements() {
+
+        int tableCounter = 0;
+
+        for (TableItem tableItem : tableItemsDs.getItems()) {
+
+            tableCounter++;
+            VBoxLayout vBox = componentsFactory.createComponent(VBoxLayout.class);
+            vBox.setStyleName("tableSelectVBox");
+            WebButton btn = componentsFactory.createComponent(WebButton.class);
+            WebGroupBox groupBox = componentsFactory.createComponent(WebGroupBox.class);
+            groupBox.setWidth("190px");
+            groupBox.setHeight("140px");
+            groupBox.setAlignment(Alignment.TOP_CENTER);
+            groupBox.setId("groupBoxLayout".concat(tableItem.getTableNumber().toString()));
+
+            if (tableItem.getCurrentOrder() != null) {
+
+                TimeField tableBtnTimeField = componentsFactory.createComponent(TimeField.class);
+
+                tableBtnTimeField.setAlignment(Alignment.TOP_CENTER);
+                tableBtnTimeField.setWidth("160px");
+                tableBtnTimeField.setHeight("35px");
+                tableBtnTimeField.setId("tableBtnTimeField".concat(tableItem.getTableNumber().toString()));
+
+                Long tableTime = Instant.now().getEpochSecond() - tableItem.getCurrentOrder().getCreateTs().toInstant().getEpochSecond() - 3600;
+
+                if (tableTime <= 0) tableBtnTimeField.setStyleName("tableTimeField-normal");
+                else tableBtnTimeField.setStyleName("tableTimeField-hot");
+
+                tableBtnTimeField.setValue(Date.from(Instant.ofEpochSecond(tableTime)));
+
+                TextField paxTextField = componentsFactory.createComponent(TextField.class);
+                paxTextField.setAlignment(Alignment.MIDDLE_CENTER);
+                paxTextField.setWidth("160px");
+                paxTextField.setHeight("30px");
+                paxTextField.setStyleName("tableInfoPaxTextField");
+                paxTextField.setValue("PAX: ".concat(tableItem.getCurrentOrder().getActualSeats().toString()));
+
+                groupBox.add(tableBtnTimeField);
+                groupBox.add(paxTextField);
+
+                TextField totalAmountTextField = componentsFactory.createComponent(TextField.class);
+                totalAmountTextField.setAlignment(Alignment.BOTTOM_CENTER);
+                totalAmountTextField.setWidth("160px");
+                totalAmountTextField.setHeight("30px");
+
+                if (tableItem.getCurrentOrder().getWithService()) {
+
+                    totalAmountTextField.setStyleName("tableInfoTotalAmountTextFieldService");
+                    totalAmountTextField.setValue("€  ".concat(tableItem.getCurrentOrder().getCharge()
+                            .add(tableItem.getCurrentOrder().getTaxes()).toString()));
+
+                } else {
+
+                    totalAmountTextField.setStyleName("tableInfoTotalAmountTextFieldNoService");
+                    totalAmountTextField.setValue("€  ".concat(tableItem.getCurrentOrder().getCharge().toString()));
+
+                }
+
+                groupBox.add(totalAmountTextField);
+
+            }
+
+            btn.setWidth("190px");
+            btn.setHeight("110px");
+            btn.setAlignment(Alignment.BOTTOM_CENTER);
+            if (tableItem.getTableStatus().toString().equals("free")) btn.setStyleName("v-button-backgroundColorGreen");
+            if (tableItem.getTableStatus().toString().equals("open")) btn.setStyleName("v-button-backgroundColorRed");
+            if (tableItem.getTableStatus().toString().equals("closed"))
+                btn.setStyleName("v-button-backgroundColorBrown");
+            btn.setId(tableItem.getTableNumber().toString());
+            btn.setCaption(tableItem.getTableNumber().toString());
+            btn.setAction(new BaseAction("buttonAction".concat(tableItem.getTableNumber().toString())).withHandler(e -> buttonAction(tableItem)));
+
+            vBox.add(btn);
+            vBox.add(groupBox);
+            if (tableCounter <= 9) {
+                tableBtnFirstGrid.add(vBox);
+            }
+            if (tableCounter > 9 && tableCounter <= 18) {
+                tableBtnSecondGrid.add(vBox);
+            }
+            if (tableCounter > 18 && tableCounter <= 27) {
+                tableBtnThirdGrid.add(vBox);
+            }
+
+
+        }
+
+    }
+
 }

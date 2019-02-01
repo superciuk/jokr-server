@@ -66,8 +66,8 @@ create table JOKERAPP_PRODUCT_MODIFIER (
     DELETED_BY varchar(50),
     --
     NAME varchar(255) not null,
-    ADD_PRICE decimal(19, 2),
-    SUBTRACT_PRICE decimal(19, 2),
+    ADD_PRICE decimal(19, 2) not null,
+    SUBTRACT_PRICE decimal(19, 2) not null,
     CATEGORY_ID uuid not null,
     SORT_ORDER integer,
     --
@@ -90,6 +90,7 @@ create table JOKERAPP_TABLE_ITEM (
     SEATS_CAPACITY integer,
     TABLE_STATUS varchar(50) not null,
     CURRENT_ORDER_ID uuid,
+    WITH_SERVICE_BY_DEFAULT boolean not null,
     --
     primary key (ID)
 )^
@@ -108,6 +109,7 @@ create table JOKERAPP_ORDER (
     ACTUAL_SEATS integer not null,
     STATUS varchar(50) not null,
     TABLE_ITEM_NUMBER integer,
+    WITH_SERVICE boolean not null,
     DISCOUNT decimal(12, 2),
     CHARGE decimal(19, 2),
     TAXES decimal(19, 2),
@@ -129,6 +131,7 @@ create table JOKERAPP_ORDER_LINE (
     QUANTITY integer,
     PRINTER_GROUP varchar(255),
     ITEM_NAME varchar(255) not null,
+    ITEM_ID uuid,
     UNIT_PRICE decimal(19, 2),
     PRICE decimal(12, 2) not null,
     TAXES decimal(12, 2) not null,
@@ -139,6 +142,8 @@ create table JOKERAPP_ORDER_LINE (
     IS_MODIFIER boolean not null,
     ITEM_TO_MODIFY_ID uuid,
     IS_SENDED boolean not null,
+    IS_SELECTED boolean,
+    TICKET_NUMBER integer,
     --
     primary key (ID)
 )^

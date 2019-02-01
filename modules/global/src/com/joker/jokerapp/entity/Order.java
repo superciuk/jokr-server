@@ -43,9 +43,13 @@ public class Order extends StandardEntity {
     @Column(name = "TABLE_ITEM_NUMBER")
     protected Integer tableItemNumber;
 
+    @NotNull
+    @Column(name = "WITH_SERVICE", nullable = false)
+    protected Boolean withService = false;
+
     @OnDeleteInverse(DeletePolicy.UNLINK)
     @Composition
-    @OnDelete(DeletePolicy.UNLINK)
+    @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "order")
     protected List<OrderLine> orderLines;
 
@@ -57,6 +61,15 @@ public class Order extends StandardEntity {
 
     @Column(name = "TAXES")
     protected BigDecimal taxes;
+
+    public void setWithService(Boolean withService) {
+        this.withService = withService;
+    }
+
+    public Boolean getWithService() {
+        return withService;
+    }
+
 
     public void setCharge(BigDecimal charge) {
         this.charge = charge;

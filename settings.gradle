@@ -1,10 +1,9 @@
 rootProject.name = 'jokerApp'
-def modulePrefix = 'app'
-include(":${modulePrefix}-global", ":${modulePrefix}-core", ":${modulePrefix}-gui", ":${modulePrefix}-web", ":${modulePrefix}-polymer-client", ":${modulePrefix}-web-themes")
+def modulePrefix = 'JokerApp'
+include(":${modulePrefix}-global", ":${modulePrefix}-core", ":${modulePrefix}-gui", ":${modulePrefix}-web", ":${modulePrefix}-web-themes")
 project(":${modulePrefix}-global").projectDir = new File(settingsDir, 'modules/global')
 project(":${modulePrefix}-core").projectDir = new File(settingsDir, 'modules/core')
 project(":${modulePrefix}-gui").projectDir = new File(settingsDir, 'modules/gui')
 project(":${modulePrefix}-web").projectDir = new File(settingsDir, 'modules/web')
-project(":${modulePrefix}-polymer-client").projectDir = new File(settingsDir, 'modules/polymer-client')
 
 project(":${modulePrefix}-web-themes").projectDir = new File(settingsDir, 'modules/web/themes')

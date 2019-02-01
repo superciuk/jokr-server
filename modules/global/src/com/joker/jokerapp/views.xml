@@ -23,6 +23,7 @@
     <view class="com.joker.jokerapp.entity.Order"
           extends="_local"
           name="order-view">
+        <property name="createTs"/>
     </view>
     <view class="com.joker.jokerapp.entity.OrderLine"
           extends="_local"
@@ -37,6 +38,13 @@
         <property name="seatsCapacity"/>
         <property name="tableStatus"/>
         <property name="currentOrder"
-                  view="_minimal"/>
+                  view="_minimal">
+            <property name="createTs"/>
+            <property name="actualSeats"/>
+            <property name="charge"/>
+            <property name="withService"/>
+            <property name="taxes"/>
+        </property>
+        <property name="withServiceByDefault"/>
     </view>
 </views>
