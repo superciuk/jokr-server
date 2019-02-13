@@ -40,8 +40,8 @@ public class Order extends StandardEntity {
 
 
 
-    @Column(name = "TABLE_ITEM_NUMBER")
-    protected Integer tableItemNumber;
+    @Column(name = "TABLE_ITEM_CAPTION")
+    protected String tableItemCaption;
 
     @NotNull
     @Column(name = "WITH_SERVICE", nullable = false)
@@ -61,6 +61,16 @@ public class Order extends StandardEntity {
 
     @Column(name = "TAXES")
     protected BigDecimal taxes;
+
+
+    public void setTableItemCaption(String tableItemCaption) {
+        this.tableItemCaption = tableItemCaption;
+    }
+
+    public String getTableItemCaption() {
+        return tableItemCaption;
+    }
+
 
     public void setWithService(Boolean withService) {
         this.withService = withService;
@@ -96,14 +106,6 @@ public class Order extends StandardEntity {
         return orderLines;
     }
 
-
-    public void setTableItemNumber(Integer tableItemNumber) {
-        this.tableItemNumber = tableItemNumber;
-    }
-
-    public Integer getTableItemNumber() {
-        return tableItemNumber;
-    }
 
 
     public void setActualSeats(Integer actualSeats) {

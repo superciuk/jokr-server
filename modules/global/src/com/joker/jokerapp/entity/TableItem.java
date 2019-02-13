@@ -27,6 +27,9 @@ public class TableItem extends StandardEntity {
     @Column(name = "TABLE_NUMBER", nullable = false, unique = true)
     protected Integer tableNumber;
 
+    @Column(name = "TABLE_CAPTION")
+    protected String tableCaption;
+
     @Column(name = "SEATS_CAPACITY")
     protected Integer seatsCapacity;
 
@@ -45,6 +48,40 @@ public class TableItem extends StandardEntity {
     @NotNull
     @Column(name = "WITH_SERVICE_BY_DEFAULT", nullable = false)
     protected Boolean withServiceByDefault = false;
+
+
+
+    @NotNull
+    @Column(name = "CHECKED", nullable = false)
+    protected Boolean checked = false;
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+
+    public void setTableCaption(String tableCaption) {
+        this.tableCaption = tableCaption;
+    }
+
+    public String getTableCaption() {
+        return tableCaption;
+    }
+
+
+    public Integer getTableNumber() {
+        return tableNumber;
+    }
+
+    public void setTableNumber(Integer tableNumber) {
+        this.tableNumber = tableNumber;
+    }
+
+
 
     public void setWithServiceByDefault(Boolean withServiceByDefault) {
         this.withServiceByDefault = withServiceByDefault;
@@ -71,14 +108,6 @@ public class TableItem extends StandardEntity {
 
     public TableItemStatus getTableStatus() {
         return tableStatus == null ? null : TableItemStatus.fromId(tableStatus);
-    }
-
-    public void setTableNumber(Integer tableNumber) {
-        this.tableNumber = tableNumber;
-    }
-
-    public Integer getTableNumber() {
-        return tableNumber;
     }
 
     public void setSeatsCapacity(Integer seatsCapacity) {

@@ -61,6 +61,7 @@
                     </actions>
                     <columns>
                         <column id="tableNumber"/>
+                        <column id="tableCaption"/>
                         <column id="seatsCapacity"/>
                         <column id="withServiceByDefault"/>
                     </columns>
@@ -86,11 +87,15 @@
                     <fieldGroup id="fieldGroup"
                                 datasource="tableItemDs">
                         <column width="250px">
-                            <field property="tableNumber"/>
-                            <field property="seatsCapacity"/>
-                            <field property="tableStatus"
-                                   visible="false"/>
-                            <field property="withServiceByDefault"/>
+                            <field caption="Numero"
+                                   property="tableNumber"/>
+                            <field caption="Nome"
+                                   property="tableCaption"/>
+                            <field caption="Numero di posti a sedere"
+                                   property="seatsCapacity"/>
+                            <field caption="Tavolo con servizio"
+                                   property="withServiceByDefault"/>
+                            <field property="checked"/>
                         </column>
                     </fieldGroup>
                 </scrollBox>

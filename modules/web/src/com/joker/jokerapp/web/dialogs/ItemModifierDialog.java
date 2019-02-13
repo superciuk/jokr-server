@@ -185,7 +185,7 @@ public class ItemModifierDialog extends AbstractWindow {
     private void showItemModifiers(ProductModifierCategory productModifierCategory) {
 
         List <ProductModifier> productModifiers = dataManager.load(ProductModifier.class)
-                .query("select e from jokerapp$ProductModifier e where e.category.id = :productModifierCategory")
+                .query("select e from jokerapp$ProductModifier e where e.category.id = :productModifierCategory order by e.sortOrder")
                 .parameter("productModifierCategory", productModifierCategory.getId())
                 .view("productModifier-view")
                 .list();
@@ -206,8 +206,8 @@ public class ItemModifierDialog extends AbstractWindow {
 
             String productName = modifier.getName();
 
-            if (Math.floorMod(productName.length(),14)==0) numberOfRow = Math.floorDiv(productName.length(),14);
-            else numberOfRow = Math.floorDiv(productName.length(),14) + 1;
+            if (Math.floorMod(productName.length(),12)==0) numberOfRow = Math.floorDiv(productName.length(),12);
+            else numberOfRow = Math.floorDiv(productName.length(),12) + 1;
 
             int exactLineLength = Math.floorDiv(productName.length(), numberOfRow);
 
@@ -227,7 +227,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
                         if (l - prevSpaceConverted > exactLineLength) {
 
-                            if (actualSpace != 0 && prevSpaceConverted != actualSpace && (actualSpace - prevSpaceConverted <= l - actualSpace || l - prevSpaceConverted > 14)) {
+                            if (actualSpace != 0 && prevSpaceConverted != actualSpace && (actualSpace - prevSpaceConverted <= l - actualSpace || l - prevSpaceConverted > 12)) {
 
                                 spaceToConvert.add(actualSpace);
                                 if (actualSpace - prevSpaceConverted > maxLineLength) maxLineLength = actualSpace - prevSpaceConverted;
@@ -263,7 +263,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
             btn.setCaption(productName);
 
-            if (maxLineLength <= 14 && spaceToConvert.size()<4) btn.setStyleName("v-button-fontSize20");
+            if (maxLineLength <= 12 && spaceToConvert.size()<4) btn.setStyleName("v-button-fontSize20");
             else btn.setStyleName("v-button-fontSize16");
 
             btn.setAction(new BaseAction("addModifierToOrder".concat(modifier.getName())).withHandler(e -> addModifierToOrder(modifier)));
@@ -332,7 +332,6 @@ public class ItemModifierDialog extends AbstractWindow {
         drawOrderLinesGrid();
 
     }
-
 
     public void onCancelBtnClick() {
 

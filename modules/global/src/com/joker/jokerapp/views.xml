@@ -44,7 +44,10 @@
             <property name="charge"/>
             <property name="withService"/>
             <property name="taxes"/>
+            <property name="status"/>
         </property>
         <property name="withServiceByDefault"/>
+        <property name="tableCaption"/>
+        <property name="checked"/>
     </view>
 </views>

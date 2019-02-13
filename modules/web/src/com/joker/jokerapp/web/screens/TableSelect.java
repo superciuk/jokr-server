@@ -10,9 +10,7 @@ import com.haulmont.cuba.gui.data.GroupDatasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebButton;
 import com.haulmont.cuba.web.gui.components.WebGroupBox;
-import com.joker.jokerapp.entity.Order;
-import com.joker.jokerapp.entity.TableItem;
-import com.joker.jokerapp.entity.TableItemStatus;
+import com.joker.jokerapp.entity.*;
 import com.joker.jokerapp.web.dialogs.ActualSeatsDialog;
 
 import javax.inject.Inject;
@@ -52,7 +50,8 @@ public class TableSelect extends AbstractWindow {
     @Named("currentTimeField")
     private TimeField currentTimeField;
 
-    private Boolean isCancelBtnPressed = Boolean.FALSE;
+    private Boolean isCancelBtnPressed = false;
+    private Boolean isCloseBtnPressed = false;
 
     @Override
     public void init(Map<String, Object> params) {
@@ -72,7 +71,7 @@ public class TableSelect extends AbstractWindow {
 
         Timer clockTimer = componentsFactory.createTimer();
         addTimer(clockTimer);
-        clockTimer.setDelay(5000);
+        clockTimer.setDelay(1000);
         clockTimer.setRepeating(true);
         clockTimer.addActionListener(timer -> refreshData());
 
@@ -93,6 +92,21 @@ public class TableSelect extends AbstractWindow {
             getWindowManager().close(this);
             openWindow("tableselect", WindowManager.OpenType.THIS_TAB);
 
+        } else  if (isCloseBtnPressed) {
+
+            if (selectedTable.getCurrentOrder() != null && selectedTable.getCurrentOrder().getStatus().equals(OrderStatus.bill)) {
+
+                ordersDs.removeItem(selectedTable.getCurrentOrder());
+                selectedTable.setCurrentOrder(null);
+                selectedTable.setTableStatus(TableItemStatus.free);
+                ordersDs.commit();
+                tableItemDs.setItem(selectedTable);
+                tableItemDs.commit();
+                getWindowManager().close(this);
+                openWindow("tableselect", WindowManager.OpenType.THIS_TAB);
+
+            } else isCloseBtnPressed = false;
+
         } else {
 
             tableItemDs.setItem(selectedTable);
@@ -101,7 +115,7 @@ public class TableSelect extends AbstractWindow {
             TableItemStatus tableItemStatus = tableItemDs.getItem().getTableStatus();
 
             Map<String, Object> orderParams = new HashMap<>();
-            orderParams.put("tableNumber",selectedTable.getTableNumber());
+            orderParams.put("tableCaption",selectedTable.getTableCaption());
 
             if (tableItemStatus == TableItemStatus.free) {
 
@@ -109,10 +123,14 @@ public class TableSelect extends AbstractWindow {
                 params.put("table", tableItemDs.getItem());
 
                 ActualSeatsDialog.CloseHandler handler = new ActualSeatsDialog.CloseHandler() {
+
                     @Override
                     public void onClose(int seats) {
+
                         orderParams.put("actualSeats", seats);
+
                     }
+
                 };
 
                 params.put("handler", handler);
@@ -123,6 +141,7 @@ public class TableSelect extends AbstractWindow {
 
                         getWindowManager().close(this);
                         openWindow("orderScreen", WindowManager.OpenType.THIS_TAB, orderParams);
+
                     }
 
                 });
@@ -162,16 +181,18 @@ public class TableSelect extends AbstractWindow {
 
     }
 
-    public void onEmptyClick() {
+    public void onBillClick() {
 
+/*        OrderScreen orderScreen = new OrderScreen();
+        orderScreen.onBillBtnClick();
         tableItemsDs.clear();
-        tableItemsDs.commit();
+        tableItemsDs.commit();*/
 
     }
 
     public void onCancelBtnClick() {
 
-        isCancelBtnPressed = Boolean.TRUE;
+        isCancelBtnPressed = true;
 
     }
 
@@ -256,12 +277,53 @@ public class TableSelect extends AbstractWindow {
             btn.setWidth("190px");
             btn.setHeight("110px");
             btn.setAlignment(Alignment.BOTTOM_CENTER);
-            if (tableItem.getTableStatus().toString().equals("free")) btn.setStyleName("v-button-backgroundColorGreen");
-            if (tableItem.getTableStatus().toString().equals("open")) btn.setStyleName("v-button-backgroundColorRed");
-            if (tableItem.getTableStatus().toString().equals("closed"))
-                btn.setStyleName("v-button-backgroundColorBrown");
-            btn.setId(tableItem.getTableNumber().toString());
-            btn.setCaption(tableItem.getTableNumber().toString());
+
+            if (tableItem.getTableCaption().length() <= 3) {
+
+                if (tableItem.getTableStatus().equals(TableItemStatus.free)) btn.setStyleName("v-button-backgroundColorGreenFont60");
+                else if (tableItem.getTableStatus().equals(TableItemStatus.open)) {
+
+                    if (tableItem.getCurrentOrder().getStatus().equals(OrderStatus.open))
+                        btn.setStyleName("v-button-backgroundColorRedFont60");
+                    else if (tableItem.getCurrentOrder().getStatus().equals(OrderStatus.bill))
+                        btn.setStyleName("v-button-backgroundColorYellowFont60");
+                    else if (tableItem.getCurrentOrder().getStatus().equals(OrderStatus.paid))
+                        btn.setStyleName("v-button-backgroundColorAzureFont60");
+
+                }
+
+            } else if (tableItem.getTableCaption().length() <= 8) {
+
+                if (tableItem.getTableStatus().equals(TableItemStatus.free)) btn.setStyleName("v-button-backgroundColorGreenFont40");
+                else if (tableItem.getTableStatus().equals(TableItemStatus.open)) {
+
+                    if (tableItem.getCurrentOrder().getStatus().equals(OrderStatus.open))
+                        btn.setStyleName("v-button-backgroundColorRedFont40");
+                    else if (tableItem.getCurrentOrder().getStatus().equals(OrderStatus.bill))
+                        btn.setStyleName("v-button-backgroundColorYellowFont40");
+                    else if (tableItem.getCurrentOrder().getStatus().equals(OrderStatus.paid))
+                        btn.setStyleName("v-button-backgroundColorAzureFont40");
+
+                }
+
+            } else {
+
+                if (tableItem.getTableStatus().equals(TableItemStatus.free))
+                    btn.setStyleName("v-button-backgroundColorGreenFont30");
+                else if (tableItem.getTableStatus().equals(TableItemStatus.open)) {
+
+                    if (tableItem.getCurrentOrder().getStatus().equals(OrderStatus.open))
+                        btn.setStyleName("v-button-backgroundColorRedFont30");
+                    else if (tableItem.getCurrentOrder().getStatus().equals(OrderStatus.bill))
+                        btn.setStyleName("v-button-backgroundColorYellowFont30");
+                    else if (tableItem.getCurrentOrder().getStatus().equals(OrderStatus.paid))
+                        btn.setStyleName("v-button-backgroundColorAzureFont30");
+
+                }
+
+            }
+
+            btn.setCaption(tableItem.getTableCaption());
             btn.setAction(new BaseAction("buttonAction".concat(tableItem.getTableNumber().toString())).withHandler(e -> buttonAction(tableItem)));
 
             vBox.add(btn);
@@ -276,9 +338,16 @@ public class TableSelect extends AbstractWindow {
                 tableBtnThirdGrid.add(vBox);
             }
 
+            if (tableItem.getChecked()) btn.setEnabled(false);
+            else btn.setEnabled(true);
 
         }
 
     }
 
+    public void onCloseBtnClick() {
+
+        isCloseBtnPressed = true;
+
+    }
 }

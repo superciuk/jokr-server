@@ -23,7 +23,7 @@
             </query>
         </collectionDatasource>
     </dsContext>
-    <dialogMode height="840"
+    <dialogMode height="900"
                 width="1600"/>
     <layout margin="true"
             spacing="true"
@@ -96,10 +96,10 @@
             </groupBox>
             <split id="secondSplit"
                    height="100%"
-                   maxSplitPosition="80%"
-                   minSplitPosition="80%"
+                   maxSplitPosition="79%"
+                   minSplitPosition="79%"
                    orientation="horizontal"
-                   pos="80%"
+                   pos="79%"
                    settingsEnabled="false"
                    width="100%">
                 <groupBox id="modifierItemGroupBox"
@@ -113,10 +113,6 @@
                               width="100%">
                             <columns count="4"/>
                             <rows>
-                                <row/>
-                                <row/>
-                                <row/>
-                                <row/>
                                 <row/>
                             </rows>
                         </grid>
@@ -150,10 +146,6 @@
                               width="100%">
                             <columns count="1"/>
                             <rows>
-                                <row/>
-                                <row/>
-                                <row/>
-                                <row/>
                                 <row/>
                             </rows>
                         </grid>
