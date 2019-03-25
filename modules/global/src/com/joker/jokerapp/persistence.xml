@@ -10,5 +10,6 @@
         <class>com.joker.jokerapp.entity.TableItem</class>
         <class>com.joker.jokerapp.entity.Order</class>
         <class>com.joker.jokerapp.entity.OrderLine</class>
+        <class>com.joker.jokerapp.entity.Ticket</class>
     </persistence-unit>
 </persistence>

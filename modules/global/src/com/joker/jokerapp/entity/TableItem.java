@@ -39,6 +39,7 @@ public class TableItem extends StandardEntity {
     protected String tableStatus;
 
 
+    @Composition
     @OnDeleteInverse(DeletePolicy.UNLINK)
     @OnDelete(DeletePolicy.DENY)
     @OneToOne(fetch = FetchType.LAZY)

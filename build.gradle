@@ -76,6 +76,13 @@ configure(globalModule) {
         main { enabled = true }
     }
 
+    jar {
+        manifest {
+            attributes('App-Component-Id': cuba.artifact.group)
+            attributes('App-Component-Version': cuba.artifact.version + (cuba.artifact.isSnapshot ? '-SNAPSHOT' : ''))
+        }
+    }
+
     
 }
 
@@ -244,3 +251,14 @@ task wrapper(type: Wrapper) {
 }
 
 apply from: 'extra.gradle'
+
+
+
+task buildWar(type: CubaWarBuilding) {
+    coreContextXmlPath = 'modules/core/web/META-INF/war-context.xml'
+    webXmlPath = 'modules/web/web/WEB-INF/single-war-web.xml'
+    appProperties = ['cuba.automaticDatabaseUpdate' : true]
+    includeContextXml = true
+    includeJdbcDriver = true
+    appHome = '../jokerapp_home'
+}

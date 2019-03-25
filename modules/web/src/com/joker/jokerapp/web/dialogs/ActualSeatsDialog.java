@@ -13,7 +13,7 @@ public class ActualSeatsDialog extends AbstractWindow {
     @Named("seatsTextField")
     private TextField seatsTextField;
 
-    TableItem table;
+    private TableItem table;
 
     public interface CloseHandler {
         void onClose(int seats);
@@ -21,10 +21,11 @@ public class ActualSeatsDialog extends AbstractWindow {
 
     private CloseHandler handler;
 
-    Boolean pressed = false;
+    private Boolean pressed = false;
 
     @Override
     public void init(Map<String, Object> params) {
+
         super.init(params);
 
         if (params.containsKey("table")) {

@@ -10,18 +10,6 @@
                 <![CDATA[select e from jokerapp$OrderLine e where e.itemToModifyId = :param$selectedLine.id]]>
             </query>
         </collectionDatasource>
-        <collectionDatasource id="productModifiersDs"
-                              class="com.joker.jokerapp.entity.ProductModifier">
-            <query>
-                <![CDATA[select e from jokerapp$ProductModifier e]]>
-            </query>
-        </collectionDatasource>
-        <collectionDatasource id="productItemsDs"
-                              class="com.joker.jokerapp.entity.ProductItem">
-            <query>
-                <![CDATA[select e from jokerapp$ProductItem e]]>
-            </query>
-        </collectionDatasource>
     </dsContext>
     <dialogMode height="900"
                 width="1600"/>
@@ -79,12 +67,14 @@
                             caption="msg://OK"
                             height="60px"
                             invoke="onOkBtnClick"
+                            stylename="okBtn"
                             width="100px"/>
                     <button id="cancelBtn"
                             align="BOTTOM_LEFT"
                             caption="msg://Cancel"
                             height="60px"
                             invoke="onCancelBtnClick"
+                            stylename="cancelBtn"
                             width="100px"/>
                     <button id="modifierOrderLinesRemoveBtn"
                             align="BOTTOM_RIGHT"

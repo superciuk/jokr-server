@@ -23,4 +23,7 @@
             template="com/joker/jokerapp/web/dialogs/item-modifier-dialog.xml"/>
     <screen id="jokerapp$itemPriceManualModifier.dialog"
             template="com/joker/jokerapp/web/dialogs/item-price-manual-modifier-dialog.xml"/>
+    <screen id="jokerapp$Kitchen.display"
+            multipleOpen="true"
+            template="com/joker/jokerapp/web/screens/kitchen-display.xml"/>
 </screen-config>

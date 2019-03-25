@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        class="com.joker.jokerapp.web.screens.KitchenDisplay"
+        messagesPack="com.joker.jokerapp.web.screens">
+    <dsContext>
+        <collectionDatasource id="ticketsDs"
+                              class="com.joker.jokerapp.entity.Ticket"
+                              view="ticket-view">
+            <query>
+                <![CDATA[select e from jokerapp$Ticket e where e.order.status = 'open' order by e.createTs]]>
+            </query>
+        </collectionDatasource>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout margin="true"
+            stylename="mainLayout">
+        <split height="100%"
+               maxSplitPosition="90%"
+               minSplitPosition="90%"
+               orientation="vertical"
+               pos="90%"
+               settingsEnabled="false"
+               width="100%">
+            <scrollBox id="kitchenDisplayMainBox"
+                       height="100%"
+                       orientation="horizontal"
+                       scrollBars="horizontal"
+                       width="100%"/>
+            <hbox id="bottomHBox"
+                  height="90%"
+                  margin="true"
+                  width="100%">
+                <buttonsPanel align="MIDDLE_CENTER"
+                              height="100%">
+                    <button id="showBarTicketsBtn"
+                            caption="BAR"
+                            height="100%"
+                            invoke="onBarBtnClick"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                    <button id="showFryerTicketsBtn"
+                            caption="FRIGGITRICE"
+                            height="100%"
+                            invoke="onFryerBtnClick"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                    <button id="showGrillTicketsBtn"
+                            caption="PIASTRA"
+                            height="100%"
+                            invoke="onGrillBtnClick"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                </buttonsPanel>
+            </hbox>
+        </split>
+    </layout>
+</window>

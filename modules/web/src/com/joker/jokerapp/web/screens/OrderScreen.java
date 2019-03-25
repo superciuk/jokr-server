@@ -2,11 +2,8 @@ package com.joker.jokerapp.web.screens;
 
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Metadata;
-import com.haulmont.cuba.core.global.UserSessionSource;
-import com.haulmont.cuba.core.sys.AbstractUserSessionSource;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
-import com.haulmont.cuba.gui.components.Action;
 import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.GridLayout;
@@ -17,11 +14,8 @@ import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
-import com.haulmont.cuba.security.entity.SessionAttribute;
-import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.global.UserSession;
 import com.haulmont.cuba.web.gui.components.WebButton;
-import com.haulmont.cuba.web.gui.components.WebScrollBoxLayout;
 import com.joker.jokerapp.entity.*;
 import com.joker.jokerapp.web.dialogs.ItemPriceManualModifierDialog;
 import com.joker.jokerapp.web.dialogs.ItemManualModifierDialog;
@@ -54,13 +48,16 @@ public class OrderScreen extends AbstractWindow {
     private UserSession userSession;
 
     @Inject
+    private Datasource<TableItem> tableItemDs;
+
+    @Inject
+    private CollectionDatasource<Ticket, UUID> ticketsDs;
+
+    @Inject
     private CollectionDatasource<ProductItemCategory, UUID> productItemCategoriesDs;
 
     @Inject
     private CollectionDatasource<ProductItem, UUID> productItemsDs;
-
-    @Inject
-    private CollectionDatasource<OrderLine, UUID> orderLinesDs;
 
     @Inject
     private ComponentsFactory componentsFactory;
@@ -86,18 +83,6 @@ public class OrderScreen extends AbstractWindow {
     @Named("orderLineScrollBox")
     private ScrollBoxLayout orderLineScrollBox;
 
-    @Named("categoriesBackBtn")
-    private Button categoriesBackBtn;
-
-    @Named("categoriesNextBtn")
-    private Button categoriesNextBtn;
-
-    @Named("itemsBackBtn")
-    private Button itemsBackBtn;
-
-    @Named("itemsNextBtn")
-    private Button itemsNextBtn;
-
     @Named("tableTimeField")
     private TimeField tableTimeField;
 
@@ -119,12 +104,6 @@ public class OrderScreen extends AbstractWindow {
     @Named("totalField")
     private TextField totalField;
 
-    @Named("orderLinesScrollUp")
-    private Button orderLinesScrollUp;
-
-    @Named("orderLinesScrollDown")
-    private Button orderLinesScrollDown;
-
     @Named("doNotPrintBtn")
     private Button doNotPrintBtn;
 
@@ -134,9 +113,9 @@ public class OrderScreen extends AbstractWindow {
     private String itemBtnWidth = "180px";
     private String itemBtnHeight = "160px";
 
-    private Order currentOrder;
-    private TableItem table;
-    private List <OrderLine> modifierOrderLinesToAdd = new ArrayList<>();
+    private UUID currentTicketId;
+
+    private List<OrderLine> modifierOrderLinesToAdd = new ArrayList<>();
 
     private BigDecimal subTotal = new BigDecimal(0.0);
     private BigDecimal service = new BigDecimal(0.0);
@@ -154,18 +133,18 @@ public class OrderScreen extends AbstractWindow {
 
     private ArrayList<Integer> spaceToConvert = new ArrayList<>();
 
-    private ArrayList <ProductItemCategory> productItemCategoriesToShow = new ArrayList<>();
+    private ArrayList<ProductItemCategory> productItemCategoriesToShow = new ArrayList<>();
 
-    private ArrayList <ProductItem> productItemsToShow = new ArrayList<>();
-
-    private int orderLinesBegin = 1;
+    private ArrayList<ProductItem> productItemsToShow = new ArrayList<>();
 
     private Boolean doNotPrint = false;
 
     private Boolean withFries = false;
     private Boolean isGrillTicket = false;
 
-    private Boolean clientIsTablet = false;
+    private Boolean clientIsTablet = true;
+
+    private UUID selectedLineId;
 
     @Override
     public void init(Map<String, Object> params) {
@@ -178,14 +157,10 @@ public class OrderScreen extends AbstractWindow {
 
         }
 
-        categoriesBackBtn.setStyleName("v-button-special");
-        categoriesNextBtn.setStyleName("v-button-special");
-        itemsBackBtn.setStyleName("v-button-special");
-        itemsNextBtn.setStyleName("v-button-special");
         subtotalLabel.setStyleName("subtotalLabel");
         serviceLabel.setStyleName("serviceLabel");
         totalLabel.setStyleName("totalLabel");
-        
+
         subtotalField.setStyleName("subtotalField");
         serviceField.setStyleName("serviceField");
         totalField.setStyleName("totalField");
@@ -193,60 +168,49 @@ public class OrderScreen extends AbstractWindow {
         doNotPrintBtn.setStyleName("doNotPrintBtnNotPushed");
         doNotPrintBtn.setCaption("STAMPA<br>LE COMANDE");
 
-        table = dataManager.load(TableItem.class)
-                .query("select e from jokerapp$TableItem e where e.tableCaption = :tableCaption")
-                .parameter("tableCaption", params.get("tableCaption"))
-                .view("tableItem-view")
-                .one();
+        tableItemDs.setItem((TableItem) params.get("selectedTable"));
 
-        if (table.getTableStatus().equals(TableItemStatus.free)) {
+        if (tableItemDs.getItem().getTableStatus().equals(TableItemStatus.free)) {
 
-            currentOrder = metadata.create(Order.class);
-            currentOrder.setStatus(OrderStatus.open);
-            currentOrder.setTableItemCaption((String)params.get("tableCaption"));
-            currentOrder.setActualSeats((Integer)params.get("actualSeats"));
-            currentOrder.setCharge(BigDecimal.valueOf(0));
-            currentOrder.setTaxes(BigDecimal.valueOf(0));
-            if (table.getWithServiceByDefault()) currentOrder.setWithService(true);
-                else currentOrder.setWithService(false);
+            Order order = metadata.create(Order.class);
+            order.setStatus(OrderStatus.open);
+            order.setTableItemCaption(tableItemDs.getItem().getTableCaption());
+            order.setActualSeats((Integer) params.get("actualSeats"));
+            order.setCharge(BigDecimal.valueOf(0));
+            order.setTaxes(BigDecimal.valueOf(0));
 
-            table.setCurrentOrder(currentOrder);
-            table.setTableStatus(TableItemStatus.open);
+            if (tableItemDs.getItem().getWithServiceByDefault()) order.setWithService(true);
+            else order.setWithService(false);
 
-            dataManager.commit(currentOrder);
-
-            currentOrder = dataManager.load(Order.class)
-                    .query("select e from jokerapp$Order e where e.id = :currentOrder")
-                    .parameter("currentOrder", table.getCurrentOrder())
-                    .view("order-view")
-                    .one();
+            tableItemDs.getItem().setCurrentOrder(order);
+            tableItemDs.getItem().setTableStatus(TableItemStatus.open);
 
 
-        } else if (table.getTableStatus().equals(TableItemStatus.open)) {
+        } else {
 
-            currentOrder = dataManager.load(Order.class)
-                    .query("select e from jokerapp$Order e where e.id = :currentOrder")
-                    .parameter("currentOrder", table.getCurrentOrder())
-                    .view("order-view")
-                    .one();
+            for (Ticket ticket: ticketsDs.getItems()) if (ticket.getTicketStatus().equals(TicketStatus.notSended)) {
+
+                currentTicketId = ticket.getId();
+                break;
+
+            }
+
+            drawOrderLinesGrid(null, null);
+
+            refreshBill();
 
         }
 
-        table.setChecked(true);
-        dataManager.commit(table);
+        tableItemDs.getItem().setChecked(true);
 
-        table = dataManager.load(TableItem.class)
-                .query("select e from jokerapp$TableItem e where e.tableCaption = :tableCaption")
-                .parameter("tableCaption", params.get("tableCaption"))
-                .view("tableItem-view")
-                .one();
+        tableItemDs.commit();
 
-        Long tableTime = Instant.now().getEpochSecond()-currentOrder.getCreateTs().toInstant().getEpochSecond();
+        Long tableTime = Instant.now().getEpochSecond() - tableItemDs.getItem().getCurrentOrder().getCreateTs().toInstant().getEpochSecond();
 
-        if (tableTime<=3600) tableTimeField.setStyleName("tableTimeField-normal");
+        if (tableTime <= 3600) tableTimeField.setStyleName("tableTimeField-normal");
         else tableTimeField.setStyleName("tableTimeField-hot");
 
-        tableTimeField.setValue(Date.from(Instant.ofEpochSecond(tableTime-3600)));
+        tableTimeField.setValue(Date.from(Instant.ofEpochSecond(tableTime - 3600)));
 
         Timer clockTimer = componentsFactory.createTimer();
         addTimer(clockTimer);
@@ -254,32 +218,14 @@ public class OrderScreen extends AbstractWindow {
         clockTimer.setRepeating(true);
         clockTimer.addActionListener(timer -> {
 
-            if (Instant.now().getEpochSecond() - currentOrder.getCreateTs().toInstant().getEpochSecond()<=3600) tableTimeField.setStyleName("tableTimeField-normal");
+            if (Instant.now().getEpochSecond() - tableItemDs.getItem().getCurrentOrder().getCreateTs().toInstant().getEpochSecond() <= 3600)
+                tableTimeField.setStyleName("tableTimeField-normal");
             else tableTimeField.setStyleName("tableTimeField-hot");
-            tableTimeField.setValue(Date.from(Instant.ofEpochSecond(Instant.now().getEpochSecond() - currentOrder.getCreateTs().toInstant().getEpochSecond() - 3600)));
+            tableTimeField.setValue(Date.from(Instant.ofEpochSecond(Instant.now().getEpochSecond() - tableItemDs.getItem().getCurrentOrder().getCreateTs().toInstant().getEpochSecond() - 3600)));
 
         });
 
         clockTimer.start();
-
-        List<OrderLine> lines = dataManager.load(OrderLine.class)
-                .query("select e from jokerapp$OrderLine e where e.order.id = :currentOrder order by e.position")
-                .parameter("currentOrder", currentOrder.getId())
-                .view("order-line-view")
-                .list();
-
-        for (OrderLine line : lines) {
-
-            orderLinesDs.includeItem(line);
-
-        }
-
-        drawOrderLinesGrid(null, null);
-
-        refreshBill();
-
-        itemsBackBtn.setVisible(false);
-        itemsNextBtn.setVisible(false);
 
         categoriesGrid.removeAll();
         productItemCategoriesDs.refresh();
@@ -301,27 +247,22 @@ public class OrderScreen extends AbstractWindow {
 
             categoriesPages = (categorySize - 1) / 10 + 1;
 
-            if (categorySize<=10) {
+            if (categorySize <= 10) {
 
-                categoriesBackBtn.setVisible(false);
-                categoriesNextBtn.setVisible(false);
-                drawProductCategories(0, categorySize-1);
+                drawProductCategories(0, categorySize - 1);
 
             } else {
 
-                categoriesBackBtn.setVisible(false);
-                categoriesNextBtn.setVisible(true);
+
                 drawProductCategories(0, 9);
 
             }
 
         } else {
 
-            categoriesBackBtn.setVisible(false);
-            categoriesNextBtn.setVisible(false);
             categoriesScrollBox.setHeightFull();
-            drawProductCategories(0, categorySize-1);
-            
+            drawProductCategories(0, categorySize - 1);
+
         }
 
     }
@@ -342,8 +283,8 @@ public class OrderScreen extends AbstractWindow {
 
             String categoryName = productItemCategoriesToShow.get(c).getName();
 
-            if (Math.floorMod(categoryName.length(),10)==0) numberOfRow = Math.floorDiv(categoryName.length(),10);
-            else numberOfRow = Math.floorDiv(categoryName.length(),10) + 1;
+            if (Math.floorMod(categoryName.length(), 10) == 0) numberOfRow = Math.floorDiv(categoryName.length(), 10);
+            else numberOfRow = Math.floorDiv(categoryName.length(), 10) + 1;
 
             int exactLineLength = Math.floorDiv(categoryName.length(), numberOfRow);
 
@@ -359,19 +300,20 @@ public class OrderScreen extends AbstractWindow {
 
                     Character ch = categoryName.charAt(l);
 
-                    if (Character.isSpace(ch) || l == categoryName.length()-1) {
+                    if (Character.isWhitespace(ch) || l == categoryName.length() - 1) {
 
                         if (l - prevSpaceConverted > exactLineLength) {
 
                             if (actualSpace != 0 && prevSpaceConverted != actualSpace && (actualSpace - prevSpaceConverted <= l - actualSpace || l - prevSpaceConverted > 10)) {
 
                                 spaceToConvert.add(actualSpace);
-                                if (actualSpace - prevSpaceConverted > maxLineLength) maxLineLength = actualSpace - prevSpaceConverted;
+                                if (actualSpace - prevSpaceConverted > maxLineLength)
+                                    maxLineLength = actualSpace - prevSpaceConverted;
                                 prevSpaceConverted = actualSpace;
 
                             } else {
 
-                                if (!(l==categoryName.length()-1)) {
+                                if (!(l == categoryName.length() - 1)) {
 
                                     spaceToConvert.add(l);
                                     if (l - prevSpaceConverted > maxLineLength) maxLineLength = l - prevSpaceConverted;
@@ -399,7 +341,7 @@ public class OrderScreen extends AbstractWindow {
 
             cBtn.setCaption(categoryName);
 
-            if (maxLineLength <= 10 && spaceToConvert.size()<3) cBtn.setStyleName("v-button-fontSize30");
+            if (maxLineLength <= 10 && spaceToConvert.size() < 3) cBtn.setStyleName("v-button-fontSize30");
             else cBtn.setStyleName("v-button-fontSize20");
 
             ProductItemCategory toShow = productItemCategoriesToShow.get(c);
@@ -423,7 +365,8 @@ public class OrderScreen extends AbstractWindow {
 
         for (ProductItem item : productItemsDs.getItems()) {
 
-            if (item.getCategory().getName().equals(productItemCategory.getName()) && item.getVisible()) productItemsToShow.add(item);
+            if (item.getCategory().getName().equals(productItemCategory.getName()) && item.getVisible())
+                productItemsToShow.add(item);
 
         }
 
@@ -435,24 +378,18 @@ public class OrderScreen extends AbstractWindow {
 
             if (productItemSize <= 20) {
 
-                itemsBackBtn.setVisible(false);
-                itemsNextBtn.setVisible(false);
-                DrawProductItems(0, productItemSize-1);
+                DrawProductItems(0, productItemSize - 1);
 
             } else {
 
-                itemsBackBtn.setVisible(false);
-                itemsNextBtn.setVisible(true);
                 DrawProductItems(0, 19);
 
             }
 
         } else {
 
-            itemsBackBtn.setVisible(false);
-            itemsNextBtn.setVisible(false);
             productItemScrollBox.setHeightFull();
-            DrawProductItems(0, productItemSize-1);
+            DrawProductItems(0, productItemSize - 1);
 
         }
 
@@ -460,7 +397,7 @@ public class OrderScreen extends AbstractWindow {
 
     private void DrawProductItems(int start, int end) {
 
-        for (int c = start; c<=end; c++) {
+        for (int c = start; c <= end; c++) {
 
             WebButton pBtn = componentsFactory.createComponent(WebButton.class);
             pBtn.setWidth(itemBtnWidth);
@@ -473,8 +410,8 @@ public class OrderScreen extends AbstractWindow {
 
             String productName = productItemsToShow.get(c).getName();
 
-            if (Math.floorMod(productName.length(),14)==0) numberOfRow = Math.floorDiv(productName.length(),14);
-            else numberOfRow = Math.floorDiv(productName.length(),14) + 1;
+            if (Math.floorMod(productName.length(), 14) == 0) numberOfRow = Math.floorDiv(productName.length(), 14);
+            else numberOfRow = Math.floorDiv(productName.length(), 14) + 1;
 
             int exactLineLength = Math.floorDiv(productName.length(), numberOfRow);
 
@@ -490,19 +427,20 @@ public class OrderScreen extends AbstractWindow {
 
                     Character ch = productName.charAt(l);
 
-                    if (Character.isSpace(ch) || l == productName.length()-1) {
+                    if (Character.isWhitespace(ch) || l == productName.length() - 1) {
 
                         if (l - prevSpaceConverted > exactLineLength) {
 
                             if (actualSpace != 0 && prevSpaceConverted != actualSpace && (actualSpace - prevSpaceConverted <= l - actualSpace || l - prevSpaceConverted > 14)) {
 
                                 spaceToConvert.add(actualSpace);
-                                if (actualSpace - prevSpaceConverted > maxLineLength) maxLineLength = actualSpace - prevSpaceConverted;
+                                if (actualSpace - prevSpaceConverted > maxLineLength)
+                                    maxLineLength = actualSpace - prevSpaceConverted;
                                 prevSpaceConverted = actualSpace;
 
                             } else {
 
-                                if (!(l==productName.length()-1)) {
+                                if (!(l == productName.length() - 1)) {
 
                                     spaceToConvert.add(l);
                                     if (l - prevSpaceConverted > maxLineLength) maxLineLength = l - prevSpaceConverted;
@@ -530,110 +468,112 @@ public class OrderScreen extends AbstractWindow {
 
             pBtn.setCaption(productName);
 
-            if (maxLineLength <= 14 && spaceToConvert.size()<4) pBtn.setStyleName("v-button-fontSize20");
+            if (maxLineLength <= 14 && spaceToConvert.size() < 4) pBtn.setStyleName("v-button-fontSize20");
             else pBtn.setStyleName("v-button-fontSize16");
 
             ProductItem toAdd = productItemsToShow.get(c);
             pBtn.setAction(new BaseAction("addToOrder".concat(productItemsToShow.get(c).getName())).withHandler(e -> addToOrder(toAdd)));
             itemsGrid.add(pBtn);
 
-            }
-
         }
+
+    }
 
     private void addToOrder(ProductItem productItemToAdd) {
 
-        for (OrderLine line : orderLinesDs.getItems()) {
+        int max = 0;
 
-            if ((line.getItemName().equals(productItemToAdd.getName())) && !line.getHasModifier() && !line.getIsSended()) {
+        for (Ticket ticket: ticketsDs.getItems()) for (OrderLine line: ticket.getOrderLines()) {
 
-                line.setQuantity(line.getQuantity() + 1);
-                line.setPrice(line.getPrice().add(productItemToAdd.getPrice()));
+            if (!line.getIsModifier() && line.getPosition() > max) {
 
-                drawOrderLinesGrid(line, "updated");
-
-                orderLinesDs.commit();
-
-                refreshBill();
-
-                return;
+                max = line.getPosition();
 
             }
 
         }
 
-            int max = 0;
+        max += 100;
 
-            for (OrderLine line : orderLinesDs.getItems()) {
+        if (currentTicketId == null) {
 
-                if (!line.getIsModifier() && line.getPosition() > max) {
+            Ticket ticket = metadata.create(Ticket.class);
+            ticket.setOrder(tableItemDs.getItem().getCurrentOrder());
+            ticket.setTicketStatus(TicketStatus.notSended);
+            ticket.setTicketNumber(ticketsDs.getItems().size() + 1);
 
-                    max = line.getPosition();
+            dataManager.commit(ticket);
+            tableItemDs.refresh();
 
-                }
+            currentTicketId = ticket.getId();
 
-            }
+        } else for (OrderLine line: ticketsDs.getItem(currentTicketId).getOrderLines()) if ((line.getItemId().equals(productItemToAdd.getId())) && !line.getHasModifier()) {
 
-            max += 100;
+            line.setQuantity(line.getQuantity() + 1);
+            line.setPrice(line.getPrice().add(productItemToAdd.getPrice()));
 
-            OrderLine newLine = metadata.create(OrderLine.class);
+            dataManager.commit(line);
 
-            newLine.setQuantity(1);
-            newLine.setItemName(productItemToAdd.getName());
-            newLine.setItemId(productItemToAdd.getId());
-            newLine.setUnitPrice(productItemToAdd.getPrice());
-            newLine.setPrice(productItemToAdd.getPrice());
-            newLine.setTaxes(BigDecimal.ZERO);
-            newLine.setOrder(currentOrder);
-            newLine.setPosition(max);
-            newLine.setNextModifierPosition(max+1);
-            newLine.setHasModifier(false);
-            newLine.setIsModifier(false);
-            newLine.setItemToModifyId(null);
-            newLine.setPrinterGroup(productItemToAdd.getPrinterGroup().toString());
-            newLine.setIsSended(false);
+            tableItemDs.refresh();
 
-            newLine.setIsSelected(false);
-
-            orderLinesDs.addItem(newLine);
-
-            if (orderLinesDs.size()>15) orderLinesBegin = orderLinesDs.size()-14;
-
-            drawOrderLinesGrid(newLine, "added");
-
-            orderLinesDs.commit();
+            drawOrderLinesGrid(line, "updated");
 
             refreshBill();
+
+            return;
+
+        }
+
+        OrderLine newLine = metadata.create(OrderLine.class);
+
+        newLine.setQuantity(1);
+        newLine.setItemName(productItemToAdd.getName());
+        newLine.setItemId(productItemToAdd.getId());
+        newLine.setUnitPrice(productItemToAdd.getPrice());
+        newLine.setPrice(productItemToAdd.getPrice());
+        newLine.setTaxes(BigDecimal.ZERO);
+
+        newLine.setTicket(ticketsDs.getItem(currentTicketId));
+        newLine.setPosition(max);
+        newLine.setNextModifierPosition(max + 1);
+        newLine.setHasModifier(false);
+        newLine.setIsModifier(false);
+        newLine.setItemToModifyId(null);
+        newLine.setPrinterGroup(productItemToAdd.getPrinterGroup().toString());
+        newLine.setIsSended(false);
+        newLine.setIsReversed(false);
+
+        dataManager.commit(newLine);
+
+        tableItemDs.refresh();
+
+        drawOrderLinesGrid(newLine, "added");
+
+        refreshBill();
 
     }
 
     public void onAddModifierClick() {
 
-        OrderLine selectedLineExist = null;
+        if (selectedLineId == null) return;
 
-        for (OrderLine line: orderLinesDs.getItems()) {
+        OrderLine founded = null;
 
-            if (line.getIsSelected()) { selectedLineExist = line; break;}
+        for (Ticket ticket : ticketsDs.getItems()) for (OrderLine line : ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
 
-        }
-
-        if (selectedLineExist == null) return;
-
-        OrderLine selectedLine = selectedLineExist;
-
-        if (selectedLine.getIsModifier()) return;
-
-        List <OrderLine> modifierOrderLines = new ArrayList<>();
-
-        if (selectedLine.getHasModifier()) {
-
-            modifierOrderLines = dataManager.load(OrderLine.class)
-                    .query("select e from jokerapp$OrderLine e where e.itemToModifyId = :selectedLineId")
-                    .parameter("selectedLineId", selectedLine.getId())
-                    .view("order-line-view")
-                    .list();
+            founded = line;
+            break;
 
         }
+
+        if (founded.getIsModifier()) return;
+
+        OrderLine selectedLine = founded;
+
+        List<OrderLine> modifierOrderLines = new ArrayList<>();
+
+        if (selectedLine.getHasModifier()) for (OrderLine line : selectedLine.getTicket().getOrderLines())
+            if (line.getItemToModifyId().equals(selectedLine.getId())) modifierOrderLines.add(line);
 
         Map<String, Object> params = new HashMap<>();
 
@@ -652,31 +592,27 @@ public class OrderScreen extends AbstractWindow {
 
         params.put("handler", handler);
         params.put("selectedLine", selectedLine);
+
+        if (productItemsDs.size() == 0) productItemsDs.refresh();
+
+        params.put("productItem", productItemsDs.getItem(selectedLine.getItemId()));
         params.put("modifierOrderLines", modifierOrderLines);
 
         openWindow("jokerapp$ItemModifier.dialog", WindowManager.OpenType.DIALOG, params).addCloseListener(closeString -> {
 
             if (closeString.equals("ok")) {
 
-                ArrayList<OrderLine> toRemove = new ArrayList<>();
+                for (OrderLine line : selectedLine.getTicket().getOrderLines()) {
 
-                for (OrderLine line : orderLinesDs.getItems()) {
+                    if (line.getIsModifier() && line.getItemToModifyId().equals(selectedLine.getId()) && !modifierOrderLinesToAdd.contains(line)) {
 
-                    if (line.getIsModifier() &&
-                            line.getItemToModifyId().equals(selectedLine.getId()) &&
-                                !modifierOrderLinesToAdd.contains(line)) {
+                        selectedLine.setPrice(selectedLine.getPrice().subtract(line.getPrice()));
 
-                                        selectedLine.setPrice(selectedLine.getPrice().subtract(line.getPrice()));
-
-                                        toRemove.add(line);
+                        selectedLine.getTicket().getOrderLines().remove(line);
 
                     }
 
                 }
-
-                Iterator<OrderLine> iterator = toRemove.iterator();
-
-                while (iterator.hasNext()) orderLinesDs.removeItem(iterator.next());
 
                 if (modifierOrderLinesToAdd.isEmpty() && selectedLine.getHasModifier().equals(true)) {
 
@@ -686,64 +622,20 @@ public class OrderScreen extends AbstractWindow {
 
                     for (OrderLine newModifierLine : modifierOrderLinesToAdd) {
 
-                        Boolean modifierAlreadyExist = false;
-
-                        for (OrderLine line : orderLinesDs.getItems()) {
-
-                            if (!line.getItemName().equals(selectedLine.getItemName()) &&
-                                    line.getItemName().equals(newModifierLine.getItemName()) &&
-                                    line.getItemToModifyId().equals(selectedLine.getId())) {
-
-                                if (!line.getQuantity().equals(newModifierLine.getQuantity())) {
-
-                                    int newQuantity = newModifierLine.getQuantity() - line.getQuantity();
-
-                                    line.setQuantity(newModifierLine.getQuantity());
-                                    line.setPrice(line.getUnitPrice().multiply(BigDecimal.valueOf(newModifierLine.getQuantity())));
-
-                                    selectedLine.setPrice(selectedLine.getPrice().add(line.getUnitPrice().multiply(BigDecimal.valueOf(newQuantity))));
-
-                                }
-
-                                modifierAlreadyExist = true;
-
-                            }
-
-                        }
-
-                        if (modifierAlreadyExist.equals(false)) {
-
-                            selectedLine.setPrice(selectedLine.getPrice().
-                                    add(newModifierLine.getPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity()))));
-
-                            orderLinesDs.addItem(newModifierLine);
-
-                        }
+                        selectedLine.setPrice(selectedLine.getPrice().add(newModifierLine.getPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity()))));
+                        dataManager.commit(newModifierLine);
 
                     }
 
                 }
 
-                selectedLine.setIsSelected(true);
-                orderLinesDs.commit();
+                dataManager.commit(selectedLine);
 
-                refreshBill();
-
-                orderLinesDs.clear();
-
-                List<OrderLine> lines = dataManager.load(OrderLine.class)
-                        .query("select e from jokerapp$OrderLine e where e.order.id = :currentOrder order by e.position")
-                        .parameter("currentOrder", currentOrder.getId())
-                        .view("order-line-view")
-                        .list();
-
-                for (OrderLine line : lines) {
-
-                    orderLinesDs.includeItem(line);
-
-                }
+                tableItemDs.refresh();
 
                 drawOrderLinesGrid(null, null);
+
+                refreshBill();
 
             }
 
@@ -753,24 +645,19 @@ public class OrderScreen extends AbstractWindow {
 
     public void onAddManualModifierClick() {
 
-        OrderLine lineFounded = null;
+        if (selectedLineId == null) return;
 
-        for (OrderLine line: orderLinesDs.getItems()) {
+        OrderLine founded = null;
 
-            if (line.getIsSelected()) {
+        for (Ticket ticket : ticketsDs.getItems()) for (OrderLine line : ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
 
-                lineFounded = line;
-                break;
-
-            }
-
+            founded = line;
+            break;
         }
 
-        if (lineFounded==null) return;
+        if (founded.getIsModifier()) return;
 
-        OrderLine selectedLine = lineFounded;
-
-        if (selectedLine.getIsModifier()) return;
+        OrderLine selectedLine = founded;
 
         OrderLine newModifierLine = metadata.create(OrderLine.class);
 
@@ -779,9 +666,10 @@ public class OrderScreen extends AbstractWindow {
         ItemManualModifierDialog.CloseHandler handler = new ItemManualModifierDialog.CloseHandler() {
 
             @Override
-            public void onClose(String itemName,BigDecimal itemModifierPrice) {
+            public void onClose(String itemName, BigDecimal itemModifierPrice) {
 
                 if (itemName == null) return;
+
                 newModifierLine.setItemName("  * ".concat(itemName));
                 newModifierLine.setUnitPrice(itemModifierPrice);
                 newModifierLine.setPrice(itemModifierPrice);
@@ -794,63 +682,30 @@ public class OrderScreen extends AbstractWindow {
 
         openWindow("jokerapp$ItemManualModifier.dialog", WindowManager.OpenType.DIALOG, params).addCloseListener(closeString -> {
 
-            if (closeString.equals("ok") && newModifierLine.getItemName() != null ) {
+            if (closeString.equals("ok") && newModifierLine.getItemName() != null) {
 
-                Boolean modifierAlreadyExist = false;
+                newModifierLine.setQuantity(1);
+                newModifierLine.setTaxes(BigDecimal.ZERO);
+                newModifierLine.setTicket(ticketsDs.getItem(currentTicketId));
+                newModifierLine.setPosition(selectedLine.getNextModifierPosition());
+                selectedLine.setNextModifierPosition(selectedLine.getNextModifierPosition() + 1);
+                newModifierLine.setHasModifier(false);
+                selectedLine.setHasModifier(true);
+                newModifierLine.setIsModifier(true);
+                newModifierLine.setItemToModifyId(selectedLine.getId());
+                newModifierLine.setPrinterGroup(selectedLine.getPrinterGroup());
+                newModifierLine.setIsSended(false);
+                newModifierLine.setIsReversed(false);
 
-                for (OrderLine line : orderLinesDs.getItems()) {
+                selectedLine.getTicket().getOrderLines().add(newModifierLine);
 
-                    if ((!line.getItemName().equals(selectedLine.getItemName())) &&
-                            line.getItemName().equals(newModifierLine.getItemName())) {
+                selectedLine.setPrice(selectedLine.getPrice().add(newModifierLine.getUnitPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity()))));
 
-                        line.setQuantity(line.getQuantity()+1);
-                        line.setPrice(line.getPrice().add(newModifierLine.getPrice()));
-                        modifierAlreadyExist = true;
+                dataManager.commit(newModifierLine,selectedLine);
 
-                    }
-
-                }
-
-                if (modifierAlreadyExist == false) {
-
-                    newModifierLine.setQuantity(1);
-                    newModifierLine.setTaxes(BigDecimal.ZERO);
-                    newModifierLine.setOrder(currentOrder);
-                    newModifierLine.setPosition(selectedLine.getNextModifierPosition());
-                    selectedLine.setNextModifierPosition(selectedLine.getNextModifierPosition()+1);
-                    newModifierLine.setHasModifier(false);
-                    selectedLine.setHasModifier(true);
-                    newModifierLine.setIsModifier(true);
-                    newModifierLine.setItemToModifyId(selectedLine.getId());
-                    newModifierLine.setPrinterGroup(selectedLine.getPrinterGroup());
-                    newModifierLine.setIsSended(false);
-                    newModifierLine.setIsSelected(false);
-                    orderLinesDs.addItem(newModifierLine);
-
-                }
-
-                selectedLine.setPrice(selectedLine.getPrice().
-                        add(newModifierLine.getUnitPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity()))));
-
-                selectedLine.setIsSelected(true);
-
-                orderLinesDs.commit();
+                tableItemDs.refresh();
 
                 refreshBill();
-
-                orderLinesDs.clear();
-
-                List<OrderLine> lines = dataManager.load(OrderLine.class)
-                        .query("select e from jokerapp$OrderLine e where e.order.id = :currentOrder order by e.position")
-                        .parameter("currentOrder", currentOrder.getId())
-                        .view("order-line-view")
-                        .list();
-
-                for (OrderLine line : lines) {
-
-                    orderLinesDs.includeItem(line);
-
-                }
 
                 drawOrderLinesGrid(null, null);
 
@@ -862,17 +717,23 @@ public class OrderScreen extends AbstractWindow {
 
     public void onAddBtnClick() {
 
+        if (selectedLineId == null) return;
+
         OrderLine selectedLine = null;
 
-        for (OrderLine line: orderLinesDs.getItems()) if (line.getIsSelected()) { selectedLine = line; break; }
+        for (Ticket ticket: ticketsDs.getItems()) for (OrderLine line : ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
 
-        if (selectedLine == null) return;
+            selectedLine = line;
+            break;
+
+        }
 
         if (selectedLine.getIsModifier()) return;
 
-        if (selectedLine.getIsSended()) {
+        if (selectedLine.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 
-            productItemsDs.refresh();
+            if (productItemsDs.size() == 0) productItemsDs.refresh();
+
             addToOrder(productItemsDs.getItem(selectedLine.getItemId()));
 
         } else {
@@ -880,12 +741,14 @@ public class OrderScreen extends AbstractWindow {
             BigDecimal SingleModifiersPrice = (selectedLine.getPrice().subtract(selectedLine.getUnitPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity())))
                     .divide(BigDecimal.valueOf(selectedLine.getQuantity()), RoundingMode.FLOOR));
 
-            selectedLine.setQuantity(selectedLine.getQuantity()+1);
+            selectedLine.setQuantity(selectedLine.getQuantity() + 1);
             selectedLine.setPrice(selectedLine.getPrice().add(selectedLine.getUnitPrice()).add(SingleModifiersPrice));
 
-            drawOrderLinesGrid(selectedLine, "updated");
+            dataManager.commit(selectedLine);
 
-            orderLinesDs.commit();
+            tableItemDs.refresh();
+
+            drawOrderLinesGrid(selectedLine, "updated");
 
             refreshBill();
 
@@ -895,183 +758,168 @@ public class OrderScreen extends AbstractWindow {
 
     public void onSubtractBtnClick() {
 
-        OrderLine lineFounded = null;
+        if (selectedLineId == null) return;
 
-        for (OrderLine line: orderLinesDs.getItems()) {
+        OrderLine selectedLine = null;
 
-            if (line.getIsSelected()) {
+        for (Ticket ticket : ticketsDs.getItems()) for (OrderLine line : ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
 
-                lineFounded = line;
-                break;
-
-            }
+            selectedLine = line;
+            break;
 
         }
 
-        if (lineFounded == null) return;
+        if (selectedLine.getIsModifier() || !selectedLine.getTicket().getId().equals(currentTicketId)) return;
 
-        OrderLine selectedLine = lineFounded;
+        if (selectedLine.getHasModifier()) if (selectedLine.getQuantity().equals(1)) {
 
-        if (selectedLine.getIsModifier()) return;
+            for (OrderLine line: selectedLine.getTicket().getOrderLines()) if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedLine.getId())) {
 
-        if (selectedLine.getHasModifier()) {
+                dataManager.remove(line);
 
-            if (selectedLine.getQuantity().equals(1)) {
+                tableItemDs.refresh();
 
-                List<OrderLine> toRemove = new ArrayList();
-
-                for (OrderLine line: orderLinesDs.getItems()) {
-
-                    if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedLine.getId())) {
-
-                        toRemove.add(line);
-
-                    }
-                }
-
-                for (OrderLine line : toRemove) {
-
-                    drawOrderLinesGrid(line, "removed");
-                    orderLinesDs.removeItem(line);
-
-                }
-
-                orderLinesDs.removeItem(selectedLine);
-                drawOrderLinesGrid(selectedLine, "removed");
-
-                orderLinesDs.commit();
-
-                refreshBill();
-
-                return;
+                drawOrderLinesGrid(line, "removed");
 
             }
 
-            for (OrderLine line: orderLinesDs.getItems()) {
+            dataManager.remove(selectedLine);
 
-                if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedLine.getId())) {
+            tableItemDs.refresh();
 
-                        selectedLine.setPrice(selectedLine.getPrice().subtract(line.getUnitPrice()));
-
-                }
-
-            }
-
-        }
-
-        if (selectedLine.getQuantity().equals(1)) {
-
-            orderLinesDs.removeItem(selectedLine);
             drawOrderLinesGrid(selectedLine, "removed");
-            orderLinesDs.commit();
 
             refreshBill();
 
-            } else {
+            return;
+
+        }
+
+        for (OrderLine line: selectedLine.getTicket().getOrderLines()) if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedLine.getId()))
+            selectedLine.setPrice(selectedLine.getPrice().subtract(line.getUnitPrice()));
+
+        if (selectedLine.getQuantity().equals(1)) {
+
+            dataManager.remove(selectedLine);
+
+            tableItemDs.refresh();
+
+            drawOrderLinesGrid(selectedLine, "removed");
+
+        } else {
 
             selectedLine.setQuantity(selectedLine.getQuantity() - 1);
             selectedLine.setPrice(selectedLine.getPrice().subtract(selectedLine.getUnitPrice()));
 
+            dataManager.commit(selectedLine);
+
+            tableItemDs.refresh();
+
             drawOrderLinesGrid(selectedLine, "updated");
 
-            orderLinesDs.commit();
-
-            refreshBill();
-
         }
+
+        refreshBill();
 
     }
 
     public void onRemoveBtnClick() {
 
-        int initialSize = orderLinesDs.size();
+        if (selectedLineId == null) return;
 
         OrderLine lineToRemove = null;
+        Ticket lineToRemoveTicket = null;
 
-        for (OrderLine line: orderLinesDs.getItems()) if (line.getIsSelected()) { lineToRemove = line; break; }
+        for (Ticket ticket : ticketsDs.getItems()) for (OrderLine line: ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
 
-        if (lineToRemove != null) {
+            lineToRemove = line;
+            lineToRemoveTicket = line.getTicket();
+            break;
 
-            List<OrderLine> bufferedLinesToRemove = new ArrayList();
+        }
 
-            if (lineToRemove.getIsModifier()) {
+        if (!lineToRemoveTicket.getId().equals(currentTicketId)) {
 
-                OrderLine orderLineModified = orderLinesDs.getItem(lineToRemove.getItemToModifyId());
-                orderLineModified.setPrice(orderLineModified.getPrice().subtract(lineToRemove.getPrice().
-                        multiply(BigDecimal.valueOf(orderLineModified.getQuantity()))));
+            lineToRemove.setPrice(BigDecimal.ZERO);
+            lineToRemove.setIsReversed(true);
 
-                drawOrderLinesGrid(orderLineModified, "updated");
+            dataManager.commit(lineToRemove);
 
-                bufferedLinesToRemove.add(lineToRemove);
+            tableItemDs.refresh();
 
-                Boolean modifiedItemHasMoreModifier = false;
-
-                for (OrderLine line: orderLinesDs.getItems()) {
-
-                    if ((line.getItemToModifyId() != null) && line.getItemToModifyId().equals(orderLineModified.getId()))
-                        if (!bufferedLinesToRemove.contains(line)) modifiedItemHasMoreModifier = true;
-
-                }
-
-                if (!modifiedItemHasMoreModifier) {
-
-                    for (OrderLine line: orderLinesDs.getItems()) {
-
-                        if ((line != orderLineModified) && line.getItemName().equals(orderLineModified.getItemName())) {
-
-                            if (line.getHasModifier()) {
-
-                                orderLineModified.setHasModifier(false);
-
-                            } else {
-
-                                line.setQuantity(line.getQuantity() + orderLineModified.getQuantity());
-                                line.setPrice(line.getPrice().add(orderLineModified.getPrice()));
-
-                                drawOrderLinesGrid(line, "updated");
-
-                                bufferedLinesToRemove.add(orderLineModified);
-
-                            }
-
-
-                        }
-
-                    }
-
-                }
-
-            } else if (lineToRemove.getHasModifier()) {
-
-                for (OrderLine line: orderLinesDs.getItems()) {
-
-                    if ((line.getItemToModifyId() != null) && line.getItemToModifyId().equals(lineToRemove.getId()))
-                        bufferedLinesToRemove.add(line);
-
-                }
-
-                bufferedLinesToRemove.add(lineToRemove);
-
-            } else bufferedLinesToRemove.add(lineToRemove);
-
-            for (int i=0; i< (initialSize-orderLinesDs.size()); i++) {
-
-                if (orderLinesDs.size() < orderLinesBegin + 14 && orderLinesBegin > 1) orderLinesBegin -= 1;
-                if (orderLinesBegin==1) break;
-
-            }
-
-            for (OrderLine line : bufferedLinesToRemove) { orderLinesDs.removeItem(line); drawOrderLinesGrid(line, "removed"); }
-
-            orderLinesDs.commit();
+            drawOrderLinesGrid(lineToRemove,"updated");
 
             refreshBill();
 
         } else {
 
-            showOptionDialog("warning", "Please select an item to remove",MessageType.WARNING,
-                    new Action[] {
-                            new DialogAction(DialogAction.Type.OK)});
+            if (lineToRemove.getIsModifier()) {
+
+                OrderLine orderLineModified = null;
+
+                for (OrderLine line: lineToRemoveTicket.getOrderLines()) if (line.getId().equals(lineToRemove.getItemToModifyId())) { orderLineModified = line; break; }
+
+                orderLineModified.setPrice(orderLineModified.getPrice().subtract(lineToRemove.getPrice().multiply(BigDecimal.valueOf(orderLineModified.getQuantity()))));
+
+                dataManager.remove(lineToRemove);
+
+                tableItemDs.refresh();
+
+                drawOrderLinesGrid(lineToRemove, "removed");
+
+                Boolean modifiedItemHasMoreModifier = false;
+
+                for (OrderLine line: lineToRemoveTicket.getOrderLines()) if (line != lineToRemove && (line.getItemToModifyId() != null) && line.getItemToModifyId().equals(orderLineModified.getId()))
+                    modifiedItemHasMoreModifier = true;
+
+                if (!modifiedItemHasMoreModifier) {
+
+                    for (OrderLine line: lineToRemoveTicket.getOrderLines()) if ((line != orderLineModified) && line.getItemId().equals(orderLineModified.getItemId())) if (!line.getHasModifier()) {
+
+                        line.setQuantity(line.getQuantity() + orderLineModified.getQuantity());
+                        line.setPrice(line.getPrice().add(orderLineModified.getPrice()));
+
+                        dataManager.commit(line);
+
+                        dataManager.remove(orderLineModified);
+
+                        tableItemDs.refresh();
+
+                        drawOrderLinesGrid(orderLineModified, "removed");
+
+                        drawOrderLinesGrid(line, "updated");
+
+                        break;
+
+                    } else { orderLineModified.setHasModifier(false); dataManager.commit(orderLineModified); tableItemDs.refresh(); drawOrderLinesGrid(orderLineModified, "updated"); }
+
+                }
+
+                refreshBill();
+
+                return;
+
+            } else if (lineToRemove.getHasModifier()) {
+
+                for (OrderLine line: lineToRemoveTicket.getOrderLines()) if ((line.getItemToModifyId() != null) && line.getItemToModifyId().equals(lineToRemove.getId())) {
+
+                    dataManager.remove(line);
+
+                    tableItemDs.refresh();
+
+                    drawOrderLinesGrid(line, "removed");
+
+                }
+
+            }
+
+            dataManager.remove(lineToRemove);
+
+            tableItemDs.refresh();
+
+            drawOrderLinesGrid(lineToRemove, "removed");
+
+            refreshBill();
 
         }
 
@@ -1081,130 +929,28 @@ public class OrderScreen extends AbstractWindow {
 
         subTotal = BigDecimal.ZERO;
 
-        for (OrderLine line : orderLinesDs.getItems()) {
+        for (Ticket ticket: ticketsDs.getItems()) for (OrderLine line: ticket.getOrderLines()) if (!line.getIsModifier()) subTotal = subTotal.add(line.getPrice());
 
-            if (line.getOrder().getId().equals(currentOrder.getId())) {
-
-                if (!line.getIsModifier()) subTotal = subTotal.add(line.getPrice());
-
-            }
-
-        }
+        tableItemDs.getItem().getCurrentOrder().setCharge(subTotal);
 
         subtotalField.setValue(subTotal.toString().concat(" €"));
 
-        if (currentOrder.getWithService()) {
+        if (tableItemDs.getItem().getCurrentOrder().getWithService()) {
 
             service = BigDecimal.valueOf(Math.round(subTotal.multiply(BigDecimal.valueOf(0.1)).subtract(BigDecimal.valueOf(0.2)).
                     multiply(BigDecimal.valueOf(2)).doubleValue()) / 2.0f).setScale(2);
 
+            tableItemDs.getItem().getCurrentOrder().setTaxes(service);
+
             total = subTotal.add(service);
 
             serviceField.setValue(service.toString().concat(" €"));
+
             totalField.setValue(total.toString().concat(" €"));
 
         } else totalField.setValue(subTotal.toString().concat(" €"));
 
-        currentOrder = dataManager.load(Order.class)
-                .query("select e from jokerapp$Order e where e.id = :currentOrder")
-                .parameter("currentOrder", table.getCurrentOrder())
-                .view("order-view")
-                .one();
-
-        currentOrder.setCharge(subTotal);
-        if (currentOrder.getWithService()) currentOrder.setTaxes(service);
-
-        dataManager.commit(currentOrder);
-
-    }
-
-    public void onCategoriesBackBtnClick() {
-
-        categoriesGrid.removeAll();
-
-        categoriesActualPage--;
-
-        if (categoriesActualPage>1) {
-
-            categoriesBackBtn.setVisible(true);
-            categoriesNextBtn.setVisible(true);
-            drawProductCategories((categoriesActualPage-1)*10, ((categoriesActualPage-1)*10)+9);
-
-        } else {
-
-            categoriesActualPage = 1;
-            categoriesBackBtn.setVisible(false);
-            categoriesNextBtn.setVisible(true);
-            drawProductCategories(0, 9);
-
-        }
-
-    }
-
-    public void onCategoriesNextBtnClick() {
-
-        categoriesGrid.removeAll();
-
-        categoriesActualPage++;
-
-        if (categoriesActualPage>1 && categoriesActualPage<categoriesPages) {
-
-            categoriesBackBtn.setVisible(true);
-            categoriesNextBtn.setVisible(true);
-            drawProductCategories((categoriesActualPage-1)*10, ((categoriesActualPage-1)*10)+9);
-
-        } else {
-
-            categoriesBackBtn.setVisible(true);
-            categoriesNextBtn.setVisible(false);
-            drawProductCategories((categoriesActualPage-1)*10, categorySize-1);
-
-        }
-
-    }
-
-    public void onItemsBackBtnClick() {
-
-        itemsGrid.removeAll();
-
-        productItemsActualPage--;
-
-        if (productItemsActualPage>1) {
-
-            itemsBackBtn.setVisible(true);
-            itemsNextBtn.setVisible(true);
-            DrawProductItems((productItemsActualPage-1)*20, ((productItemsActualPage-1)*20)+19);
-
-        } else {
-
-            productItemsActualPage = 1;
-            itemsBackBtn.setVisible(false);
-            itemsNextBtn.setVisible(true);
-            DrawProductItems(0, 19);
-
-        }
-
-    }
-
-    public void onItemsNextBtnClick() {
-
-        itemsGrid.removeAll();
-
-        productItemsActualPage++;
-
-        if (productItemsActualPage>1 && productItemsActualPage<productItemsPages) {
-
-            itemsBackBtn.setVisible(true);
-            itemsNextBtn.setVisible(true);
-            DrawProductItems((productItemsActualPage-1)*20, ((productItemsActualPage-1)*20)+19);
-
-        } else {
-
-            itemsBackBtn.setVisible(true);
-            itemsNextBtn.setVisible(false);
-            DrawProductItems((productItemsActualPage-1)*20, productItemSize-1);
-
-        }
+        dataManager.commit(tableItemDs.getItem().getCurrentOrder());
 
     }
 
@@ -1212,22 +958,16 @@ public class OrderScreen extends AbstractWindow {
 
         OrderLine lineFounded = null;
 
-        for (OrderLine line: orderLinesDs.getItems()) {
+        for (Ticket ticket: ticketsDs.getItems()) for (OrderLine line: ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
 
-            if (line.getIsSelected()) {
-
-                lineFounded = line;
-                break;
-
-            }
+            lineFounded = line;
+            break;
 
         }
 
-        if (lineFounded==null) return;
+        if (lineFounded == null || lineFounded.getIsModifier()) return;
 
         OrderLine selectedLine = lineFounded;
-
-        if (selectedLine.getIsModifier()) return;
 
         Map<String, Object> params = new HashMap<>();
 
@@ -1238,29 +978,22 @@ public class OrderScreen extends AbstractWindow {
 
                 params.put("newPrice", newPrice);
 
-                }
-            };
+            }
+        };
 
         params.put("handler", handler);
         openWindow("jokerapp$itemPriceManualModifier.dialog", WindowManager.OpenType.DIALOG, params).addCloseListener(closeString -> {
 
             if (closeString.equals("ok")) {
 
-                BigDecimal newPrice = (BigDecimal)params.get("newPrice");
+                BigDecimal newPrice = (BigDecimal) params.get("newPrice");
 
                 if (selectedLine.getHasModifier()) {
 
                     BigDecimal modifierPrice = new BigDecimal(0);
 
-                    for (OrderLine line : orderLinesDs.getItems()) {
-
-                        if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedLine.getId())) {
-
-                            modifierPrice = modifierPrice.add(line.getUnitPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity())));
-
-                        }
-
-                    }
+                    for (Ticket ticket: ticketsDs.getItems()) for (OrderLine line: ticket.getOrderLines()) if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedLine.getId()))
+                        modifierPrice = modifierPrice.add(line.getUnitPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity())));
 
                     try {
 
@@ -1273,9 +1006,14 @@ public class OrderScreen extends AbstractWindow {
 
                     }
 
+                } else {
+
+                    selectedLine.setUnitPrice(newPrice.divide(BigDecimal.valueOf(selectedLine.getQuantity())));
+                    selectedLine.setPrice(newPrice);
+
                 }
 
-                orderLinesDs.commit();
+                dataManager.commit(selectedLine);
 
                 drawOrderLinesGrid(null, null);
 
@@ -1287,119 +1025,106 @@ public class OrderScreen extends AbstractWindow {
 
     }
 
-    private void drawOrderLinesGrid (OrderLine lineToProcess, String operationPerformed) {
+    private void drawOrderLinesGrid(OrderLine lineToProcess, String operationPerformed) {
 
-        if (!clientIsTablet) {
+        if (lineToProcess != null) {
 
-            orderLineScrollBox.removeAll();
+            if (operationPerformed.equals("added")) {
 
-            if (orderLinesBegin == 1) orderLinesScrollUp.setVisible(false);
-            else orderLinesScrollUp.setVisible(true);
-            if (orderLinesDs.size()-orderLinesBegin<=14) orderLinesScrollDown.setVisible(false);
-            else orderLinesScrollDown.setVisible(true);
+                HBoxLayout hBoxToAdd = createOrderLineHBox(lineToProcess);
+                orderLineScrollBox.add(hBoxToAdd);
 
-            int index = 1;
+                if (selectedLineId != null) {
 
-            for (OrderLine orderLine : orderLinesDs.getItems()) {
+                    for (Ticket ticket : ticketsDs.getItems()) for (OrderLine orderLine: ticket.getOrderLines()) if (orderLine.getId().equals(selectedLineId)) {
 
-                if (index>=orderLinesBegin && index<=orderLinesBegin+14) orderLineScrollBox.add(createOrderLineHBox(orderLine));
-                setOrderLineStyle(orderLine, orderLineScrollBox);
+                        selectedLineId = lineToProcess.getId();
+                        setOrderLineStyle(orderLine, orderLineScrollBox);
 
-                index+=1;
+                    }
+
+                } else selectedLineId = lineToProcess.getId();
+
+                setOrderLineStyle(lineToProcess, orderLineScrollBox);
+
+                orderLineScrollBox.getComponent("itemName".concat(lineToProcess.getId().toString())).requestFocus();
+
+                return;
+
+            }
+
+            if (operationPerformed.equals("removed")) {
+
+                HBoxLayout hBoxToRemove = (HBoxLayout) orderLineScrollBox.getOwnComponent("hBoxLayout".concat(lineToProcess.getId().toString()));
+
+                int index = orderLineScrollBox.indexOf(hBoxToRemove);
+
+                orderLineScrollBox.remove(hBoxToRemove);
+
+                if (orderLineScrollBox.getOwnComponents().size() == 0) {
+
+                    selectedLineId = null;
+
+                    return;
+
+                }
+
+                if (index == orderLineScrollBox.getOwnComponents().size()) index--;
+
+                HBoxLayout hBoxToSelect = (HBoxLayout) orderLineScrollBox.getComponent(index);
+
+                for (Ticket ticket: ticketsDs.getItems()) for (OrderLine orderLine: ticket.getOrderLines()) if (orderLine.getId().equals(UUID.fromString(hBoxToSelect.getId().substring(10)))) {
+
+                    if (!lineToProcess.getId().equals(selectedLineId)) {
+
+                        for (Ticket tkt: ticketsDs.getItems()) for (OrderLine line: tkt.getOrderLines()) if (orderLine.getId().equals(selectedLineId)) {
+
+                            selectedLineId = orderLine.getId();
+
+                            setOrderLineStyle(line, orderLineScrollBox);
+
+                        }
+
+                    } else selectedLineId = orderLine.getId();
+
+                    setOrderLineStyle(orderLine, orderLineScrollBox);
+                    return;
+
+                }
+
+            }
+
+            if (operationPerformed.equals("updated")) {
+
+                Label quantityToChange = (Label) orderLineScrollBox.getComponent("quantity".concat(lineToProcess.getId().toString()));
+                quantityToChange.setValue(lineToProcess.getQuantity());
+
+                Button itemNameToChange = (Button) orderLineScrollBox.getComponent("itemName".concat(lineToProcess.getId().toString()));
+                itemNameToChange.requestFocus();
+
+                Label priceToChange = (Label) orderLineScrollBox.getComponent("price".concat(lineToProcess.getId().toString()));
+                priceToChange.setValue(lineToProcess.getPrice());
+
+                if (!lineToProcess.getId().equals(selectedLineId)) for (Ticket ticket: ticketsDs.getItems()) for (OrderLine orderLine: ticket.getOrderLines()) if (orderLine.getId().equals(selectedLineId)) {
+
+                    selectedLineId = lineToProcess.getId();
+                    setOrderLineStyle(orderLine, orderLineScrollBox);
+
+                }
+
+                setOrderLineStyle(lineToProcess, orderLineScrollBox);
 
             }
 
         } else {
 
-            if (lineToProcess != null) {
+            orderLineScrollBox.removeAll();
 
-                if (operationPerformed.equals("added")) {
+            for (Ticket ticket: ticketsDs.getItems()) {
 
-                    HBoxLayout hBoxToAdd = createOrderLineHBox(lineToProcess);
-                    orderLineScrollBox.add(hBoxToAdd);
+                ticket.getOrderLines().sort(Comparator.comparing(OrderLine::getPosition));
 
-                    for (OrderLine line: orderLinesDs.getItems()) {
-
-                        if (line.getIsSelected()) {
-
-                            line.setIsSelected(false);
-                            setOrderLineStyle(line, orderLineScrollBox);
-                            break;
-
-                        }
-                    }
-
-                    lineToProcess.setIsSelected(true);
-                    setOrderLineStyle(lineToProcess, orderLineScrollBox);
-                    orderLineScrollBox.getComponent("itemName".concat(lineToProcess.getId().toString())).requestFocus();
-                    return;
-
-                }
-
-                if (operationPerformed.equals("removed")) {
-
-                    HBoxLayout hBoxToRemove = (HBoxLayout) orderLineScrollBox.getOwnComponent("hBoxLayout".concat(lineToProcess.getId().toString()));
-
-                    int index = orderLineScrollBox.indexOf(hBoxToRemove);
-
-                    orderLineScrollBox.remove(hBoxToRemove);
-
-                    if (orderLineScrollBox.getOwnComponents().size()==0) return;
-
-                    if (index==orderLineScrollBox.getOwnComponents().size()) index--;
-
-                    if (!lineToProcess.getIsModifier()) {
-
-                        HBoxLayout hBoxToSelect = (HBoxLayout) orderLineScrollBox.getComponent(index);
-                        OrderLine newLineToSelect = orderLinesDs.getItem(UUID.fromString(hBoxToSelect.getId().substring(10)));
-                        newLineToSelect.setIsSelected(true);
-                        setOrderLineStyle(newLineToSelect, orderLineScrollBox);
-
-                    }
-
-                    return;
-
-                }
-
-                if (operationPerformed.equals("updated")) {
-
-                    Label quantityToChange = (Label) orderLineScrollBox.getComponent("quantity".concat(lineToProcess.getId().toString()));
-                    quantityToChange.setValue(lineToProcess.getQuantity());
-
-                    Button itemNameToChange = (Button) orderLineScrollBox.getComponent("itemName".concat(lineToProcess.getId().toString()));
-                    itemNameToChange.requestFocus();
-
-                    Label priceToChange = (Label) orderLineScrollBox.getComponent("price".concat(lineToProcess.getId().toString()));
-                    priceToChange.setValue(lineToProcess.getPrice());
-
-                    for (OrderLine line: orderLinesDs.getItems()) {
-
-                        if (line.getIsSelected()) {
-
-                            line.setIsSelected(false);
-                            setOrderLineStyle(line, orderLineScrollBox);
-                            break;
-
-                        }
-                    }
-
-                    lineToProcess.setIsSelected(true);
-                    setOrderLineStyle(lineToProcess, orderLineScrollBox);
-
-                    return;
-
-                }
-
-            }
-
-             else {
-
-                orderLineScrollBox.removeAll();
-
-                orderLinesScrollUp.setVisible(false);
-                orderLinesScrollDown.setVisible(false);
-
-                for (OrderLine orderLine : orderLinesDs.getItems()) {
+                for (OrderLine orderLine: ticket.getOrderLines()) {
 
                     orderLineScrollBox.add(createOrderLineHBox(orderLine));
                     setOrderLineStyle(orderLine, orderLineScrollBox);
@@ -1412,36 +1137,19 @@ public class OrderScreen extends AbstractWindow {
 
     }
 
-    public void onOrderLinesScrollUpClick() {
-
-        orderLinesBegin -=1;
-
-        drawOrderLinesGrid(null, null);
-
-    }
-
-    public void onOrderLinesScrollDownClick() {
-
-        orderLinesBegin +=1;
-
-        drawOrderLinesGrid(null, null);
-
-    }
-
     public void onSendAndCloseBtnClick() {
 
-        if (!doNotPrint) printTickets();
+        if (ticketsDs.getItem(currentTicketId) != null && !doNotPrint) {
 
-        for (OrderLine orderLine : orderLinesDs.getItems()) {
+            printTicket(ticketsDs.getItem(currentTicketId));
 
-            orderLine.setIsSended(true);
-            orderLine.setIsSelected(false);
+            ticketsDs.getItem(currentTicketId).setTicketStatus(TicketStatus.sended);
+            dataManager.commit(ticketsDs.getItem(currentTicketId));
 
         }
 
-        table.setChecked(false);
-        dataManager.commit(table);
-        orderLinesDs.commit();
+        tableItemDs.getItem().setChecked(false);
+        tableItemDs.commit();
 
         getWindowManager().close(this);
         openWindow("tableselect", WindowManager.OpenType.THIS_TAB);
@@ -1450,40 +1158,42 @@ public class OrderScreen extends AbstractWindow {
 
     public void onSendBtnClick() {
 
-        if (!doNotPrint) printTickets();
+        if (ticketsDs.getItem(currentTicketId) == null) return;
 
-        for (OrderLine orderLine : orderLinesDs.getItems()) {
+        if (!doNotPrint) printTicket(ticketsDs.getItem(currentTicketId));
 
-            orderLine.setIsSended(true);
+        ticketsDs.getItem(currentTicketId).setTicketStatus(TicketStatus.sended);
 
-        }
+        dataManager.commit(ticketsDs.getItem(currentTicketId));
+
+        tableItemDs.refresh();
 
         drawOrderLinesGrid(null, null);
 
-        orderLinesDs.commit();
-
+        currentTicketId = null;
 
     }
 
     public void onReSendBtnClick() {
 
-        for (OrderLine orderLine : orderLinesDs.getItems()) {
+        for (Ticket ticket : ticketsDs.getItems()) {
 
-            orderLine.setIsSended(false);
+            if (!doNotPrint) printTicket(ticket);
+
+            if (ticket.getTicketStatus().equals(TicketStatus.notSended)) {
+
+                ticket.setTicketStatus(TicketStatus.sended);
+                dataManager.commit(ticket);
+
+            }
 
         }
 
-        if (!doNotPrint) printTickets();
-
-        for (OrderLine orderLine : orderLinesDs.getItems()) {
-
-            orderLine.setIsSended(true);
-
-        }
+        tableItemDs.refresh();
 
         drawOrderLinesGrid(null, null);
 
-        orderLinesDs.commit();
+        currentTicketId = null;
 
     }
 
@@ -1495,7 +1205,7 @@ public class OrderScreen extends AbstractWindow {
 
         if (printServices[0] != null) {
 
-            MediaPrintableArea mpa = new MediaPrintableArea(1,1,74,2000,MediaPrintableArea.MM);
+            MediaPrintableArea mpa = new MediaPrintableArea(1, 1, 74, 2000, MediaPrintableArea.MM);
 
             PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
             printRequestAttributeSet.add(MediaSizeName.ISO_A0);
@@ -1523,18 +1233,11 @@ public class OrderScreen extends AbstractWindow {
 
         }
 
-        currentOrder = dataManager.load(Order.class)
-                .query("select e from jokerapp$Order e where e.id = :currentOrder")
-                .parameter("currentOrder", table.getCurrentOrder())
-                .view("order-view")
-                .one();
+        tableItemDs.getItem().getCurrentOrder().setStatus(OrderStatus.bill);
+        tableItemDs.getItem().setChecked(false);
+        dataManager.commit(tableItemDs.getItem().getCurrentOrder());
+        tableItemDs.commit();
 
-        currentOrder.setStatus(OrderStatus.bill);
-
-        dataManager.commit(currentOrder);
-
-        table.setChecked(false);
-        dataManager.commit(table);
         getWindowManager().close(this);
         openWindow("tableselect", WindowManager.OpenType.THIS_TAB);
 
@@ -1552,13 +1255,13 @@ public class OrderScreen extends AbstractWindow {
                 Font font3 = new Font("ZapfDingbats", Font.BOLD, 11);
 
                 int x;
-                int xMin = (int) pageFormat.getImageableX()+1;
+                int xMin = (int) pageFormat.getImageableX() + 1;
                 int y = 20;
                 int paperWidth = (int) pageFormat.getImageableWidth();
 
-                int yInc1 = font1.getSize()/2;
-                int yInc2 = font1.getSize()/2;
-                int yInc3 = font1.getSize()/2;
+                int yInc1 = font1.getSize() / 2;
+                int yInc2 = font1.getSize() / 2;
+                int yInc3 = font1.getSize() / 2;
 
                 Graphics2D graphics2D = (Graphics2D) graphics;
 
@@ -1568,107 +1271,101 @@ public class OrderScreen extends AbstractWindow {
 
                     bufferedImage = ImageIO.read(new File("/home/joker/Desktop/logo3.jpg"));
 
-                } catch (Exception e) { System.err.println(e); }
+                } catch (Exception e) {
+                    System.err.println(e);
+                }
 
                 graphics2D.drawImage(bufferedImage, null, 30, -10);
 
                 y += 60;
                 graphics2D.setFont(font2);
-                graphics2D.drawString("PRECONTO TAVOLO: ".concat(currentOrder.getTableItemCaption().toString()), xMin, y);
+                graphics2D.drawString("PRECONTO TAVOLO: ".concat(tableItemDs.getItem().getCurrentOrder().getTableItemCaption()), xMin, y);
                 y += 20;
 
                 graphics2D.drawLine(xMin, y, paperWidth, y);
 
-                y = y + 2*yInc2;
+                y = y + 2 * yInc2;
 
-                for (OrderLine line : orderLinesDs.getItems()) {
+                for (Ticket ticket : ticketsDs.getItems()) for (OrderLine line : ticket.getOrderLines()) if (line.getTicket().getOrder().equals(tableItemDs.getItem().getCurrentOrder())) {
 
-                    if (line.getOrder().equals(currentOrder)) {
+                    if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
-                        if (!line.getIsModifier()) {
+                    Integer linesToDraw = Math.round(line.getItemName().length() / 24) + 1;
 
-                            graphics2D.drawString(line.getQuantity().toString(),xMin, y);
+                    String stringToDraw = "";
 
-                        }
+                    int spacePosition = 0;
+                    int currentSpacePosition = 0;
 
-                        Integer linesToDraw = Math.round(line.getItemName().length()/24) + 1 ;
+                    for (int l = 1; l < linesToDraw; l++) {
 
-                        String stringToDraw = "";
+                        String lineName = line.getItemName();
 
-                        int spacePosition = 0;
-                        int currentSpacePosition = 0;
+                        for (int i = spacePosition; i < line.getItemName().length(); i++) {
 
-                        for (int l=1; l<linesToDraw; l++) {
+                            Character c = lineName.charAt(i);
 
-                            String lineName = line.getItemName();
+                            if (Character.isWhitespace(c)) {
 
-                            for (int i = spacePosition; i<line.getItemName().length(); i++) {
+                                if (i > 24 * l) break;
 
-                                Character c = lineName.charAt(i);
-
-                                if (Character.isSpace(c)) {
-
-                                    if (i > 24*l) break;
-
-                                    spacePosition = i;
-
-                                }
+                                spacePosition = i;
 
                             }
 
-                            graphics2D.drawString(lineName.substring(currentSpacePosition, spacePosition),xMin+font2.getSize(), y);
-
-                            currentSpacePosition = spacePosition;
-
-                            if (l==1 && !line.getIsModifier()) {
-
-                                x = paperWidth - Math.multiplyExact(line.getPrice().toString().length(), font2.getSize() - 3);
-                                graphics2D.drawString(line.getPrice().toString(), x, y);
-
-                            }
-
-                            y = y + yInc2 + 1;
-
                         }
 
-                        graphics2D.drawString(line.getItemName().substring(currentSpacePosition),xMin+font2.getSize(), y);
+                        graphics2D.drawString(lineName.substring(currentSpacePosition, spacePosition), xMin + font2.getSize(), y);
 
-                        if (currentSpacePosition == 0 && !line.getIsModifier()) {
+                        currentSpacePosition = spacePosition;
+
+                        if (l == 1 && !line.getIsModifier()) {
 
                             x = paperWidth - Math.multiplyExact(line.getPrice().toString().length(), font2.getSize() - 3);
                             graphics2D.drawString(line.getPrice().toString(), x, y);
 
                         }
 
-                        y = y + yInc2 + 4;
+                        y = y + yInc2 + 1;
 
                     }
+
+                    graphics2D.drawString(line.getItemName().substring(currentSpacePosition), xMin + font2.getSize(), y);
+
+                    if (currentSpacePosition == 0 && !line.getIsModifier()) {
+
+                        x = paperWidth - Math.multiplyExact(line.getPrice().toString().length(), font2.getSize() - 3);
+                        graphics2D.drawString(line.getPrice().toString(), x, y);
+
+                    }
+
+                    y = y + yInc2 + 4;
 
                 }
 
                 graphics2D.drawLine(xMin, y, paperWidth, y);
-                y = y + 2*yInc2;
+                y = y + 2 * yInc2;
                 graphics2D.setFont(font3);
                 graphics2D.drawString("SUBTOTALE", xMin, y);
-                x = paperWidth - Math.multiplyExact(currentOrder.getCharge().toString().length(), font3.getSize()-3);
-                graphics2D.drawString(currentOrder.getCharge().toString(), x, y);
-                y = y + yInc3 +3;
+                x = paperWidth - Math.multiplyExact(tableItemDs.getItem().getCurrentOrder().getCharge().toString().length(), font3.getSize() - 3);
+                graphics2D.drawString(tableItemDs.getItem().getCurrentOrder().getCharge().toString(), x, y);
+                y = y + yInc3 + 3;
                 graphics2D.drawString("SERVIZIO", xMin, y);
-                x = paperWidth - Math.multiplyExact(currentOrder.getTaxes().toString().length(), font3.getSize()-3);
-                graphics2D.drawString(currentOrder.getTaxes().toString(), x, y);
-                y = y + yInc3 +20;
+                x = paperWidth - Math.multiplyExact(tableItemDs.getItem().getCurrentOrder().getTaxes().toString().length(), font3.getSize() - 3);
+                graphics2D.drawString(tableItemDs.getItem().getCurrentOrder().getTaxes().toString(), x, y);
+                y = y + yInc3 + 20;
 
                 graphics2D.setFont(font1);
 
                 graphics2D.drawString("TOTALE", xMin, y);
-                x = paperWidth -4 - Math.multiplyExact(currentOrder.getCharge().add(currentOrder.getTaxes()).toString().length(), font1.getSize()-7);
-                graphics2D.drawString(currentOrder.getCharge().add(currentOrder.getTaxes()).toString(), x, y);
-                y = y + yInc3 +10;
+                x = paperWidth - 4 - Math.multiplyExact(tableItemDs.getItem().getCurrentOrder().getCharge().add(tableItemDs.getItem().getCurrentOrder().getTaxes()).toString().length(), font1.getSize() - 7);
+                graphics2D.drawString(tableItemDs.getItem().getCurrentOrder().getCharge().add(tableItemDs.getItem().getCurrentOrder().getTaxes()).toString(), x, y);
+                y = y + yInc3 + 10;
 
                 graphics2D.setFont(font2);
 
-                graphics2D.drawString("Coperti: ".concat(currentOrder.getActualSeats().toString()), xMin, y);
-                y = y + 2*yInc3;
+                graphics2D.drawString("Coperti: ".concat(tableItemDs.getItem().getCurrentOrder().getActualSeats().toString()), xMin, y);
+                y = y + 2 * yInc3;
                 graphics2D.setFont(font2);
                 graphics2D.drawString("NON FISCALE", 60, y);
 
@@ -1681,7 +1378,7 @@ public class OrderScreen extends AbstractWindow {
 
     }
 
-    private void printTickets() {
+    private void printTicket(Ticket ticketToPrint) {
 
         withFries = false;
         isGrillTicket = false;
@@ -1692,12 +1389,8 @@ public class OrderScreen extends AbstractWindow {
 
             Boolean printerGroupLinesExixts = false;
 
-            for (OrderLine line : orderLinesDs.getItems()) {
-
-                if (line.getOrder().equals(currentOrder) && line.getPrinterGroup().equals(printerGroupToSendTicket) && !line.getIsSended())
-                    printerGroupLinesExixts = true;
-
-            }
+            for (OrderLine line : ticketToPrint.getOrderLines())
+                if (line.getPrinterGroup().equals(printerGroupToSendTicket)) printerGroupLinesExixts = true;
 
             if (printerGroupToSendTicket.equals("Fryer") && printerGroupLinesExixts) withFries = true;
             if (printerGroupToSendTicket.equals("Grill")) isGrillTicket = true;
@@ -1710,7 +1403,7 @@ public class OrderScreen extends AbstractWindow {
 
                 if (printServices[0] != null) {
 
-                    MediaPrintableArea mpa = new MediaPrintableArea(1,1,74,2000,MediaPrintableArea.MM);
+                    MediaPrintableArea mpa = new MediaPrintableArea(1, 1, 74, 2000, MediaPrintableArea.MM);
 
                     PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
                     printRequestAttributeSet.add(MediaSizeName.ISO_A0);
@@ -1721,10 +1414,11 @@ public class OrderScreen extends AbstractWindow {
 
                     docAttributeSet.add(mpa);
 
-                    Ticket ticket = new Ticket();
+                    PrinterTicket printerticket = new PrinterTicket();
+                    printerticket.setTicketToPrint(ticketToPrint);
 
                     DocPrintJob docPrintJob = printServices[0].createPrintJob();
-                    SimpleDoc doc1 = new SimpleDoc(ticket, flavor, docAttributeSet);
+                    SimpleDoc doc1 = new SimpleDoc(printerticket, flavor, docAttributeSet);
 
                     try {
 
@@ -1744,7 +1438,9 @@ public class OrderScreen extends AbstractWindow {
 
     }
 
-    class Ticket implements Printable {
+    class PrinterTicket implements Printable {
+
+        private Ticket ticket;
 
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -1755,7 +1451,7 @@ public class OrderScreen extends AbstractWindow {
                 Font font2 = new Font("ZapfDingbats", Font.PLAIN, 14);
                 Font font3 = new Font("ZapfDingbats", Font.BOLD, 12);
 
-                int xMin = (int) pageFormat.getImageableX()+1;
+                int xMin = (int) pageFormat.getImageableX() + 1;
                 int y = 20;
 
                 int yInc = 12;
@@ -1763,12 +1459,12 @@ public class OrderScreen extends AbstractWindow {
 
                 Graphics2D graphics2D = (Graphics2D) graphics;
                 graphics2D.setFont(font1);
-                graphics2D.drawString(printerGroupToSendTicket.toUpperCase(), xMin+70, y);
+                graphics2D.drawString(printerGroupToSendTicket.toUpperCase(), xMin + 70, y);
                 y += 30;
-                graphics2D.drawString("TAVOLO: ".concat(table.getTableCaption()), xMin, y);
+                graphics2D.drawString("TAVOLO: ".concat(tableItemDs.getItem().getTableCaption()), xMin, y);
                 y += 30;
                 graphics2D.setFont(font3);
-                graphics2D.drawString("Coperti: ".concat(currentOrder.getActualSeats().toString()), xMin, y);
+                graphics2D.drawString("Coperti: ".concat(tableItemDs.getItem().getCurrentOrder().getActualSeats().toString()), xMin, y);
                 y += 20;
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
@@ -1777,35 +1473,35 @@ public class OrderScreen extends AbstractWindow {
 
                 if (isGrillTicket && !withFries) {
 
-                    graphics2D.drawString("NO FRITTURE", xMin+10, y);
+                    graphics2D.drawString("NO FRITTURE", xMin + 10, y);
                     y += 30;
 
                 }
 
                 graphics2D.setFont(font2);
 
-                for (OrderLine line : orderLinesDs.getItems()) {
+                for (OrderLine line : ticket.getOrderLines()) {
 
-                    if (line.getOrder().equals(currentOrder) && line.getPrinterGroup().equals(printerGroupToSendTicket) && !line.getIsSended()) {
+                    if (line.getPrinterGroup().equals(printerGroupToSendTicket) && line.getTicket().getTicketStatus().equals(TicketStatus.notSended)) {
 
-                        if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(),xMin, y);
+                        if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
-                        Integer linesToDraw = Math.round(line.getItemName().length()/20) + 1 ;
+                        Integer linesToDraw = Math.round(line.getItemName().length() / 20) + 1;
 
                         int spacePosition = 0;
                         int currentSpacePosition = 0;
 
-                        for (int l=1; l<linesToDraw; l++) {
+                        for (int l = 1; l < linesToDraw; l++) {
 
                             String lineName = line.getItemName();
 
-                            for (int i = spacePosition; i<line.getItemName().length(); i++) {
+                            for (int i = spacePosition; i < line.getItemName().length(); i++) {
 
                                 Character c = lineName.charAt(i);
 
                                 if (Character.isSpace(c)) {
 
-                                    if (i > 20*l) break;
+                                    if (i > 20 * l) break;
 
                                     spacePosition = i;
 
@@ -1813,7 +1509,7 @@ public class OrderScreen extends AbstractWindow {
 
                             }
 
-                            graphics2D.drawString(lineName.substring(currentSpacePosition, spacePosition),xMin+font2.getSize(), y);
+                            graphics2D.drawString(lineName.substring(currentSpacePosition, spacePosition), xMin + font2.getSize(), y);
 
                             currentSpacePosition = spacePosition;
 
@@ -1821,7 +1517,7 @@ public class OrderScreen extends AbstractWindow {
 
                         }
 
-                        graphics2D.drawString(line.getItemName().substring(currentSpacePosition),xMin+font2.getSize(), y);
+                        graphics2D.drawString(line.getItemName().substring(currentSpacePosition), xMin + font2.getSize(), y);
 
                         y = y + yInc + 8;
 
@@ -1835,6 +1531,12 @@ public class OrderScreen extends AbstractWindow {
             }
 
             return Printable.NO_SUCH_PAGE;
+
+        }
+
+        public void setTicketToPrint(Ticket ticketToPrint) {
+
+            ticket = ticketToPrint;
 
         }
 
@@ -1859,24 +1561,17 @@ public class OrderScreen extends AbstractWindow {
 
     public void onCloseBtnClick() {
 
-        for (OrderLine orderLine : orderLinesDs.getItems()) {
-
-            orderLine.setIsSelected(false);
-
-        }
-
-        table.setChecked(false);
-        dataManager.commit(table);
-        orderLinesDs.commit();
+        tableItemDs.getItem().setChecked(false);
+        tableItemDs.commit();
 
         getWindowManager().close(this);
         openWindow("tableselect", WindowManager.OpenType.THIS_TAB);
 
     }
 
-    private HBoxLayout createOrderLineHBox (OrderLine orderLine) {
+    private HBoxLayout createOrderLineHBox(OrderLine orderLine) {
 
-        HBoxLayout hBoxLayout= componentsFactory.createComponent(HBoxLayout.class);
+        HBoxLayout hBoxLayout = componentsFactory.createComponent(HBoxLayout.class);
 
         hBoxLayout.setId("hBoxLayout".concat(orderLine.getId().toString()));
 
@@ -1884,8 +1579,8 @@ public class OrderScreen extends AbstractWindow {
         Button itemName = componentsFactory.createComponent(Button.class);
         Label price = componentsFactory.createComponent(Label.class);
 
-        quantity.setWidth("35px");
-        itemName.setWidth("480px");
+        quantity.setWidth("20px");
+        itemName.setWidth("475px");
         price.setWidth("55px");
 
         quantity.setHeight("40px");
@@ -1901,15 +1596,15 @@ public class OrderScreen extends AbstractWindow {
 
         itemName.setAction(new SelectCurrentLineAction());
 
-        setOrderLineStyle(orderLine, orderLineScrollBox);
-
         if (!orderLine.getIsModifier()) quantity.setValue(orderLine.getQuantity());
 
-        if (orderLine.getItemName().length()<50) itemName.setCaption(orderLine.getItemName());
-        else itemName.setCaption(orderLine.getItemName().substring(0,27).concat("...").concat(orderLine.getItemName().substring(orderLine.getItemName().length()-20)));
+        if (orderLine.getItemName().length() < 50) itemName.setCaption(orderLine.getItemName());
+        else
+            itemName.setCaption(orderLine.getItemName().substring(0, 27).concat("...").concat(orderLine.getItemName().substring(orderLine.getItemName().length() - 20)));
         if (orderLine.getIsModifier() && !orderLine.getPrice().toString().equals("0.00")) {
 
-            if (orderLine.getPrice().toString().charAt(0)=='-') price.setValue("(".concat(orderLine.getPrice().toString()).concat(")"));
+            if (orderLine.getPrice().toString().charAt(0) == '-')
+                price.setValue("(".concat(orderLine.getPrice().toString()).concat(")"));
             else price.setValue("(+".concat(orderLine.getPrice().toString()).concat(")"));
 
         } else if (!orderLine.getIsModifier()) price.setValue(orderLine.getPrice().setScale(2).toString());
@@ -1930,21 +1625,81 @@ public class OrderScreen extends AbstractWindow {
             Button itemName = (Button) scrollBox.getComponent("itemName".concat(orderLine.getId().toString()));
             Label price = (Label) scrollBox.getComponent("price".concat(orderLine.getId().toString()));
 
-            if (orderLine.getIsSelected()) {
+            if (orderLine.getId().equals(selectedLineId)) {
 
-                if (orderLine.getIsSended()) {
+                if (orderLine.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 
                     if (orderLine.getIsModifier()) {
 
-                        quantity.setStyleName("label-quantity-selected-isModifier-isSended");
-                        itemName.setStyleName("button-itemName-selected-isModifier-isSended");
-                        price.setStyleName("label-price-selected-isModifier-isSended");
+                        if (orderLine.getIsReversed()) {
+
+                            if (orderLine.getTicket().getTicketNumber() % 2 == 0) {
+
+                                quantity.setStyleName("gridItem-label-selected-isModifier-isSended-even");
+                                itemName.setStyleName("gridItem-button-selected-isModifier-isSended-isReversed-even");
+                                price.setStyleName("gridItem-label-selected-isModifier-isSended-isReversed-even");
+
+                            } else {
+
+                                quantity.setStyleName("gridItem-label-selected-isModifier-isSended-odd");
+                                itemName.setStyleName("gridItem-button-selected-isModifier-isSended-isReversed-odd");
+                                price.setStyleName("gridItem-label-selected-isModifier-isSended-isReversed-odd");
+
+                            }
+
+                        } else {
+
+                            if (orderLine.getTicket().getTicketNumber() % 2 == 0) {
+
+                                quantity.setStyleName("gridItem-label-selected-isModifier-isSended-even");
+                                itemName.setStyleName("gridItem-button-selected-isModifier-isSended-even");
+                                price.setStyleName("gridItem-label-selected-isModifier-isSended-even");
+
+                            } else {
+
+                                quantity.setStyleName("gridItem-label-selected-isModifier-isSended-odd");
+                                itemName.setStyleName("gridItem-button-selected-isModifier-isSended-odd");
+                                price.setStyleName("gridItem-label-selected-isModifier-isSended-odd");
+
+                            }
+
+                        }
 
                     } else {
 
-                        quantity.setStyleName("label-quantity-selected-isSended");
-                        itemName.setStyleName("button-itemName-selected-isSended");
-                        price.setStyleName("label-price-selected-isSended");
+                        if (orderLine.getIsReversed()) {
+
+                            if (orderLine.getTicket().getTicketNumber() % 2 == 0) {
+
+                                quantity.setStyleName("gridItem-label-selected-isSended-even");
+                                itemName.setStyleName("gridItem-button-selected-isSended-isReversed-even");
+                                price.setStyleName("gridItem-label-selected-isSended-isReversed-even");
+
+                            } else {
+
+                                quantity.setStyleName("gridItem-label-selected-isSended-odd");
+                                itemName.setStyleName("gridItem-button-selected-isSended-isReversed-odd");
+                                price.setStyleName("gridItem-label-selected-isSended-isReversed-odd");
+
+                            }
+
+                        } else {
+
+                            if (orderLine.getTicket().getTicketNumber() % 2 == 0) {
+
+                                quantity.setStyleName("gridItem-label-selected-isSended-even");
+                                itemName.setStyleName("gridItem-button-selected-isSended-even");
+                                price.setStyleName("gridItem-label-selected-isSended-even");
+
+                            } else {
+
+                                quantity.setStyleName("gridItem-label-selected-isSended-odd");
+                                itemName.setStyleName("gridItem-button-selected-isSended-odd");
+                                price.setStyleName("gridItem-label-selected-isSended-odd");
+
+                            }
+
+                        }
 
                     }
 
@@ -1952,15 +1707,15 @@ public class OrderScreen extends AbstractWindow {
 
                     if (orderLine.getIsModifier()) {
 
-                        quantity.setStyleName("label-quantity-selected-isModifier");
-                        itemName.setStyleName("button-itemName-selected-isModifier");
-                        price.setStyleName("label-price-selected-isModifier");
+                        quantity.setStyleName("gridItem-label-selected-isModifier");
+                        itemName.setStyleName("gridItem-button-selected-isModifier");
+                        price.setStyleName("gridItem-label-selected-isModifier");
 
                     } else {
 
-                        quantity.setStyleName("label-quantity-selected");
-                        itemName.setStyleName("button-itemName-selected");
-                        price.setStyleName("label-price-selected");
+                        quantity.setStyleName("gridItem-label-selected");
+                        itemName.setStyleName("gridItem-button-selected");
+                        price.setStyleName("gridItem-label-selected");
 
                     }
 
@@ -1968,19 +1723,79 @@ public class OrderScreen extends AbstractWindow {
 
             } else {
 
-                if (orderLine.getIsSended()) {
+                if (orderLine.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 
                     if (orderLine.getIsModifier()) {
 
-                        quantity.setStyleName("label-quantity-isModifier-isSended");
-                        itemName.setStyleName("button-itemName-isModifier-isSended");
-                        price.setStyleName("label-price-isModifier-isSended");
+                        if (orderLine.getIsReversed()) {
+
+                            if (orderLine.getTicket().getTicketNumber() % 2 == 0) {
+
+                                quantity.setStyleName("gridItem-label-isModifier-isSended-isReversed-even");
+                                itemName.setStyleName("gridItem-button-isModifier-isSended-isReversed-even");
+                                price.setStyleName("gridItem-label-isModifier-isSended-isReversed-even");
+
+                            } else {
+
+                                quantity.setStyleName("gridItem-label-isModifier-isSended-isReversed-odd");
+                                itemName.setStyleName("gridItem-button-isModifier-isSended-isReversed-odd");
+                                price.setStyleName("gridItem-label-isModifier-isSended-isReversed-odd");
+
+                            }
+
+                        } else {
+
+                            if (orderLine.getTicket().getTicketNumber() % 2 == 0) {
+
+                                quantity.setStyleName("gridItem-label-isModifier-isSended-even");
+                                itemName.setStyleName("gridItem-button-isModifier-isSended-even");
+                                price.setStyleName("gridItem-label-isModifier-isSended-even");
+
+                            } else {
+
+                                quantity.setStyleName("gridItem-label-isModifier-isSended-odd");
+                                itemName.setStyleName("gridItem-button-isModifier-isSended-odd");
+                                price.setStyleName("gridItem-label-isModifier-isSended-odd");
+
+                            }
+
+                        }
 
                     } else {
 
-                        quantity.setStyleName("label-quantity-isSended");
-                        itemName.setStyleName("button-itemName-isSended");
-                        price.setStyleName("label-price-isSended");
+                        if (orderLine.getIsReversed()) {
+
+                            if (orderLine.getTicket().getTicketNumber() % 2 == 0) {
+
+                                quantity.setStyleName("gridItem-label-isSended-isReversed-even");
+                                itemName.setStyleName("gridItem-button-isSended-isReversed-even");
+                                price.setStyleName("gridItem-label-isSended-isReversed-even");
+
+                            } else {
+
+                                quantity.setStyleName("gridItem-label-isSended-isReversed-odd");
+                                itemName.setStyleName("gridItem-button-isSended-isReversed-odd");
+                                price.setStyleName("gridItem-label-isSended-isReversed-odd");
+
+                            }
+
+                        } else {
+
+                            if (orderLine.getTicket().getTicketNumber() % 2 == 0) {
+
+                                quantity.setStyleName("gridItem-label-isSended-even");
+                                itemName.setStyleName("gridItem-button-isSended-even");
+                                price.setStyleName("gridItem-label-isSended-even");
+
+                            } else {
+
+                                quantity.setStyleName("gridItem-label-isSended-odd");
+                                itemName.setStyleName("gridItem-button-isSended-odd");
+                                price.setStyleName("gridItem-label-isSended-odd");
+
+                            }
+
+                        }
 
                     }
 
@@ -1988,15 +1803,15 @@ public class OrderScreen extends AbstractWindow {
 
                     if (orderLine.getIsModifier()) {
 
-                        quantity.setStyleName("label-quantity-isModifier");
-                        itemName.setStyleName("button-itemName-isModifier");
-                        price.setStyleName("label-price-isModifier");
+                        quantity.setStyleName("gridItem-label-isModifier");
+                        itemName.setStyleName("gridItem-button-isModifier");
+                        price.setStyleName("gridItem-label-isModifier");
 
                     } else {
 
-                        quantity.setStyleName("label-quantity");
-                        itemName.setStyleName("button-itemName");
-                        price.setStyleName("label-price");
+                        quantity.setStyleName("gridItem-label");
+                        itemName.setStyleName("gridItem-button");
+                        price.setStyleName("gridItem-label");
 
                     }
 
@@ -2011,7 +1826,9 @@ public class OrderScreen extends AbstractWindow {
     private class SelectCurrentLineAction extends BaseAction {
 
         public SelectCurrentLineAction() {
+
             super("SelectCurrentLine");
+
         }
 
         @Override
@@ -2025,31 +1842,33 @@ public class OrderScreen extends AbstractWindow {
         public void actionPerform(Component component) {
 
             Button itemNameBtn = (Button) component;
-            OrderLine orderLine = orderLinesDs.getItem(UUID.fromString(itemNameBtn.getId().substring(8)));
 
-            if (!orderLine.getIsSelected()) {
+            UUID newLineToSelectId = UUID.fromString(itemNameBtn.getId().substring(8));
+            UUID newLineToDeselectId = selectedLineId;
 
-                orderLine.setIsSelected(true);
+            if (newLineToSelectId.equals(selectedLineId)) for (Ticket ticket: ticketsDs.getItems()) for (OrderLine orderLine: ticket.getOrderLines()) {
 
-                for (OrderLine line : orderLinesDs.getItems()) {
+                if (orderLine.getId().equals(selectedLineId)) {
 
-                    if (line.getIsSelected() && !line.getId().equals(orderLine.getId())) {
-
-                        line.setIsSelected(false);
-
-                        setOrderLineStyle(line, orderLineScrollBox);
-
-                        break;
-
-                    }
+                    selectedLineId = null;
+                    setOrderLineStyle(orderLine, orderLineScrollBox);
+                    return;
 
                 }
 
-            } else orderLine.setIsSelected(false);
+            } else {
 
-            setOrderLineStyle(orderLine, orderLineScrollBox);
+                OrderLine newLineToDeselect = null;
+                OrderLine newLineToSelect = null;
 
-            orderLinesDs.commit();
+                for (Ticket ticket: ticketsDs.getItems()) for (OrderLine orderLine: ticket.getOrderLines()) if (orderLine.getId().equals(newLineToSelectId)) newLineToSelect = orderLine;
+                else if (orderLine.getId().equals(newLineToDeselectId)) newLineToDeselect = orderLine;
+
+                selectedLineId = newLineToSelectId;
+                if (newLineToSelect != null) setOrderLineStyle(newLineToSelect, orderLineScrollBox);
+                if (newLineToDeselect != null) setOrderLineStyle(newLineToDeselect, orderLineScrollBox);
+
+            }
 
         }
 

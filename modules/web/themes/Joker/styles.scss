@@ -1,15 +1,30 @@
 @import "Joker-defaults";
 @import "Joker";
 
-.Joker {
-  @include Joker;
-}
+.Joker {@include Joker;}
 
 .Joker .v-window-contents{background-color:#1a1a1a}
 
 .Joker .c-app-window-wrap {background-color:#1a1a1a}
 
 .Joker .mainLayout {background-color:#1a1a1a !important;border-radius:10px}
+
+.Joker .v-button {display:inline-table;-webkit-box-shadow:none;box-shadow:none}
+
+.Joker .v-button-wrap{display:table-cell;vertical-align:middle}
+
+.Joker .v-button-fontSize12 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffe699;font-size:12px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
+.Joker .v-button-fontSize14 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffe699;font-size:14px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
+.Joker .v-button-fontSize16 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffe699;font-size:16px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
+.Joker .v-button-fontSize20 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffe699;font-size:20px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
+.Joker .v-button-fontSize24 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffe699;font-size:24px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
+.Joker .v-button-fontSize30 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffe699;font-size:30px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
+.Joker .v-button-fontSize80 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffe699;font-size:80px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
+
+.Joker .okBtn {background-image:-webkit-radial-gradient(#006400, #003400);background-image:radial-gradient(#006400, #003400);color:#ffffff;font-size:30px;-webkit-box-shadow:none;box-shadow:none;border-radius:10px;border:0px}
+.Joker .cancelBtn {background-image:-webkit-radial-gradient(#cc0000, #500000);background-image:radial-gradient(#cc0000, #500000);color:#ffffff;font-size:30px;-webkit-box-shadow:none;box-shadow:none;border-radius:10px;border:0px}
+
+
 
 /* SELECT TABLE SCREEN */
 
@@ -26,16 +41,6 @@
 
 .Joker .bottomHBox {margin-top:5px !important;background-color:#1a1a1a !important;border-radius:10px}
 
-.Joker .v-button{
-
-display:inline-table;
--webkit-box-shadow:none;
-box-shadow:none
-
-}
-
-.Joker .v-button-wrap{display:table-cell;vertical-align:middle}
-
 .Joker .v-button-backgroundColorGreenFont60{background-image:-webkit-radial-gradient(#006400, #003400);background-image:radial-gradient(#006400, #003400);border:0px !important;border-radius:10px;font-size:60px;color:#ffffff}
 .Joker .v-button-backgroundColorRedFont60{background-image:-webkit-radial-gradient(#cc0000, #500000);background-image:radial-gradient(#cc0000, #500000);border:0px !important;border-radius:10px;font-size:60px;color:#ffffff}
 .Joker .v-button-backgroundColorYellowFont60{background-image:-webkit-radial-gradient(#ffcc00, #4d3d00);background-image:radial-gradient(#ffcc00, #4d3d00);border:0px !important;border-radius:10px;font-size:60px;color:#ffffff}
@@ -51,30 +56,13 @@ box-shadow:none
 .Joker .v-button-backgroundColorYellowFont30{background-image:-webkit-radial-gradient(#ffcc00, #4d3d00);background-image:radial-gradient(#ffcc00, #4d3d00);border:0px !important;border-radius:10px;font-size:30px;color:#ffffff}
 .Joker .v-button-backgroundColorAzureFont30{background-image:-webkit-radial-gradient(#cc0000, #500000);background-image:radial-gradient(#cc0000, #500000);border:0px !important;border-radius:10px;font-size:30px;color:#ffffff}
 
-
-.Joker .v-button-fontSize12 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffffff;font-size:12px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
-.Joker .v-button-fontSize14 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffffff;font-size:14px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
-.Joker .v-button-fontSize16 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffffff;font-size:16px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
-.Joker .v-button-fontSize20 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffffff;font-size:20px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
-.Joker .v-button-fontSize24 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffffff;font-size:24px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
-.Joker .v-button-fontSize30 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffffff;font-size:30px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
-.Joker .v-button-fontSize80 {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);color:#ffffff;font-size:80px;border:2px;border-radius:10px;border-color:#000f1a;border-style: solid}
-
 .Joker .v-button-special {color:#ffffff;font-size:30px;border:0px;background-image:-webkit-radial-gradient(#a00000, #700000);background-image:radial-gradient(#a00000, #700000)}
 
 .Joker .tableScreenFunctionBtn {background-image:-webkit-radial-gradient(#006080, #00394d);background-image:radial-gradient(#006080, #00394d);border:0px;border-radius:10px; color:#ffffff;font-size:20px}
 
-.Joker .currentTimeField {
+.Joker .tableScreenFunctionBtnPressed {background-image:-webkit-radial-gradient(#e6ac00, #806000);background-image:radial-gradient(#e6ac00, #806000);border:0px;border-radius:10px; color:#ffffff;font-size:20px}
 
-color:#101010 !important;
-font-size:50px;
-font-weight:bold;
-text-align:center;
-border:2px solid #ffffff;
-background-image:-webkit-radial-gradient(#70a6db, #2e73b8) !important;
-background-image:radial-gradient(#70a6db, #2e73b8) !important
-
-}
+.Joker .currentTimeField {color:#000000 !important;font-size:50px;font-weight:bold;text-align:center;border:0px;background-image:-webkit-radial-gradient(#ff4d4d, #990000) !important;background-image:radial-gradient(#ff4d4d, #990000) !important}
 
 .Joker .v-splitpanel-vsplitter{visibility:hidden}
 .Joker .v-splitpanel-hsplitter{visibility:hidden}
@@ -82,84 +70,88 @@ background-image:radial-gradient(#70a6db, #2e73b8) !important
 /* SEATS DIALOG */
 
 .Joker .seatsLabel {font-size:30px; color:#ffffff}
-
+.Joker .seatsTextField {background-color:#374049;color:#ffffff;font-size:30px;-webkit-box-shadow:none;box-shadow:none;border-radius:6px;border:0px}
 
 /* ORDER SCREEN */
 
-.Joker .tableTimeField-normal {
+.Joker .tableTimeField-normal {color:#101010 !important;margin:0px;padding:10px;font-size:28px;font-weight:bold;text-align:center;border:3px solid #000000;-webkit-box-shadow:none;box-shadow:none;background-image:-webkit-radial-gradient(#70a6db, #2e73b8) !important;background-image:radial-gradient(#70a6db, #2e73b8) !important}
+.Joker .tableTimeField-hot {color:#ffffff !important;margin:0px;padding:10px;font-size:28px;font-weight:bold;text-align:center;border:3px solid #000000;-webkit-box-shadow:none;box-shadow:none;background-image:-webkit-radial-gradient(#e63d00, #992900) !important;background-image:radial-gradient(#e63d00, #992900) !important}
 
-color:#101010 !important;
-margin:0px;
-padding:10px;
-font-size:28px;
-font-weight:bold;
-text-align:center;
-border:3px solid #000000;
--webkit-box-shadow:none;
-box-shadow:none;
-background-image:-webkit-radial-gradient(#70a6db, #2e73b8) !important;
-background-image:radial-gradient(#70a6db, #2e73b8) !important
-
-}
-
-.Joker .tableTimeField-hot {
-
-color:#ffffff !important;
-margin:0px;
-padding:10px;
-font-size:28px;
-font-weight:bold;
-text-align:center;
-border:3px solid #000000;
--webkit-box-shadow:none;
-box-shadow:none;
-background-image:-webkit-radial-gradient(#e63d00, #992900) !important;
-background-image:radial-gradient(#e63d00, #992900) !important
-
-}
-
-.Joker .orderScreenFunctionBtn {background-image:-webkit-radial-gradient(#006080, #00394d);background-image:radial-gradient(#006080, #00394d);border:0px;border-radius:10px; color:#ffffff;font-size:20px}
-
-.Joker .subtotalLabel{font-size:20px;color:white;text-align:right}
-.Joker .serviceLabel{font-size:20px;color:white;text-align:right}
-.Joker .totalLabel{font-size:20px;color:#de5454;text-align:right;font-weight:bold}
-.Joker .subtotalField{font-size:20px;color:white;text-align:right;border:0px;background-color:transparent !important;-webkit-box-shadow:none;box-shadow:none}
-.Joker .serviceField{font-size:20px;color:white;text-align:right;border:0px;background-color:transparent !important;-webkit-box-shadow:none;box-shadow:none}
-.Joker .totalField{font-size:20px;color:#de5454;text-align:right;font-weight:bold;border:0px;background-color:transparent !important;-webkit-box-shadow:none;box-shadow:none}
+.Joker .orderScreenFunctionBtn {background-image:-webkit-radial-gradient(#006080, #00394d);background-image:radial-gradient(#006080, #00394d);border:0px;border-radius:10px; color:#c6d9ec;font-size:20px;font-weight: bold}
 
 .Joker .billGroupBox{border:0px !important}
 
-.Joker .label-quantity{background-color:transparent;margin:1px 0px;border:0px;color:white;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .button-itemName{background-image:-webkit-radial-gradient(#202020, #202020);background-image:radial-gradient(#202020, #202020);border:0px !important;font-size:18px;text-align:left;color:#ffffff}
-.Joker .label-price{background-color:transparent;margin:1px 0px;border:0px;color:white;font-size:18px;text-align:right;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .billBox {background-color:transparent;border-radius:10px}
 
-.Joker .label-quantity-isSended{background-color:transparent;margin:1px 0px;border:0px;color:#ffff66;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .button-itemName-isSended{background-image:-webkit-radial-gradient(#202020, #202020);background-image:radial-gradient(#202020, #202020);border:0px !important;font-size:18px;text-align:left;color:#ffff66}
-.Joker .label-price-isSended{background-color:transparent;margin:1px 0px;border:0px;color:#ffff66;font-size:18px;text-align:right;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .orderScreenBillBtn {background-image:-webkit-radial-gradient(#4d1926, #260d13);background-image:radial-gradient(#4d1926, #260d13);border:0px;border-radius:10px; color:#ffcc00;font-size:30px}
 
-.Joker .label-quantity-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:white;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .button-itemName-isModifier{background-image:-webkit-radial-gradient(#202020, #202020);background-image:radial-gradient(#202020, #202020);border:0px !important;font-size:16px;text-align:left;color:#ffffff}
-.Joker .label-price-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:white;font-size:16px;text-align:right;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .subtotalLabel{font-size:20px;color:#dfff80;text-align:right}
+.Joker .serviceLabel{font-size:20px;color:#dfff80;text-align:right}
+.Joker .totalLabel{font-size:20px;color:#dfff80;text-align:right;font-weight:bold}
+.Joker .subtotalField{font-size:20px;color:#dfff80;text-align:right;border:0px;background-color:transparent !important;-webkit-box-shadow:none;box-shadow:none}
+.Joker .serviceField{font-size:20px;color:#dfff80;text-align:right;border:0px;background-color:transparent !important;-webkit-box-shadow:none;box-shadow:none}
+.Joker .totalField{font-size:20px;color:#dfff80;text-align:right;font-weight:bold;border:0px;background-color:transparent !important;-webkit-box-shadow:none;box-shadow:none}
 
-.Joker .label-quantity-isModifier-isSended{background-color:transparent;margin:1px 0px;border:0px;color:#ffff66;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .button-itemName-isModifier-isSended{background-image:-webkit-radial-gradient(#202020, #202020);background-image:radial-gradient(#202020, #202020);border:0px !important;font-size:16px;text-align:left;color:#ffff66}
-.Joker .label-price-isModifier-isSended{background-color:transparent;margin:1px 0px;border:0px;color:#ffff66;font-size:16px;text-align:right;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-label{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6b3}
 
-.Joker .label-quantity-selected{background-color:transparent;margin:1px 0px;border:0px;color:white;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .button-itemName-selected{background-image:-webkit-radial-gradient(#404040, #404040);background-image:radial-gradient(#404040, #404040);border:0px !important;font-size:18px;text-align:left;color:#ffffff}
-.Joker .label-price-selected{background-color:transparent;margin:1px 0px;border:0px;color:white;font-size:18px;text-align:right;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-label-selected{background-color:transparent;margin:1px 0px;border:0px;color:#d9f2d9;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#d9f2d9}
 
-.Joker .label-quantity-selected-isSended{background-color:transparent;margin:1px 0px;border:0px;color:#ffff66;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .button-itemName-selected-isSended{background-image:-webkit-radial-gradient(#404040, #404040);background-image:radial-gradient(#404040, #404040);border:0px !important;font-size:18px;text-align:left;color:#ffff66}
-.Joker .label-price-selected-isSended{background-color:transparent;margin:1px 0px;border:0px;color:#ffff66;font-size:18px;text-align:right;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-label-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-isSended-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6ff}
 
-.Joker .label-quantity-selected-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:white;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .button-itemName-selected-isModifier{background-image:-webkit-radial-gradient(#404040, #404040);background-image:radial-gradient(#404040, #404040);border:0px !important;font-size:16px;text-align:left;color:#ffffff}
-.Joker .label-price-selected-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:white;font-size:16px;text-align:right;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-label-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-isSended-isReversed-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6ff;text-decoration:line-through}
 
-.Joker .label-quantity-selected-isModifier-isSended{background-color:transparent;margin:1px 0px;border:0px;color:#ffff66;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .button-itemName-selected-isModifier-isSended{background-image:-webkit-radial-gradient(#404040, #404040);background-image:radial-gradient(#404040, #404040);border:0px !important;font-size:16px;text-align:left;color:#ffff66}
-.Joker .label-price-selected-isModifier-isSended{background-color:transparent;margin:1px 0px;border:0px;color:#ffff66;font-size:16px;text-align:right;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-label-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffd9b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-isSended-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffd9b3}
+
+.Joker .gridItem-label-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffd9b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffd9b3;text-decoration:line-through}
+
+.Joker .gridItem-label-selected-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isSended-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff}
+
+.Joker .gridItem-label-selected-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-selected-isSended-isReversed-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff;text-decoration:line-through}
+
+.Joker .gridItem-label-selected-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffcc99;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isSended-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffcc99}
+
+.Joker .gridItem-label-selected-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffcc99;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-selected-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffcc99;text-decoration:line-through}
+
+
+.Joker .gridItem-label-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:#79d279;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-isModifier{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#79d279}
+
+.Joker .gridItem-label-selected-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:#d9f2d9;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isModifier{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#d9f2d9}
+
+.Joker .gridItem-label-isModifier-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#66ccff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-isModifier-isSended-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#66ccff}
+
+.Joker .gridItem-label-isModifier-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#66ccff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-isModifier-isSended-isReversed-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#66ccff;text-decoration:line-through}
+
+.Joker .gridItem-label-isModifier-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffb366;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-isModifier-isSended-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffb366}
+
+.Joker .gridItem-label-isModifier-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffb366;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-isModifier-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffb366;text-decoration:line-through}
+
+.Joker .gridItem-label-selected-isModifier-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isModifier-isSended-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#cceeff}
+
+.Joker .gridItem-label-selected-isModifier-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-selected-isModifier-isSended-isReversed-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#cceeff;text-decoration:line-through}
+
+.Joker .gridItem-label-selected-isModifier-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffe6cc;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isModifier-isSended-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffe6cc}
+
+.Joker .gridItem-label-selected-isModifier-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffe6cc;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-selected-isModifier-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffe6cc;text-decoration:line-through}
 
 .Joker .doNotPrintBtnPushed{background-image:-webkit-radial-gradient(#cc0000, #500000);background-image:radial-gradient(#cc0000, #500000);border:1px !important;font-size:16px;color:#ffffff}
 
@@ -171,6 +163,13 @@ background-image:radial-gradient(#e63d00, #992900) !important
 .Joker .modifierButtonNotPushed{background-image:-webkit-radial-gradient(#ffffff, #f0f0f0);background-image:radial-gradient(#ffffff, #f0f0f0);border:1px !important;font-size:16px;color:#000000}
 
 /* ITEM MANUAL MODIFIER DIALOG */
+
 .Joker .virtualKeyBtn {background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px;border-radius:10px; color:#ffffff;font-size:30px}
 .Joker .virtualKeyBtnToHide {background-image:-webkit-radial-gradient(#000000, #000000);background-image:radial-gradient(#000000, #000000);border:0px;border-radius:10px; color:#ffffff;font-size:30px}
-.Joker .itemModifierField {background-color:#202020;border:0px;border-radius:10px;color:#ffffff;font-size:30px}
+.Joker .itemModifierField {background-color:#374049;color:#ffffff;font-size:30px;-webkit-box-shadow:none;box-shadow:none;border-radius:6px;border:0px}
+.Joker .modifierFieldLabel{background-color:transparent;border:0px;color:#ffffff;font-size:25px;text-align:left;vertical-align:-28px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .priceFieldLabel{background-color:transparent;border:0px;color:#ffffff;font-size:25px;text-align:left;vertical-align:-10px;-webkit-box-shadow:none;box-shadow:none}
+
+/* ITEM PRICE MODIFIER DIALOG */
+
+.Joker .newPriceTextField {background-color:#374049;color:#ffffff;font-size:30px;-webkit-box-shadow:none;box-shadow:none;border-radius:6px;border:0px}

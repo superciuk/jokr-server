@@ -26,7 +26,7 @@ public class ProductItem extends StandardEntity {
     private static final long serialVersionUID = 6093572631839975153L;
 
     @NotNull
-    @Column(name = "NAME", nullable = false, length = 100)
+    @Column(name = "NAME", nullable = false, unique = true, length = 100)
     protected String name;
 
     @Column(name = "SORT_ORDER")

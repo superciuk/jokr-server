@@ -22,21 +22,29 @@
                       height="100%"
                       width="100%">
                     <vbox id="vBox"
-                          height="200px"
-                          width="1200px">
+                          height="100%"
+                          width="1100px">
+                        <label id="modifierFieldLabel"
+                               height="30px"
+                               stylename="modifierFieldLabel"
+                               value="Inserisci il testo:"
+                               width="250px"/>
                         <textField id="modifierText"
-                                   caption="Insert Modifier Text"
                                    datatype="string"
-                                   editable="false"
-                                   height="60px"
+                                   height="50px"
                                    stylename="itemModifierField"
                                    width="1100px"/>
+                        <label id="priceFieldLabel"
+                               align="BOTTOM_LEFT"
+                               height="30px"
+                               stylename="priceFieldLabel"
+                               value="Inserisci il prezzo:"
+                               width="300px"/>
                         <textField id="modifierPrice"
                                    align="BOTTOM_LEFT"
-                                   caption="Insert Price"
                                    datatype="string"
                                    editable="false"
-                                   height="60px"
+                                   height="50px"
                                    stylename="itemModifierField"
                                    width="200px"/>
                     </vbox>
@@ -48,12 +56,14 @@
                                 caption="msg://OK"
                                 height="100%"
                                 invoke="onOkBtnClick"
+                                stylename="okBtn"
                                 width="150px"/>
                         <button id="cancelBtn"
                                 align="MIDDLE_RIGHT"
                                 caption="msg://Cancel"
                                 height="100%"
                                 invoke="onCancelBtnClick"
+                                stylename="cancelBtn"
                                 width="150px"/>
                     </buttonsPanel>
                 </hbox>

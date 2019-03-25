@@ -130,6 +130,7 @@ create table JOKERAPP_ORDER_LINE (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
+    TICKET_ID uuid,
     QUANTITY integer,
     PRINTER_GROUP varchar(255),
     ITEM_NAME varchar(255) not null,
@@ -137,15 +138,13 @@ create table JOKERAPP_ORDER_LINE (
     UNIT_PRICE decimal(19, 2),
     PRICE decimal(12, 2) not null,
     TAXES decimal(12, 2) not null,
-    ORDER_ID uuid,
     POSITION_ integer,
     NEXT_MODIFIER_POSITION integer,
     HAS_MODIFIER boolean not null,
     IS_MODIFIER boolean not null,
     ITEM_TO_MODIFY_ID uuid,
     IS_SENDED boolean not null,
-    IS_SELECTED boolean,
-    TICKET_NUMBER integer,
+    IS_REVERSED boolean,
     --
     primary key (ID)
 )^
@@ -157,3 +156,21 @@ create table JOKERAPP_PRODUCT_ITEM_PRODUCT_MODIFIER_CATEGORY_LINK (
     primary key (PRODUCT_MODIFIER_CATEGORY_ID, PRODUCT_ITEM_ID)
 )^
 -- end JOKERAPP_PRODUCT_ITEM_PRODUCT_MODIFIER_CATEGORY_LINK
+-- begin JOKERAPP_TICKET
+create table JOKERAPP_TICKET (
+    ID uuid,
+    VERSION integer not null,
+    CREATE_TS timestamp,
+    CREATED_BY varchar(50),
+    UPDATE_TS timestamp,
+    UPDATED_BY varchar(50),
+    DELETE_TS timestamp,
+    DELETED_BY varchar(50),
+    --
+    ORDER_ID uuid,
+    TICKET_NUMBER integer,
+    TICKET_STATUS varchar(50),
+    --
+    primary key (ID)
+)^
+-- end JOKERAPP_TICKET

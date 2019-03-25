@@ -28,9 +28,6 @@ public class ItemModifierDialog extends AbstractWindow {
     @Inject
     private Metadata metadata;
 
-    @Named("modifierOrderLinesDataGrid")
-    private DataGrid modifierOrderLinesDataGrid;
-
     @Named("modifierOrderLinesScrollBox")
     private ScrollBoxLayout modifierOrderLinesScrollBox;
 
@@ -53,8 +50,8 @@ public class ItemModifierDialog extends AbstractWindow {
     private String itemBtnHeight = "120px";
 
     private ItemModifierDialog.CloseHandler handler;
-    private Order currentOrder;
     private OrderLine selectedLine;
+    private UUID modifierSelectedLineId;
     private List <ProductModifierCategory> modifierCategories;
     private List <OrderLine> newModifierOrderLines = new ArrayList<>();
 
@@ -81,20 +78,13 @@ public class ItemModifierDialog extends AbstractWindow {
             handler = (ItemModifierDialog.CloseHandler) params.get("handler");
 
             selectedLine = (OrderLine) params.get("selectedLine");
-            currentOrder = selectedLine.getOrder();
 
             addModifierBtn.setStyleName("modifierButtonPushed");
             removeModifierBtn.setStyleName("modifierButtonNotPushed");
 
-            String itemToModify = selectedLine.getItemName();
+            ProductItem productItem = (ProductItem) params.get("productItem");
 
-            ProductItem item = dataManager.load(ProductItem.class)
-                    .query("select e from jokerapp$ProductItem e where e.name = :itemToModify")
-                    .parameter("itemToModify", itemToModify)
-                    .view("productItem-view")
-                    .one();
-
-            modifierCategories = item.getModifierCategories();
+            modifierCategories = productItem.getModifierCategories();
             modifierCategoriesGrid.setColumns(1);
 
             for (ProductModifierCategory productModifierCategory : modifierCategories) {
@@ -129,7 +119,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
                         Character ch = categoryName.charAt(l);
 
-                        if (Character.isSpace(ch) || l == categoryName.length()-1) {
+                        if (Character.isWhitespace(ch) || l == categoryName.length()-1) {
 
                             if (l - prevSpaceConverted > exactLineLength) {
 
@@ -190,6 +180,7 @@ public class ItemModifierDialog extends AbstractWindow {
                 .view("productModifier-view")
                 .list();
 
+
         modifierItemGrid.removeAll();
 
         for (ProductModifier modifier : productModifiers) {
@@ -223,7 +214,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
                     Character ch = productName.charAt(l);
 
-                    if (Character.isSpace(ch) || l == productName.length()-1) {
+                    if (Character.isWhitespace(ch) || l == productName.length()-1) {
 
                         if (l - prevSpaceConverted > exactLineLength) {
 
@@ -275,7 +266,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
     private void addModifierToOrder(ProductModifier productModifierToAdd) {
 
-        for (OrderLine line : modifierOrderLinesDs.getItems()) {
+        for (OrderLine line: modifierOrderLinesDs.getItems()) {
 
             if (line.getItemName().equals(" + ".concat(productModifierToAdd.getName())) || line.getItemName().equals(" - ".concat(productModifierToAdd.getName()))) return;
 
@@ -301,7 +292,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
         newLine.setItemId(productModifierToAdd.getId());
         newLine.setTaxes(BigDecimal.ZERO);
-        newLine.setOrder(currentOrder);
+        newLine.setTicket(selectedLine.getTicket());
         newLine.setPosition(selectedLine.getNextModifierPosition());
         selectedLine.setNextModifierPosition(selectedLine.getNextModifierPosition()+1);
         newLine.setHasModifier(Boolean.FALSE);
@@ -309,11 +300,13 @@ public class ItemModifierDialog extends AbstractWindow {
         newLine.setItemToModifyId(selectedLine.getId());
         newLine.setPrinterGroup(selectedLine.getPrinterGroup());
         newLine.setIsSended(Boolean.FALSE);
-        newLine.setIsSelected(Boolean.FALSE);
+        newLine.setIsReversed(Boolean.FALSE);
 
         if (selectedLine.getHasModifier().equals(Boolean.FALSE)) selectedLine.setHasModifier(Boolean.TRUE);
 
         modifierOrderLinesDs.addItem(newLine);
+
+        modifierSelectedLineId = newLine.getItemId();
 
         drawOrderLinesGrid();
 
@@ -321,13 +314,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
     public void onModifierOrderLinesRemoveBtnClick() {
 
-        ArrayList<OrderLine> toRemove = new ArrayList<>();
-
-        for (OrderLine lineToRemove: modifierOrderLinesDs.getItems()) if (lineToRemove.getIsSelected()) toRemove.add(lineToRemove);
-
-        Iterator<OrderLine> iterator = toRemove.iterator();
-
-        while (iterator.hasNext()) modifierOrderLinesDs.removeItem(iterator.next());
+        for (OrderLine line: modifierOrderLinesDs.getItems()) if (line.getItemId().equals(modifierSelectedLineId)) { modifierOrderLinesDs.removeItem(line); break; }
 
         drawOrderLinesGrid();
 
@@ -344,7 +331,6 @@ public class ItemModifierDialog extends AbstractWindow {
         if (handler != null) {
 
             newModifierOrderLines.addAll(modifierOrderLinesDs.getItems());
-            for (OrderLine line : modifierOrderLinesDs.getItems()) line.setIsSelected(false);
             handler.onClose(newModifierOrderLines);
 
         }
@@ -373,7 +359,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
         modifierOrderLinesScrollBox.removeAll();
 
-        for (OrderLine orderLine : modifierOrderLinesDs.getItems()) {
+        for (OrderLine orderLineToDraw : modifierOrderLinesDs.getItems()) {
 
             HBoxLayout hBoxLayout= componentsFactory.createComponent(HBoxLayout.class);
 
@@ -398,35 +384,35 @@ public class ItemModifierDialog extends AbstractWindow {
                 @Override
                 public void actionPerform(Component component) {
 
-                    if (!orderLine.getIsSelected()) {
+                    if (!orderLineToDraw.getItemId().equals(modifierSelectedLineId)) {
 
-                        orderLine.setIsSelected(Boolean.TRUE);
+                        modifierSelectedLineId = orderLineToDraw.getItemId();
 
-                        if (orderLine.getIsSended()) {
+                        if (orderLineToDraw.getIsSended()) {
 
-                            if (orderLine.getIsModifier()) {
+                            if (orderLineToDraw.getIsModifier()) {
 
-                                itemName.setStyleName("button-itemName-selected-isModifier-isSended");
-                                price.setStyleName("label-price-selected-isModifier-isSended");
+                                itemName.setStyleName("gridItem-button-selected-isModifier-isSended");
+                                price.setStyleName("gridItem-label-selected-isModifier-isSended");
 
                             } else {
 
-                                itemName.setStyleName("button-itemName-selected-isSended");
-                                price.setStyleName("label-price-selected-isSended");
+                                itemName.setStyleName("gridItem-button-selected-isSended");
+                                price.setStyleName("gridItem-label-selected-isSended");
 
                             }
 
                         } else {
 
-                            if (orderLine.getIsModifier()) {
+                            if (orderLineToDraw.getIsModifier()) {
 
-                                itemName.setStyleName("button-itemName-selected-isModifier");
-                                price.setStyleName("label-price-selected-isModifier");
+                                itemName.setStyleName("gridItem-button-selected-isModifier");
+                                price.setStyleName("gridItem-label-selected-isModifier");
 
                             } else {
 
-                                itemName.setStyleName("button-itemName-selected");
-                                price.setStyleName("label-price-selected");
+                                itemName.setStyleName("gridItem-button-selected");
+                                price.setStyleName("gridItem-label-selected");
 
                             }
 
@@ -434,33 +420,33 @@ public class ItemModifierDialog extends AbstractWindow {
 
                     } else {
 
-                        orderLine.setIsSelected(Boolean.FALSE);
+                        modifierSelectedLineId = null;
 
-                        if (orderLine.getIsSended()) {
+                        if (orderLineToDraw.getIsSended()) {
 
-                            if (orderLine.getIsModifier()) {
+                            if (orderLineToDraw.getIsModifier()) {
 
-                                itemName.setStyleName("button-itemName-isModifier-isSended");
-                                price.setStyleName("label-price-isModifier-isSended");
+                                itemName.setStyleName("gridItem-button-isModifier-isSended");
+                                price.setStyleName("gridItem-label-isModifier-isSended");
 
                             } else {
 
-                                itemName.setStyleName("button-itemName-isSended");
-                                price.setStyleName("label-price-isSended");
+                                itemName.setStyleName("gridItem-button-isSended");
+                                price.setStyleName("gridItem-label-isSended");
 
                             }
 
                         } else {
 
-                            if (orderLine.getIsModifier()) {
+                            if (orderLineToDraw.getIsModifier()) {
 
-                                itemName.setStyleName("button-itemName-isModifier");
-                                price.setStyleName("label-price-isModifier");
+                                itemName.setStyleName("gridItem-button-isModifier");
+                                price.setStyleName("gridItem-label-isModifier");
 
                             } else {
 
                                 itemName.setStyleName("button-itemName");
-                                price.setStyleName("label-price");
+                                price.setStyleName("gridItem-label");
 
                             }
 
@@ -472,33 +458,33 @@ public class ItemModifierDialog extends AbstractWindow {
 
             });
 
-            if (orderLine.getIsSelected()) {
+            if (orderLineToDraw.getItemId().equals(modifierSelectedLineId)) {
 
-                if (orderLine.getIsSended()) {
+                if (orderLineToDraw.getIsSended()) {
 
-                    if (orderLine.getIsModifier()) {
+                    if (orderLineToDraw.getIsModifier()) {
 
-                        itemName.setStyleName("button-itemName-selected-isModifier-isSended");
-                        price.setStyleName("label-price-selected-isModifier-isSended");
+                        itemName.setStyleName("gridItem-button-selected-isModifier-isSended");
+                        price.setStyleName("gridItem-label-selected-isModifier-isSended");
 
                     } else {
 
-                        itemName.setStyleName("button-itemName-selected-isSended");
-                        price.setStyleName("label-price-selected-isSended");
+                        itemName.setStyleName("gridItem-button-selected-isSended");
+                        price.setStyleName("gridItem-label-selected-isSended");
 
                     }
 
                 } else {
 
-                    if (orderLine.getIsModifier()) {
+                    if (orderLineToDraw.getIsModifier()) {
 
-                        itemName.setStyleName("button-itemName-selected-isModifier");
-                        price.setStyleName("label-price-selected-isModifier");
+                        itemName.setStyleName("gridItem-button-selected-isModifier");
+                        price.setStyleName("gridItem-label-selected-isModifier");
 
                     } else {
 
-                        itemName.setStyleName("button-itemName-selected");
-                        price.setStyleName("label-price-selected");
+                        itemName.setStyleName("gridItem-button-selected");
+                        price.setStyleName("gridItem-label-selected");
 
                     }
 
@@ -506,31 +492,31 @@ public class ItemModifierDialog extends AbstractWindow {
 
             } else {
 
-                if (orderLine.getIsSended()) {
+                if (orderLineToDraw.getIsSended()) {
 
-                    if (orderLine.getIsModifier()) {
+                    if (orderLineToDraw.getIsModifier()) {
 
-                        itemName.setStyleName("button-itemName-isModifier-isSended");
-                        price.setStyleName("label-price-isModifier-isSended");
+                        itemName.setStyleName("gridItem-button-isModifier-isSended");
+                        price.setStyleName("gridItem-label-isModifier-isSended");
 
                     } else {
 
-                        itemName.setStyleName("button-itemName-isSended");
-                        price.setStyleName("label-price-isSended");
+                        itemName.setStyleName("gridItem-button-isSended");
+                        price.setStyleName("gridItem-label-isSended");
 
                     }
 
                 } else {
 
-                    if (orderLine.getIsModifier()) {
+                    if (orderLineToDraw.getIsModifier()) {
 
-                        itemName.setStyleName("button-itemName-isModifier");
-                        price.setStyleName("label-price-isModifier");
+                        itemName.setStyleName("gridItem-button-isModifier");
+                        price.setStyleName("gridItem-label-isModifier");
 
                     } else {
 
-                        itemName.setStyleName("button-itemName");
-                        price.setStyleName("label-price");
+                        itemName.setStyleName("bbutton-itemName");
+                        price.setStyleName("gridItem-label");
 
                     }
 
@@ -538,8 +524,8 @@ public class ItemModifierDialog extends AbstractWindow {
 
             }
 
-            itemName.setCaption(orderLine.getItemName());
-            price.setValue(orderLine.getPrice().toString());
+            itemName.setCaption(orderLineToDraw.getItemName());
+            price.setValue(orderLineToDraw.getPrice().toString());
 
             hBoxLayout.add(itemName);
             hBoxLayout.add(price);

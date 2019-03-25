@@ -8,6 +8,7 @@
         <item screen="jokerapp$TableItem.browse"/>
         <item screen="jokerapp$ProductModifierCategory.browse"/>
         <item screen="jokerapp$ProductItem.browse"/>
+        <item screen="jokerapp$Kitchen.display"/>
         <item screen="jokerapp$ItemModifier.dialog"/>
     </menu>
 </menu-config>

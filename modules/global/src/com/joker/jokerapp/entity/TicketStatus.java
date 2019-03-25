@@ -5,17 +5,15 @@ import com.haulmont.chile.core.datatypes.impl.EnumClass;
 import javax.annotation.Nullable;
 
 
-public enum OrderStatus implements EnumClass<String> {
+public enum TicketStatus implements EnumClass<String> {
 
-    open("open"),
-    bill("bill"),
-    paid("paid"),
-    cancelled("cancelled"),
-    closed("closed");
+    notSended("notSended"),
+    sended("sended"),
+    cancelled("cancelled");
 
     private String id;
 
-    OrderStatus(String value) {
+    TicketStatus(String value) {
         this.id = value;
     }
 
@@ -24,8 +22,8 @@ public enum OrderStatus implements EnumClass<String> {
     }
 
     @Nullable
-    public static OrderStatus fromId(String id) {
-        for (OrderStatus at : OrderStatus.values()) {
+    public static TicketStatus fromId(String id) {
+        for (TicketStatus at : TicketStatus.values()) {
             if (at.getId().equals(id)) {
                 return at;
             }

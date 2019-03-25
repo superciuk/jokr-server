@@ -4,21 +4,11 @@
         class="com.joker.jokerapp.web.screens.TableSelect"
         messagesPack="com.joker.jokerapp.web.screens">
     <dsContext>
-        <groupDatasource id="tableItemsDs"
-                         class="com.joker.jokerapp.entity.TableItem"
-                         view="tableItem-view">
+        <collectionDatasource id="tableItemsDs"
+                              class="com.joker.jokerapp.entity.TableItem"
+                              view="tableItem-view">
             <query>
                 <![CDATA[select e from jokerapp$TableItem e order by e.tableNumber]]>
-            </query>
-        </groupDatasource>
-        <datasource id="tableItemDs"
-                    class="com.joker.jokerapp.entity.TableItem"
-                    view="tableItem-view"/>
-        <collectionDatasource id="ordersDs"
-                              class="com.joker.jokerapp.entity.Order"
-                              view="_minimal">
-            <query>
-                <![CDATA[select e from jokerapp$Order e]]>
             </query>
         </collectionDatasource>
     </dsContext>
@@ -31,6 +21,7 @@
                minSplitPosition="90%"
                orientation="vertical"
                pos="90%"
+               settingsEnabled="false"
                width="100%">
             <split height="100%"
                    maxSplitPosition="10%"
@@ -48,16 +39,19 @@
                         <button id="splitTableBtn"
                                 caption="SPLIT TABLE"
                                 height="100%"
+                                invoke="onSplitTableBtnClick"
                                 stylename="tableScreenFunctionBtn"
                                 width="120px"/>
                         <button id="mergeTableBtn"
                                 caption="MERGE TABLE"
                                 height="100%"
+                                invoke="onMergeTableBtnClick"
                                 stylename="tableScreenFunctionBtn"
                                 width="120px"/>
                         <button id="moveTableBtn"
                                 caption="MOVE TABLE"
                                 height="100%"
+                                invoke="onMoveTableBtnClick"
                                 stylename="tableScreenFunctionBtn"
                                 width="120px"/>
                         <button id="reservationBtn"

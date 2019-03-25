@@ -18,6 +18,8 @@ import com.haulmont.cuba.core.entity.annotation.OnDelete;
 // import com.haulmont.cuba.core.global.DataManager;
 
 import java.util.UUID;
+import com.haulmont.chile.core.annotations.MetaProperty;
+import javax.persistence.Transient;
 
 @NamePattern("%s|id")
 @Table(name = "JOKERAPP_ORDER_LINE")
@@ -25,6 +27,10 @@ import java.util.UUID;
 
 public class OrderLine extends StandardEntity {
     private static final long serialVersionUID = 2123398643400124806L;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TICKET_ID")
+    protected Ticket ticket;
 
     @Column(name = "QUANTITY")
     protected Integer quantity;
@@ -51,12 +57,6 @@ public class OrderLine extends StandardEntity {
     protected BigDecimal taxes;
 
 
-    @OnDeleteInverse(DeletePolicy.CASCADE)
-    @OnDelete(DeletePolicy.UNLINK)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ORDER_ID")
-    protected Order order;
-
     @Column(name = "POSITION_")
     protected Integer position;
 
@@ -78,19 +78,28 @@ public class OrderLine extends StandardEntity {
     @Column(name = "IS_SENDED", nullable = false)
     protected Boolean isSended = false;
 
-/*
-
-    @Inject
-    private DataManager dataManager;
-*/
 
 
+    @Column(name = "IS_REVERSED")
+    protected Boolean isReversed;
 
-    @Column(name = "IS_SELECTED")
-    protected Boolean isSelected;
+    public void setIsReversed(Boolean isReversed) {
+        this.isReversed = isReversed;
+    }
 
-    @Column(name = "TICKET_NUMBER")
-    protected Integer ticketNumber;
+    public Boolean getIsReversed() {
+        return isReversed;
+    }
+
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
 
     public void setItemId(UUID itemId) {
         this.itemId = itemId;
@@ -101,22 +110,6 @@ public class OrderLine extends StandardEntity {
     }
 
 
-    public void setIsSelected(Boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
-    public Boolean getIsSelected() {
-        return isSelected;
-    }
-
-
-    public void setTicketNumber(Integer ticketNumber) {
-        this.ticketNumber = ticketNumber;
-    }
-
-    public Integer getTicketNumber() {
-        return ticketNumber;
-    }
 
 
     public void setPrinterGroup(String printerGroup) {
@@ -202,14 +195,6 @@ public class OrderLine extends StandardEntity {
     }
 
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
@@ -238,16 +223,5 @@ public class OrderLine extends StandardEntity {
     public BigDecimal getPrice() {
         return price;
     }
-
-/*    public List<OrderLine> getModifiers() {
-
-        List <OrderLine> orderModifierLines = dataManager.load(OrderLine.class)
-                .query("select e from jokerapp$OrderLine e where e.itemToModifyId = :selectedLineId")
-                .parameter("selectedLineId", this)
-                .view("order-line-view")
-                .list();
-
-        return  orderModifierLines;
-    }*/
 
 }

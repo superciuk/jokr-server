@@ -47,12 +47,6 @@ public class Order extends StandardEntity {
     @Column(name = "WITH_SERVICE", nullable = false)
     protected Boolean withService = false;
 
-    @OnDeleteInverse(DeletePolicy.UNLINK)
-    @Composition
-    @OnDelete(DeletePolicy.CASCADE)
-    @OneToMany(mappedBy = "order")
-    protected List<OrderLine> orderLines;
-
     @Column(name = "DISCOUNT", precision = 12, scale = 2)
     protected BigDecimal discount;
 
@@ -61,6 +55,20 @@ public class Order extends StandardEntity {
 
     @Column(name = "TAXES")
     protected BigDecimal taxes;
+
+
+    @Composition
+    @OnDelete(DeletePolicy.CASCADE)
+    @OneToMany(mappedBy = "order")
+    protected List<Ticket> tickets;
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
 
 
     public void setTableItemCaption(String tableItemCaption) {
@@ -97,14 +105,6 @@ public class Order extends StandardEntity {
         return taxes;
     }
 
-
-    public void setOrderLines(List<OrderLine> orderLines) {
-        this.orderLines = orderLines;
-    }
-
-    public List<OrderLine> getOrderLines() {
-        return orderLines;
-    }
 
 
 

@@ -26,7 +26,7 @@
                                    align="MIDDLE_LEFT"
                                    datatype="int"
                                    height="40px"
-                                   stylename="v-button-fontSize30"
+                                   stylename="seatsTextField"
                                    width="120px"/>
                     </hbox>
                 </vbox>
@@ -38,12 +38,14 @@
                             caption="msg://OK"
                             height="60px"
                             invoke="onOkBtnClick"
+                            stylename="okBtn"
                             width="150px"/>
                     <button id="cancelBtn"
                             align="MIDDLE_RIGHT"
                             caption="msg://Cancel"
                             height="60px"
                             invoke="onCancelBtnClick"
+                            stylename="cancelBtn"
                             width="150px"/>
                 </buttonsPanel>
             </vbox>
@@ -129,7 +131,6 @@
                             caption="*"
                             enable="false"
                             height="100px"
-                            invoke="onNumPadBtnBClick"
                             stylename="virtualKeyBtn"
                             width="100px"/>
                 </buttonsPanel>

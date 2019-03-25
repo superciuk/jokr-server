@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<app-component xmlns="http://schemas.haulmont.com/cuba/app-component.xsd"
+               dependsOn="com.haulmont.cuba">
+    <module blocks="*"
+            name="global">
+        <artifact appJar="true"
+                  name="JokerApp-global"/>
+        <property name="cuba.persistenceConfig"
+                  value="+com/joker/jokerapp/persistence.xml"/>
+        <property name="cuba.metadataConfig"
+                  value="+com/joker/jokerapp/metadata.xml"/>
+        <property name="cuba.viewsConfig"
+                  value="+com/joker/jokerapp/views.xml"/>
+    </module>
+    <module blocks="core"
+            dependsOn="global"
+            name="core">
+        <artifact appJar="true"
+                  name="JokerApp-core"/>
+        <artifact classifier="db"
+                  configuration="dbscripts"
+                  ext="zip"
+                  name="JokerApp-core"/>
+        <property name="cuba.springContextConfig"
+                  value="+com/joker/jokerapp/spring.xml"/>
+        <property name="cuba.mainMessagePack"
+                  value="+com.joker.jokerapp.core"/>
+    </module>
+    <module blocks="web,desktop"
+            dependsOn="global"
+            name="gui">
+        <artifact appJar="true"
+                  name="JokerApp-gui"/>
+    </module>
+    <module blocks="web"
+            dependsOn="gui"
+            name="web">
+        <artifact appJar="true"
+                  name="JokerApp-web"/>
+        <artifact classifier="web"
+                  configuration="webcontent"
+                  ext="zip"
+                  name="JokerApp-web"/>
+        <artifact configuration="themes"
+                  name="JokerApp-web-themes"/>
+        <property name="cuba.springContextConfig"
+                  value="+com/joker/jokerapp/web-spring.xml"/>
+        <property name="cuba.dispatcherSpringContextConfig"
+                  value="+com/joker/jokerapp/web-dispatcher-spring.xml"/>
+        <property name="cuba.windowConfig"
+                  value="+com/joker/jokerapp/web-screens.xml"/>
+        <property name="cuba.menuConfig"
+                  value="+com/joker/jokerapp/web-menu.xml"/>
+        <property name="cuba.permissionConfig"
+                  value="+com/joker/jokerapp/web-permissions.xml"/>
+        <property name="cuba.mainMessagePack"
+                  value="+com.joker.jokerapp.web"/>
+    </module>
+    <module name="web-themes">
+        <artifact name="JokerApp-web-themes"/>
+    </module>
+</app-component>
