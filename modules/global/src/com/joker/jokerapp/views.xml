@@ -77,7 +77,6 @@
                     <property name="hasModifier"/>
                     <property name="isModifier"/>
                     <property name="itemToModifyId"/>
-                    <property name="isSended"/>
                     <property name="createTs"/>
                     <property name="createdBy"/>
                     <property name="updateTs"/>
@@ -85,6 +84,7 @@
                     <property name="ticket"
                               view="_minimal"/>
                     <property name="isReversed"/>
+                    <property name="isdone"/>
                 </property>
                 <property name="createTs"/>
                 <property name="createdBy"/>
@@ -112,6 +112,8 @@
             <property name="isModifier"/>
             <property name="itemToModifyId"/>
             <property name="isReversed"/>
+            <property name="position"/>
+            <property name="isdone"/>
         </property>
         <property name="order"
                   view="_minimal">

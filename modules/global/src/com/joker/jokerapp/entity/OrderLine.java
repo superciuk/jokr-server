@@ -35,9 +35,6 @@ public class OrderLine extends StandardEntity {
     @Column(name = "QUANTITY")
     protected Integer quantity;
 
-    @Column(name = "PRINTER_GROUP")
-    protected String printerGroup;
-
     @NotNull
     @Column(name = "ITEM_NAME", nullable = false)
     protected String itemName;
@@ -74,14 +71,25 @@ public class OrderLine extends StandardEntity {
     @Column(name = "ITEM_TO_MODIFY_ID")
     protected UUID itemToModifyId;
 
-    @NotNull
-    @Column(name = "IS_SENDED", nullable = false)
-    protected Boolean isSended = false;
 
 
+    @Column(name = "ISDONE")
+    protected Boolean isdone;
 
     @Column(name = "IS_REVERSED")
     protected Boolean isReversed;
+
+    @Column(name = "PRINTER_GROUP")
+    protected String printerGroup;
+
+    public void setIsdone(Boolean isdone) {
+        this.isdone = isdone;
+    }
+
+    public Boolean getIsdone() {
+        return isdone;
+    }
+
 
     public void setIsReversed(Boolean isReversed) {
         this.isReversed = isReversed;
@@ -147,14 +155,6 @@ public class OrderLine extends StandardEntity {
         return unitPrice;
     }
 
-
-    public void setIsSended(Boolean isSended) {
-        this.isSended = isSended;
-    }
-
-    public Boolean getIsSended() {
-        return isSended;
-    }
 
 
     public void setHasModifier(Boolean hasModifier) {

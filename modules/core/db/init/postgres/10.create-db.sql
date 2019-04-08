@@ -132,7 +132,6 @@ create table JOKERAPP_ORDER_LINE (
     --
     TICKET_ID uuid,
     QUANTITY integer,
-    PRINTER_GROUP varchar(255),
     ITEM_NAME varchar(255) not null,
     ITEM_ID uuid,
     UNIT_PRICE decimal(19, 2),
@@ -143,8 +142,9 @@ create table JOKERAPP_ORDER_LINE (
     HAS_MODIFIER boolean not null,
     IS_MODIFIER boolean not null,
     ITEM_TO_MODIFY_ID uuid,
-    IS_SENDED boolean not null,
+    ISDONE boolean,
     IS_REVERSED boolean,
+    PRINTER_GROUP varchar(255),
     --
     primary key (ID)
 )^

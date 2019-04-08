@@ -540,7 +540,7 @@ public class OrderScreen extends AbstractWindow {
         newLine.setIsModifier(false);
         newLine.setItemToModifyId(null);
         newLine.setPrinterGroup(productItemToAdd.getPrinterGroup().toString());
-        newLine.setIsSended(false);
+        newLine.setIsdone(false);
         newLine.setIsReversed(false);
 
         dataManager.commit(newLine);
@@ -694,7 +694,7 @@ public class OrderScreen extends AbstractWindow {
                 newModifierLine.setIsModifier(true);
                 newModifierLine.setItemToModifyId(selectedLine.getId());
                 newModifierLine.setPrinterGroup(selectedLine.getPrinterGroup());
-                newModifierLine.setIsSended(false);
+                newModifierLine.setIsdone(false);
                 newModifierLine.setIsReversed(false);
 
                 selectedLine.getTicket().getOrderLines().add(newModifierLine);
@@ -1499,7 +1499,7 @@ public class OrderScreen extends AbstractWindow {
 
                                 Character c = lineName.charAt(i);
 
-                                if (Character.isSpace(c)) {
+                                if (Character.isWhitespace(c)) {
 
                                     if (i > 20 * l) break;
 
@@ -1555,6 +1555,7 @@ public class OrderScreen extends AbstractWindow {
             doNotPrintBtn.setStyleName("doNotPrintBtnPushed");
             doNotPrintBtn.setCaption("NON STAMPARE<br>LE COMANDE");
             doNotPrint = true;
+
         }
 
     }

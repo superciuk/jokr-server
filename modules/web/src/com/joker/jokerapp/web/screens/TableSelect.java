@@ -89,7 +89,7 @@ public class TableSelect extends AbstractWindow {
 
         Timer clockTimer = componentsFactory.createTimer();
         addTimer(clockTimer);
-        clockTimer.setDelay(1000);
+        clockTimer.setDelay(5000);
         clockTimer.setRepeating(true);
         clockTimer.addActionListener(timer -> refreshData());
 
@@ -378,6 +378,7 @@ public class TableSelect extends AbstractWindow {
             if (selectedTable.getCurrentOrder()!=null) {
 
                 selectedTable.getCurrentOrder().setStatus(OrderStatus.cancelled);
+                dataManager.commit(selectedTable.getCurrentOrder());
                 selectedTable.setCurrentOrder(null);
                 selectedTable.setTableStatus(TableItemStatus.free);
 

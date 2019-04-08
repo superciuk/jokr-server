@@ -9,6 +9,9 @@ public enum TicketStatus implements EnumClass<String> {
 
     notSended("notSended"),
     sended("sended"),
+    checked("checked"),
+    modified("modified"),
+    closed("closed"),
     cancelled("cancelled");
 
     private String id;

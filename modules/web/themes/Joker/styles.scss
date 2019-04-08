@@ -173,3 +173,131 @@
 /* ITEM PRICE MODIFIER DIALOG */
 
 .Joker .newPriceTextField {background-color:#374049;color:#ffffff;font-size:30px;-webkit-box-shadow:none;box-shadow:none;border-radius:6px;border:0px}
+
+/* KITCHEN DISPLAY */
+
+.Joker .tableNameBtn {background-image:-webkit-radial-gradient(#006400, #003400);margin-bottom:20px;background-image:radial-gradient(#006400, #003400);border-radius:10px;border:0px !important;font-size:26px;text-align:center;color:#ffffff}
+
+.Joker .kitchenDisplayBtn {background-image:-webkit-radial-gradient(#006080, #00394d);background-image:radial-gradient(#006080, #00394d);border:0px;border-radius:10px; color:#ffffff;font-size:20px}
+
+.Joker .kitchenDisplayBtnPressed {background-image:-webkit-radial-gradient(#e6ac00, #806000);background-image:radial-gradient(#e6ac00, #806000);border:0px;border-radius:10px; color:#ffffff;font-size:20px}
+
+
+.Joker .kitchenDisplayGridItem-label-bar{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-bar{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6b3}
+
+.Joker .kitchenDisplayGridItem-label-fryer{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-fryer{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6b3}
+
+.Joker .kitchenDisplayGridItem-label-grill{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-grill{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6b3}
+
+
+.Joker .kitchenDisplayGridItem-label-selected-bar{background-color:transparent;margin:1px 0px;border:0px;color:#d9f2d9;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-bar{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#d9f2d9}
+
+.Joker .kitchenDisplayGridItem-label-selected-fryer{background-color:transparent;margin:1px 0px;border:0px;color:#d9f2d9;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-fryer{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#d9f2d9}
+
+.Joker .kitchenDisplayGridItem-label-selected-grill{background-color:transparent;margin:1px 0px;border:0px;color:#d9f2d9;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-grill{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#d9f2d9}
+
+
+.Joker .kitchenDisplayGridItem-label-isSended-bar{background-color:transparent;margin:1px 0px;border:0px;color:#33bbff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isSended-bar{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#33bbff}
+
+.Joker .kitchenDisplayGridItem-label-isSended-fryer{background-color:transparent;margin:1px 0px;border:0px;color:#ffcc66;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isSended-fryer{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffcc66}
+
+.Joker .kitchenDisplayGridItem-label-isSended-grill{background-color:transparent;margin:1px 0px;border:0px;color:#df9f9f;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isSended-grill{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#df9f9f}
+
+
+
+.Joker .kitchenDisplayGridItem-label-isSended-isReversed-bar{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-isSended-isReversed-bar{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6ff;text-decoration:line-through}
+
+.Joker .kitchenDisplayGridItem-label-isSended-isReversed-fryer{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-isSended-isReversed-fryer{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6ff;text-decoration:line-through}
+
+.Joker .kitchenDisplayGridItem-label-isSended-isReversed-grill{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-isSended-isReversed-grill{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6ff;text-decoration:line-through}
+
+
+.Joker .kitchenDisplayGridItem-label-selected-isSended-bar{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-isSended-bar{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff}
+
+.Joker .kitchenDisplayGridItem-label-selected-isSended-fryer{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-isSended-fryer{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff}
+
+.Joker .kitchenDisplayGridItem-label-selected-isSended-grill{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-isSended-grill{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff}
+
+
+.Joker .kitchenDisplayGridItem-label-selected-isSended-isReversed-bar{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-selected-isSended-isReversed-bar{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff;text-decoration:line-through}
+
+.Joker .kitchenDisplayGridItem-label-selected-isSended-isReversed-fryer{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-selected-isSended-isReversed-fryer{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff;text-decoration:line-through}
+
+.Joker .kitchenDisplayGridItem-label-selected-isSended-isReversed-grill{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-selected-isSended-isReversed-grill{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff;text-decoration:line-through}
+
+
+
+
+.Joker .kitchenDisplayGridItem-label-isModifier-bar{background-color:transparent;margin:1px 0px;border:0px;color:#79d279;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isModifier-bar{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#79d279}
+
+.Joker .kitchenDisplayGridItem-label-isModifier-fryer{background-color:transparent;margin:1px 0px;border:0px;color:#79d279;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isModifier-fryer{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#79d279}
+
+.Joker .kitchenDisplayGridItem-label-isModifier-grill{background-color:transparent;margin:1px 0px;border:0px;color:#79d279;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isModifier-grill{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#79d279}
+
+
+.Joker .kitchenDisplayGridItem-label-selected-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:#d9f2d9;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#d9f2d9}
+
+.Joker .kitchenDisplayGridItem-label-isModifier-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#66ccff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#66ccff}
+
+.Joker .kitchenDisplayGridItem-label-isModifier-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#66ccff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-isReversed-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#66ccff;text-decoration:line-through}
+
+
+.Joker .kitchenDisplayGridItem-label-isModifier-isSended-bar{background-color:transparent;margin:1px 0px;border:0px;color:#ffb366;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-bar{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffb366}
+
+.Joker .kitchenDisplayGridItem-label-isModifier-isSended-fryer{background-color:transparent;margin:1px 0px;border:0px;color:#ffb366;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-fryer{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffb366}
+
+.Joker .kitchenDisplayGridItem-label-isModifier-isSended-grill{background-color:transparent;margin:1px 0px;border:0px;color:#ffb366;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-grill{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffb366}
+
+
+.Joker .kitchenDisplayGridItem-label-isModifier-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffb366;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffb366;text-decoration:line-through}
+
+.Joker .kitchenDisplayGridItem-label-selected-isModifier-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#cceeff}
+
+.Joker .kitchenDisplayGridItem-label-selected-isModifier-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-isReversed-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#cceeff;text-decoration:line-through}
+
+
+.Joker .kitchenDisplayGridItem-label-selected-isModifier-isSended-bar{background-color:transparent;margin:1px 0px;border:0px;color:#ffe6cc;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-bar{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffe6cc}
+
+.Joker .kitchenDisplayGridItem-label-selected-isModifier-isSended-fryer{background-color:transparent;margin:1px 0px;border:0px;color:#ffe6cc;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-fryer{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffe6cc}
+
+.Joker .kitchenDisplayGridItem-label-selected-isModifier-isSended-grill{background-color:transparent;margin:1px 0px;border:0px;color:#ffe6cc;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-grill{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffe6cc}
+
+
+.Joker .kitchenDisplayGridItem-label-selected-isModifier-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffe6cc;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffe6cc;text-decoration:line-through}
+
+.Joker .kitchenDisplayGridItem-checkBtn-pushed{margin-right:10px;background-image:-webkit-radial-gradient(#006400, #003400);background-image:radial-gradient(#006400, #003400);border:0px !important;font-size:16px;text-align:center;color:#ffffff}
+.Joker .kitchenDisplayGridItem-checkBtn{margin-right:10px;background-image:-webkit-radial-gradient(#cc0000, #500000);background-image:radial-gradient(#cc0000, #500000);border:0px !important;font-size:16px;text-align:center;color:#ffffff}

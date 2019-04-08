@@ -295,12 +295,12 @@ public class ItemModifierDialog extends AbstractWindow {
         newLine.setTicket(selectedLine.getTicket());
         newLine.setPosition(selectedLine.getNextModifierPosition());
         selectedLine.setNextModifierPosition(selectedLine.getNextModifierPosition()+1);
-        newLine.setHasModifier(Boolean.FALSE);
+        newLine.setHasModifier(false);
         newLine.setIsModifier(Boolean.TRUE);
         newLine.setItemToModifyId(selectedLine.getId());
         newLine.setPrinterGroup(selectedLine.getPrinterGroup());
-        newLine.setIsSended(Boolean.FALSE);
-        newLine.setIsReversed(Boolean.FALSE);
+        newLine.setIsdone(false);
+        newLine.setIsReversed(false);
 
         if (selectedLine.getHasModifier().equals(Boolean.FALSE)) selectedLine.setHasModifier(Boolean.TRUE);
 
@@ -388,7 +388,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
                         modifierSelectedLineId = orderLineToDraw.getItemId();
 
-                        if (orderLineToDraw.getIsSended()) {
+                        if (orderLineToDraw.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 
                             if (orderLineToDraw.getIsModifier()) {
 
@@ -422,7 +422,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
                         modifierSelectedLineId = null;
 
-                        if (orderLineToDraw.getIsSended()) {
+                        if (orderLineToDraw.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 
                             if (orderLineToDraw.getIsModifier()) {
 
@@ -460,7 +460,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
             if (orderLineToDraw.getItemId().equals(modifierSelectedLineId)) {
 
-                if (orderLineToDraw.getIsSended()) {
+                if (orderLineToDraw.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 
                     if (orderLineToDraw.getIsModifier()) {
 
@@ -492,7 +492,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
             } else {
 
-                if (orderLineToDraw.getIsSended()) {
+                if (orderLineToDraw.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 
                     if (orderLineToDraw.getIsModifier()) {
 
