@@ -32,7 +32,7 @@ create table JOKERAPP_PRODUCT_ITEM (
     CATEGORY_ID uuid not null,
     VISIBLE boolean,
     PRICE decimal(12, 2) not null,
-    PRINTER_GROUP integer,
+    PRINTER_GROUP varchar(50),
     --
     primary key (ID)
 )^
@@ -142,9 +142,9 @@ create table JOKERAPP_ORDER_LINE (
     HAS_MODIFIER boolean not null,
     IS_MODIFIER boolean not null,
     ITEM_TO_MODIFY_ID uuid,
-    ISDONE boolean,
+    CHECKED boolean,
     IS_REVERSED boolean,
-    PRINTER_GROUP varchar(255),
+    PRINTER_GROUP varchar(50),
     --
     primary key (ID)
 )^
@@ -170,6 +170,7 @@ create table JOKERAPP_TICKET (
     ORDER_ID uuid,
     TICKET_NUMBER integer,
     TICKET_STATUS varchar(50),
+    SUBTICKET_STATUS varchar(255),
     --
     primary key (ID)
 )^

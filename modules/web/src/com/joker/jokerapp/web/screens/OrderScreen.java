@@ -121,7 +121,7 @@ public class OrderScreen extends AbstractWindow {
     private BigDecimal service = new BigDecimal(0.0);
     private BigDecimal total = new BigDecimal(0.0);
 
-    private String printerGroupToSendTicket;
+    private PrinterGroup printerGroupToSendTicket;
 
     private int categorySize = 0;
     private int categoriesPages = 0;
@@ -501,6 +501,7 @@ public class OrderScreen extends AbstractWindow {
             ticket.setOrder(tableItemDs.getItem().getCurrentOrder());
             ticket.setTicketStatus(TicketStatus.notSended);
             ticket.setTicketNumber(ticketsDs.getItems().size() + 1);
+            ticket.setSubticketStatus("bn-fn-gn");
 
             dataManager.commit(ticket);
             tableItemDs.refresh();
@@ -539,8 +540,27 @@ public class OrderScreen extends AbstractWindow {
         newLine.setHasModifier(false);
         newLine.setIsModifier(false);
         newLine.setItemToModifyId(null);
-        newLine.setPrinterGroup(productItemToAdd.getPrinterGroup().toString());
-        newLine.setIsdone(false);
+        newLine.setPrinterGroup(productItemToAdd.getPrinterGroup());
+
+        if (newLine.getPrinterGroup().equals(PrinterGroup.Bar) && ticketsDs.getItem(currentTicketId).getSubticketStatus().charAt(1) == 'n') {
+
+            ticketsDs.getItem(currentTicketId).setSubticketStatus(ticketsDs.getItem(currentTicketId).getSubticketStatus().replace("bn", "bo"));
+            dataManager.commit(ticketsDs.getItem(currentTicketId));
+
+        } else if (newLine.getPrinterGroup().equals(PrinterGroup.Fryer) && ticketsDs.getItem(currentTicketId).getSubticketStatus().charAt(4) == 'n') {
+
+            ticketsDs.getItem(currentTicketId).setSubticketStatus(ticketsDs.getItem(currentTicketId).getSubticketStatus().replace("fn", "fo"));
+            dataManager.commit(ticketsDs.getItem(currentTicketId));
+
+
+        } else if (newLine.getPrinterGroup().equals(PrinterGroup.Grill) && ticketsDs.getItem(currentTicketId).getSubticketStatus().charAt(7) == 'n') {
+
+            ticketsDs.getItem(currentTicketId).setSubticketStatus(ticketsDs.getItem(currentTicketId).getSubticketStatus().replace("gn", "go"));
+            dataManager.commit(ticketsDs.getItem(currentTicketId));
+
+        }
+
+        newLine.setChecked(false);
         newLine.setIsReversed(false);
 
         dataManager.commit(newLine);
@@ -694,7 +714,7 @@ public class OrderScreen extends AbstractWindow {
                 newModifierLine.setIsModifier(true);
                 newModifierLine.setItemToModifyId(selectedLine.getId());
                 newModifierLine.setPrinterGroup(selectedLine.getPrinterGroup());
-                newModifierLine.setIsdone(false);
+                newModifierLine.setChecked(false);
                 newModifierLine.setIsReversed(false);
 
                 selectedLine.getTicket().getOrderLines().add(newModifierLine);
@@ -1383,17 +1403,17 @@ public class OrderScreen extends AbstractWindow {
         withFries = false;
         isGrillTicket = false;
 
-        for (PrinterGroup printerGroup : PrinterGroup.values()) {
+        for (PrinterGroup printerGroup: PrinterGroup.values()) {
 
-            printerGroupToSendTicket = printerGroup.toString();
+            printerGroupToSendTicket = printerGroup;
 
             Boolean printerGroupLinesExixts = false;
 
-            for (OrderLine line : ticketToPrint.getOrderLines())
+            for (OrderLine line: ticketToPrint.getOrderLines())
                 if (line.getPrinterGroup().equals(printerGroupToSendTicket)) printerGroupLinesExixts = true;
 
-            if (printerGroupToSendTicket.equals("Fryer") && printerGroupLinesExixts) withFries = true;
-            if (printerGroupToSendTicket.equals("Grill")) isGrillTicket = true;
+            if (printerGroupToSendTicket.equals(PrinterGroup.Fryer) && printerGroupLinesExixts) withFries = true;
+            if (printerGroupToSendTicket.equals(PrinterGroup.Grill)) isGrillTicket = true;
 
             if (printerGroupLinesExixts) {
 
@@ -1459,7 +1479,7 @@ public class OrderScreen extends AbstractWindow {
 
                 Graphics2D graphics2D = (Graphics2D) graphics;
                 graphics2D.setFont(font1);
-                graphics2D.drawString(printerGroupToSendTicket.toUpperCase(), xMin + 70, y);
+                graphics2D.drawString(printerGroupToSendTicket.toString().toUpperCase(), xMin + 70, y);
                 y += 30;
                 graphics2D.drawString("TAVOLO: ".concat(tableItemDs.getItem().getTableCaption()), xMin, y);
                 y += 30;

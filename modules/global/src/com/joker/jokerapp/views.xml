@@ -37,6 +37,7 @@
             <property name="updateTs"/>
             <property name="updatedBy"/>
             <property name="ticketNumber"/>
+            <property name="subticketStatus"/>
         </property>
     </view>
     <view class="com.joker.jokerapp.entity.TableItem"
@@ -84,12 +85,13 @@
                     <property name="ticket"
                               view="_minimal"/>
                     <property name="isReversed"/>
-                    <property name="isdone"/>
+                    <property name="checked"/>
                 </property>
                 <property name="createTs"/>
                 <property name="createdBy"/>
                 <property name="updateTs"/>
                 <property name="updatedBy"/>
+                <property name="subticketStatus"/>
             </property>
             <property name="createTs"/>
             <property name="createdBy"/>
@@ -113,7 +115,7 @@
             <property name="itemToModifyId"/>
             <property name="isReversed"/>
             <property name="position"/>
-            <property name="isdone"/>
+            <property name="checked"/>
         </property>
         <property name="order"
                   view="_minimal">

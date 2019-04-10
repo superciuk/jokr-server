@@ -30,10 +30,22 @@ public class Ticket extends StandardEntity {
     @Column(name = "TICKET_STATUS")
     protected String ticketStatus;
 
+    @Column(name = "SUBTICKET_STATUS")
+    protected String subticketStatus;
+
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "ticket")
     protected List<OrderLine> orderLines;
+
+    public void setSubticketStatus(String subticketStatus) {
+        this.subticketStatus = subticketStatus;
+    }
+
+    public String getSubticketStatus() {
+        return subticketStatus;
+    }
+
 
     public void setTicketNumber(Integer ticketNumber) {
         this.ticketNumber = ticketNumber;

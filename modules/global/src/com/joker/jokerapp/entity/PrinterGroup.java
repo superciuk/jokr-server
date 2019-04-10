@@ -5,24 +5,24 @@ import com.haulmont.chile.core.datatypes.impl.EnumClass;
 import javax.annotation.Nullable;
 
 
-public enum PrinterGroup implements EnumClass<Integer> {
+public enum PrinterGroup implements EnumClass<String> {
 
-    Bar(10),
-    Fryer(20),
-    Grill(30);
+    Bar("Bar"),
+    Fryer("Fryer"),
+    Grill("Grill");
 
-    private Integer id;
+    private String id;
 
-    PrinterGroup(Integer value) {
+    PrinterGroup(String value) {
         this.id = value;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
     @Nullable
-    public static PrinterGroup fromId(Integer id) {
+    public static PrinterGroup fromId(String id) {
         for (PrinterGroup at : PrinterGroup.values()) {
             if (at.getId().equals(id)) {
                 return at;

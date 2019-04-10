@@ -58,15 +58,16 @@ public class ProductItem extends StandardEntity {
     protected List<ProductModifierCategory> modifierCategories;
 
     @Column(name = "PRINTER_GROUP")
-    protected Integer printerGroup;
+    protected String printerGroup;
+
+    public PrinterGroup getPrinterGroup() {
+        return printerGroup == null ? null : PrinterGroup.fromId(printerGroup);
+    }
 
     public void setPrinterGroup(PrinterGroup printerGroup) {
         this.printerGroup = printerGroup == null ? null : printerGroup.getId();
     }
 
-    public PrinterGroup getPrinterGroup() {
-        return printerGroup == null ? null : PrinterGroup.fromId(printerGroup);
-    }
 
 
     public void setModifierCategories(List<ProductModifierCategory> modifierCategories) {

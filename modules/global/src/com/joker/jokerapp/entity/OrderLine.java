@@ -73,8 +73,8 @@ public class OrderLine extends StandardEntity {
 
 
 
-    @Column(name = "ISDONE")
-    protected Boolean isdone;
+    @Column(name = "CHECKED")
+    protected Boolean checked;
 
     @Column(name = "IS_REVERSED")
     protected Boolean isReversed;
@@ -82,13 +82,24 @@ public class OrderLine extends StandardEntity {
     @Column(name = "PRINTER_GROUP")
     protected String printerGroup;
 
-    public void setIsdone(Boolean isdone) {
-        this.isdone = isdone;
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 
-    public Boolean getIsdone() {
-        return isdone;
+    public Boolean getChecked() {
+        return checked;
     }
+
+
+    public PrinterGroup getPrinterGroup() {
+        return printerGroup == null ? null : PrinterGroup.fromId(printerGroup);
+    }
+
+    public void setPrinterGroup(PrinterGroup printerGroup) {
+        this.printerGroup = printerGroup == null ? null : printerGroup.getId();
+    }
+
+
 
 
     public void setIsReversed(Boolean isReversed) {
@@ -119,14 +130,6 @@ public class OrderLine extends StandardEntity {
 
 
 
-
-    public void setPrinterGroup(String printerGroup) {
-        this.printerGroup = printerGroup;
-    }
-
-    public String getPrinterGroup() {
-        return printerGroup;
-    }
 
 
     public void setNextModifierPosition(Integer nextModifierPosition) {

@@ -299,7 +299,7 @@ public class ItemModifierDialog extends AbstractWindow {
         newLine.setIsModifier(Boolean.TRUE);
         newLine.setItemToModifyId(selectedLine.getId());
         newLine.setPrinterGroup(selectedLine.getPrinterGroup());
-        newLine.setIsdone(false);
+        newLine.setChecked(false);
         newLine.setIsReversed(false);
 
         if (selectedLine.getHasModifier().equals(Boolean.FALSE)) selectedLine.setHasModifier(Boolean.TRUE);
