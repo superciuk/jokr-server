@@ -6,9 +6,6 @@ import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
-import java.util.List;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -33,11 +30,9 @@ public class TableItem extends StandardEntity {
     @Column(name = "SEATS_CAPACITY")
     protected Integer seatsCapacity;
 
-
     @NotNull
     @Column(name = "TABLE_STATUS", nullable = false)
     protected String tableStatus;
-
 
     @Composition
     @OnDeleteInverse(DeletePolicy.UNLINK)
@@ -49,8 +44,6 @@ public class TableItem extends StandardEntity {
     @NotNull
     @Column(name = "WITH_SERVICE_BY_DEFAULT", nullable = false)
     protected Boolean withServiceByDefault = false;
-
-
 
     @NotNull
     @Column(name = "CHECKED", nullable = false)
@@ -64,7 +57,6 @@ public class TableItem extends StandardEntity {
         return checked;
     }
 
-
     public void setTableCaption(String tableCaption) {
         this.tableCaption = tableCaption;
     }
@@ -72,7 +64,6 @@ public class TableItem extends StandardEntity {
     public String getTableCaption() {
         return tableCaption;
     }
-
 
     public Integer getTableNumber() {
         return tableNumber;
@@ -82,8 +73,6 @@ public class TableItem extends StandardEntity {
         this.tableNumber = tableNumber;
     }
 
-
-
     public void setWithServiceByDefault(Boolean withServiceByDefault) {
         this.withServiceByDefault = withServiceByDefault;
     }
@@ -91,7 +80,6 @@ public class TableItem extends StandardEntity {
     public Boolean getWithServiceByDefault() {
         return withServiceByDefault;
     }
-
 
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;
@@ -101,11 +89,9 @@ public class TableItem extends StandardEntity {
         return currentOrder;
     }
 
-
     public void setTableStatus(TableItemStatus tableStatus) {
         this.tableStatus = tableStatus == null ? null : tableStatus.getId();
     }
-
 
     public TableItemStatus getTableStatus() {
         return tableStatus == null ? null : TableItemStatus.fromId(tableStatus);
@@ -118,6 +104,5 @@ public class TableItem extends StandardEntity {
     public Integer getSeatsCapacity() {
         return seatsCapacity;
     }
-
 
 }

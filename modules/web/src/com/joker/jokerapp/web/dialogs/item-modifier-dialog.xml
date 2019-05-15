@@ -5,7 +5,7 @@
         messagesPack="com.joker.jokerapp.web.dialogs">
     <dsContext>
         <collectionDatasource id="modifierOrderLinesDs"
-                              class="com.joker.jokerapp.entity.OrderLine">
+                              class="com.joker.jokerapp.entity.OrderLine" view="order-line-view">
             <query>
                 <![CDATA[select e from jokerapp$OrderLine e where e.itemToModifyId = :param$selectedLine.id]]>
             </query>

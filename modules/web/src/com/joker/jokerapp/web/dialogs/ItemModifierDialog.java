@@ -57,7 +57,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
     private ArrayList<Integer> spaceToConvert = new ArrayList<>();
 
-    Boolean addModifierBtnPushed = true;
+    private boolean addModifierBtnPushed = true;
 
     public interface CloseHandler {
 
@@ -102,7 +102,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
                 String categoryName = productModifierCategory.getName();
 
-                if (Math.floorMod(categoryName.length(),10)==0) numberOfRow = Math.floorDiv(categoryName.length(),10);
+                if (Math.floorMod(categoryName.length(),10) == 0) numberOfRow = Math.floorDiv(categoryName.length(),10);
                 else numberOfRow = Math.floorDiv(categoryName.length(),10) + 1;
 
                 int exactLineLength = Math.floorDiv(categoryName.length(), numberOfRow);
@@ -117,7 +117,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
                     for (int l = 0; l < categoryName.length(); l++) {
 
-                        Character ch = categoryName.charAt(l);
+                        char ch = categoryName.charAt(l);
 
                         if (Character.isWhitespace(ch) || l == categoryName.length()-1) {
 
@@ -131,7 +131,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
                                 } else {
 
-                                    if (!(l==categoryName.length()-1)) {
+                                    if (!(l == categoryName.length()-1)) {
 
                                         spaceToConvert.add(l);
                                         if (l - prevSpaceConverted > maxLineLength) maxLineLength = l - prevSpaceConverted;
@@ -306,7 +306,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
         modifierOrderLinesDs.addItem(newLine);
 
-        modifierSelectedLineId = newLine.getItemId();
+        modifierSelectedLineId = newLine.getId();
 
         drawOrderLinesGrid();
 
@@ -314,7 +314,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
     public void onModifierOrderLinesRemoveBtnClick() {
 
-        for (OrderLine line: modifierOrderLinesDs.getItems()) if (line.getItemId().equals(modifierSelectedLineId)) { modifierOrderLinesDs.removeItem(line); break; }
+        for (OrderLine line: modifierOrderLinesDs.getItems()) if (line.getId().equals(modifierSelectedLineId)) { modifierOrderLinesDs.removeItem(line); break; }
 
         drawOrderLinesGrid();
 
@@ -335,7 +335,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
         }
 
-        close("ok");
+        close("bee");
 
     }
 
@@ -384,9 +384,9 @@ public class ItemModifierDialog extends AbstractWindow {
                 @Override
                 public void actionPerform(Component component) {
 
-                    if (!orderLineToDraw.getItemId().equals(modifierSelectedLineId)) {
+                    if (!orderLineToDraw.getId().equals(modifierSelectedLineId)) {
 
-                        modifierSelectedLineId = orderLineToDraw.getItemId();
+                        modifierSelectedLineId = orderLineToDraw.getId();
 
                         if (orderLineToDraw.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 
@@ -458,7 +458,7 @@ public class ItemModifierDialog extends AbstractWindow {
 
             });
 
-            if (orderLineToDraw.getItemId().equals(modifierSelectedLineId)) {
+            if (orderLineToDraw.getId().equals(modifierSelectedLineId)) {
 
                 if (orderLineToDraw.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 

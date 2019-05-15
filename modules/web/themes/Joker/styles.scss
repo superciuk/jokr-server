@@ -3,6 +3,8 @@
 
 .Joker {@include Joker;}
 
+.Joker .c-main-singlewindow {background-color:#1a1a1a;padding:0px}
+
 .Joker .v-window-contents{background-color:#1a1a1a}
 
 .Joker .c-app-window-wrap {background-color:#1a1a1a}
@@ -178,9 +180,9 @@
 
 .Joker .tableNameBtn {background-image:-webkit-radial-gradient(#006400, #003400);margin-bottom:20px;background-image:radial-gradient(#006400, #003400);border-radius:10px;border:0px !important;font-size:26px;text-align:center;color:#ffffff}
 
-.Joker .kitchenDisplayBtn {background-image:-webkit-radial-gradient(#006080, #00394d);background-image:radial-gradient(#006080, #00394d);border:0px;border-radius:10px; color:#ffffff;font-size:20px}
+.Joker .kitchenDisplayBtn {background-image:-webkit-radial-gradient(#006080, #00394d);background-image:radial-gradient(#006080, #00394d);border:0px;border-radius:10px;color:#ffffff;font-size:20px}
 
-.Joker .kitchenDisplayBtnPressed {background-image:-webkit-radial-gradient(#e6ac00, #806000);background-image:radial-gradient(#e6ac00, #806000);border:0px;border-radius:10px; color:#ffffff;font-size:20px}
+.Joker .kitchenDisplayBtnPressed {background-image:-webkit-radial-gradient(#e6ac00, #806000);background-image:radial-gradient(#e6ac00, #806000);border:0px;border-radius:10px;color:#ffffff;font-size:20px}
 
 
 .Joker .kitchenDisplayGridItem-label-bar{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
@@ -299,5 +301,5 @@
 .Joker .kitchenDisplayGridItem-label-selected-isModifier-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffe6cc;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
 .Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffe6cc;text-decoration:line-through}
 
-.Joker .kitchenDisplayGridItem-checkBtn-pushed{margin-right:10px;background-image:-webkit-radial-gradient(#006400, #003400);background-image:radial-gradient(#006400, #003400);border:0px !important;font-size:16px;text-align:center;color:#ffffff}
-.Joker .kitchenDisplayGridItem-checkBtn{margin-right:10px;background-image:-webkit-radial-gradient(#cc0000, #500000);background-image:radial-gradient(#cc0000, #500000);border:0px !important;font-size:16px;text-align:center;color:#ffffff}
+.Joker .kitchenDisplayGridItem-checkBtn-pushed{margin:0px 10px 0px 3px;background-image:-webkit-radial-gradient(#006400, #003400);background-image:radial-gradient(#006400, #003400);border:0px !important;font-size:16px;text-align:center;color:#ffffff}
+.Joker .kitchenDisplayGridItem-checkBtn{margin:0px 10px 0px 3px;background-image:-webkit-radial-gradient(#cc0000, #500000);background-image:radial-gradient(#cc0000, #500000);border:0px !important;font-size:16px;text-align:center;color:#ffffff}

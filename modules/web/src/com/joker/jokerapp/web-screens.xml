@@ -12,7 +12,7 @@
     <screen id="jokerapp$ActualSeats.dialog"
             template="com/joker/jokerapp/web/dialogs/actual-seats-dialog.xml"/>
     <screen id="orderScreen"
-            template="com/joker/jokerapp/web/screens/order-screen.xml"/>
+            template="com/joker/jokerapp/web/screens/order-screenOLD.xml"/>
     <screen id="jokerapp$ProductModifierCategory.browse"
             template="com/joker/jokerapp/web/productmodifiercategory/product-modifier-category-browse.xml"/>
     <screen id="jokerapp$ProductItem.browse"

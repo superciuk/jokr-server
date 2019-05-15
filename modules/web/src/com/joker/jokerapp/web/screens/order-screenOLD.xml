@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://caption"
-        class="com.joker.jokerapp.web.screens.OrderScreen"
-        messagesPack="com.joker.jokerapp.web.screens">
+        class="com.joker.jokerapp.web.screens.OrderScreenOLD"
+        messagesPack="com.joker.jokerapp.web.screens" datasource="tableItemDs">
     <dsContext>
         <collectionDatasource id="productItemCategoriesDs"
                               class="com.joker.jokerapp.entity.ProductItemCategory"
@@ -42,8 +42,6 @@
             </datasource>
         </datasource>
     </dsContext>
-    <dialogMode height="600"
-                width="800"/>
     <layout margin="true"
             spacing="true"
             stylename="mainLayout">

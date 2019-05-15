@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://caption"
+        messagesPack="com.joker.jokerapp.web.order">
+    <data>
+        <collection id="productItemCategoriesDc" class="com.joker.jokerapp.entity.ProductItemCategory"
+                    view="productCategory-view">
+            <loader id="productItemCategoriesDl">
+                <query><![CDATA[select e from jokerapp$ProductItemCategory e order by e.sortOrder]]></query>
+            </loader>
+        </collection>
+        <collection id="productItemsDc" class="com.joker.jokerapp.entity.ProductItem" view="productItem-view">
+            <loader id="productItemsDl">
+                <query><![CDATA[select e from jokerapp$ProductItem e order by e.sortOrder]]></query>
+            </loader>
+        </collection>
+        <instance id="tableItemDc" class="com.joker.jokerapp.entity.TableItem" view="tableItem-view">
+            <loader id="tableItemDl">
+            </loader>
+        </instance>
+    </data>
+    <layout margin="true"
+            spacing="true"
+            stylename="mainLayout">
+        <split height="100%"
+               maxSplitPosition="90%"
+               minSplitPosition="90%"
+               orientation="vertical"
+               pos="90%"
+               responsive="true"
+               stylename="tableBtnsContainer"
+               width="100%">
+            <split height="100%"
+                   maxSplitPosition="10%"
+                   minSplitPosition="10%"
+                   orientation="vertical"
+                   pos="10%"
+                   width="100%">
+                <hbox height="100%"
+                      margin="true"
+                      width="100%">
+                    <buttonsPanel align="MIDDLE_LEFT"
+                                  height="100%"
+                                  width="540px">
+                        <button id="subtractBtn"
+                                align="MIDDLE_LEFT"
+                                caption="-"
+                                height="60px"
+                                invoke="onSubtractBtnClick"
+                                stylename="orderScreenFunctionBtn"
+                                width="130px"/>
+                        <button id="addBtn"
+                                align="MIDDLE_LEFT"
+                                caption="+"
+                                height="60px"
+                                invoke="onAddBtnClick"
+                                stylename="orderScreenFunctionBtn"
+                                width="130px"/>
+                        <button id="addModifier"
+                                align="MIDDLE_LEFT"
+                                caption="MODIFICA"
+                                height="60px"
+                                invoke="onAddModifierClick"
+                                stylename="orderScreenFunctionBtn"
+                                width="130px"/>
+                        <button id="addManualModifier"
+                                align="MIDDLE_LEFT"
+                                caption="MODIFICA&lt;br&gt;MANUALE"
+                                captionAsHtml="true"
+                                height="60px"
+                                invoke="onAddManualModifierClick"
+                                stylename="orderScreenFunctionBtn"
+                                width="130px"/>
+                    </buttonsPanel>
+                    <timeField id="tableTimeField"
+                               align="MIDDLE_CENTER"
+                               editable="false"
+                               height="60px"
+                               width="145px"/>
+                    <buttonsPanel align="MIDDLE_CENTER"
+                                  height="100%"
+                                  width="100%">
+                        <button id="doNotPrintBtn"
+                                align="MIDDLE_RIGHT"
+                                captionAsHtml="true"
+                                height="60px"
+                                invoke="onDoNotPrintBtnClick"
+                                width="150px"/>
+                    </buttonsPanel>
+                </hbox>
+                <split height="100%"
+                       maxSplitPosition="32%"
+                       minSplitPosition="32%"
+                       orientation="horizontal"
+                       pos="32%"
+                       width="100%">
+                    <vbox expand="orderLineGroupBox"
+                          height="100%"
+                          margin="false,false,false,true">
+                        <groupBox id="orderLineGroupBox">
+                            <scrollBox id="orderLineScrollBox"
+                                       height="100%"/>
+                        </groupBox>
+                        <groupBox align="MIDDLE_CENTER"
+                                  height="110px"
+                                  settingsEnabled="false">
+                            <hbox align="TOP_RIGHT"
+                                  height="100%"
+                                  width="100%">
+                                <button id="billBtn"
+                                        caption="CONTO"
+                                        captionAsHtml="true"
+                                        height="100%"
+                                        invoke="onBillBtnClick"
+                                        stylename="orderScreenBillBtn"
+                                        width="250px"/>
+                                <vbox id="billGroupBox"
+                                      align="TOP_RIGHT"
+                                      height="100%"
+                                      settingsEnabled="false"
+                                      stylename="billBox"
+                                      width="250px">
+                                    <hbox align="MIDDLE_CENTER"
+                                          height="100%"
+                                          width="215px">
+                                        <label id="subtotalLabel"
+                                               align="MIDDLE_RIGHT"
+                                               value="Subtotal"
+                                               width="120px"/>
+                                        <textField id="subtotalField"
+                                                   align="MIDDLE_RIGHT"
+                                                   editable="false"
+                                                   height="16px"
+                                                   width="115px"/>
+                                    </hbox>
+                                    <hbox align="MIDDLE_CENTER"
+                                          width="215px">
+                                        <label id="serviceLabel"
+                                               align="MIDDLE_RIGHT"
+                                               value="Service 10%"
+                                               width="120px"/>
+                                        <textField id="serviceField"
+                                                   align="MIDDLE_RIGHT"
+                                                   editable="false"
+                                                   height="16px"
+                                                   width="115px"/>
+                                    </hbox>
+                                    <hbox align="MIDDLE_CENTER"
+                                          width="215px">
+                                        <label id="totalLabel"
+                                               align="MIDDLE_RIGHT"
+                                               value="TOTAL"
+                                               width="120px"/>
+                                        <textField id="totalField"
+                                                   align="MIDDLE_RIGHT"
+                                                   editable="false"
+                                                   height="16px"
+                                                   width="115px"/>
+                                    </hbox>
+                                </vbox>
+                            </hbox>
+                        </groupBox>
+                    </vbox>
+                    <split height="100%"
+                           maxSplitPosition="65%"
+                           minSplitPosition="65%"
+                           orientation="horizontal"
+                           pos="65%"
+                           width="100%">
+                        <groupBox height="100%"
+                                  settingsEnabled="false">
+                            <scrollBox id="productItemScrollBox"
+                                       height="100%">
+                                <grid id="itemsGrid"
+                                      spacing="true"
+                                      width="100%">
+                                    <columns count="4"/>
+                                    <rows>
+                                        <row/>
+                                        <row/>
+                                        <row/>
+                                        <row/>
+                                    </rows>
+                                </grid>
+                            </scrollBox>
+                        </groupBox>
+                        <groupBox height="100%"
+                                  outerMargin="false,true,false,false">
+                            <scrollBox id="categoriesScrollBox"
+                                       height="100%">
+                                <grid id="categoriesGrid"
+                                      margin="true"
+                                      spacing="true"
+                                      width="100%">
+                                    <columns count="2"/>
+                                    <rows>
+                                        <row/>
+                                        <row/>
+                                        <row/>
+                                        <row/>
+                                        <row/>
+                                    </rows>
+                                </grid>
+                            </scrollBox>
+                        </groupBox>
+                    </split>
+                </split>
+            </split>
+            <hbox height="100%"
+                  width="100%">
+                <buttonsPanel align="MIDDLE_LEFT"
+                              height="100%"
+                              width="600px">
+                    <button id="sendAndCloseBtn"
+                            align="MIDDLE_CENTER"
+                            caption="INVIA&lt;br&gt;E CHIUDI"
+                            captionAsHtml="true"
+                            height="60px"
+                            invoke="onSendAndCloseBtnClick"
+                            stylename="orderScreenFunctionBtn"
+                            width="120px"/>
+                    <button id="sendBtn"
+                            align="MIDDLE_CENTER"
+                            caption="INVIA"
+                            captionAsHtml="true"
+                            height="60px"
+                            invoke="onSendBtnClick"
+                            stylename="orderScreenFunctionBtn"
+                            width="120px"/>
+                    <button id="reSendBtn"
+                            align="MIDDLE_CENTER"
+                            caption="RISTAMPA&lt;br&gt;TUTTO"
+                            captionAsHtml="true"
+                            height="60px"
+                            invoke="onReSendBtnClick"
+                            stylename="orderScreenFunctionBtn"
+                            width="120px"/>
+                    <button id="closeBtn"
+                            align="MIDDLE_LEFT"
+                            caption="CHIUDI"
+                            captionAsHtml="true"
+                            height="60px"
+                            invoke="onCloseBtnClick"
+                            stylename="orderScreenFunctionBtn"
+                            width="120px"/>
+                </buttonsPanel>
+                <buttonsPanel align="MIDDLE_CENTER"
+                              height="100%">
+                    <button id="modifyPriceBtn"
+                            align="MIDDLE_LEFT"
+                            caption="MODIFICA&lt;br&gt;PREZZO"
+                            captionAsHtml="true"
+                            height="60px"
+                            invoke="onModifyPriceBtnClick"
+                            stylename="orderScreenFunctionBtn"
+                            width="120px"/>
+                    <button id="removeBtn"
+                            align="MIDDLE_LEFT"
+                            caption="CANCELLA&lt;br&gt;RIGA"
+                            captionAsHtml="true"
+                            height="60px"
+                            invoke="onRemoveBtnClick"
+                            stylename="orderScreenFunctionBtn"
+                            width="140px"/>
+                </buttonsPanel>
+                <buttonsPanel align="MIDDLE_RIGHT"
+                              height="100%"/>
+            </hbox>
+        </split>
+    </layout>
+</window>

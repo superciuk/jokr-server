@@ -10,5 +10,7 @@
         <item screen="jokerapp$ProductItem.browse"/>
         <item screen="jokerapp$Kitchen.display"/>
         <item screen="jokerapp$ItemModifier.dialog"/>
+        <item screen="jokerapp_MainScreen"/>
+        <item screen="jokerapp_ActualSeats"/>
     </menu>
 </menu-config>

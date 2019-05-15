@@ -42,7 +42,7 @@
                   ext="zip"
                   name="JokerApp-web"/>
         <artifact configuration="themes"
-                  name="JokerApp-web-themes"/>
+                  name="JokerApp-web" ext="jar"/>
         <property name="cuba.springContextConfig"
                   value="+com/joker/jokerapp/web-spring.xml"/>
         <property name="cuba.dispatcherSpringContextConfig"
@@ -55,8 +55,5 @@
                   value="+com/joker/jokerapp/web-permissions.xml"/>
         <property name="cuba.mainMessagePack"
                   value="+com.joker.jokerapp.web"/>
-    </module>
-    <module name="web-themes">
-        <artifact name="JokerApp-web-themes"/>
     </module>
 </app-component>

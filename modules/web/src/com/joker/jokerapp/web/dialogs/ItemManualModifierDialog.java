@@ -8,8 +8,6 @@ import java.util.Map;
 
 public class ItemManualModifierDialog extends AbstractWindow {
 
-
-
     @Named("modifierText")
     private TextField modifierText;
 
@@ -112,7 +110,7 @@ public class ItemManualModifierDialog extends AbstractWindow {
 
         super.init(params);
 
-        modifierPrice.setValue(BigDecimal.valueOf(0));
+        modifierPrice.setValue("0");
 
         if (params.containsKey("handler")) {
 
@@ -123,18 +121,22 @@ public class ItemManualModifierDialog extends AbstractWindow {
     }
 
     public void onCancelBtnClick() {
+
         close("cancel");
+
     }
 
     public void onOkBtnClick() {
 
-        if (handler != null) {
+        if (modifierText.getValue()!=null) if (handler != null) {
+
             String itemModifier = modifierText.getValue().toString().replaceAll("_", " ");
             BigDecimal itemModifierPrice = BigDecimal.valueOf(Double.parseDouble(modifierPrice.getRawValue()));
-            handler.onClose(itemModifier,itemModifierPrice);
-        }
+            handler.onClose(itemModifier, itemModifierPrice);
 
-        close("ok");
+            close("ok");
+
+        }
 
     }
 

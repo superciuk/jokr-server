@@ -5,13 +5,11 @@ import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.Timer;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
-import com.haulmont.cuba.gui.data.GroupDatasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.joker.jokerapp.entity.OrderLine;
 import com.joker.jokerapp.entity.PrinterGroup;
 import com.joker.jokerapp.entity.Ticket;
 import com.joker.jokerapp.entity.TicketStatus;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -145,21 +143,27 @@ public class KitchenDisplay extends AbstractWindow {
 
     private void refreshData() {
 
-        //currentTimeField.setValue(Date.from(Instant.now()));
-
         ticketsDs.refresh();
 
-        localTicketList.clear();
+        for (Iterator<Ticket> ticketIterator = localTicketList.iterator(); ticketIterator.hasNext();) {
 
-        for (Ticket ticket: ticketsDs.getItems()) if (ticket.getTicketStatus().equals(TicketStatus.sended)) {
+            Ticket ticket = ticketIterator.next();
 
-            localTicketList.add(ticket);
+            if (!ticketsDs.containsItem(ticket.getUuid())) {
+
+                drawTickets(ticket, "remove");
+                ticketIterator.remove();
+
+            }
 
         }
 
-        kitchenDisplayMainBox.removeAll();
+        for (Ticket ticket: ticketsDs.getItems()) if (!localTicketList.contains(ticket) && ticket.getTicketStatus().equals(TicketStatus.sended)) {
 
-        drawTickets(null, null);
+            localTicketList.add(ticket);
+            drawTickets(ticket, "add");
+
+        } else drawTickets(ticket, "modify");
 
     }
 
@@ -169,73 +173,98 @@ public class KitchenDisplay extends AbstractWindow {
 
             if (operation.equals("add")) {
 
-                ScrollBoxLayout ticketScrollBox = componentsFactory.createComponent(ScrollBoxLayout.class);
-                ticketScrollBox.setId("ticketScrollBox".concat(ticketToProcess.getId().toString()));
-                ticketScrollBox.setHeightFull();
-                ticketScrollBox.setWidth("500px");
+                GroupBoxLayout ticketGroupBox = componentsFactory.createComponent(GroupBoxLayout.class);
 
-                HBoxLayout hBoxLayout = componentsFactory.createComponent(HBoxLayout.class);
+                ticketGroupBox.setId("ticketGroupBox".concat(ticketToProcess.getId().toString()));
+                ticketGroupBox.setHeightFull();
+                ticketGroupBox.setWidth("628px");
+                ticketGroupBox.setOuterMargin(false,true,true,false);
 
-                hBoxLayout.setId("hBoxLayout".concat(ticketToProcess.getOrder().getId().toString()));
+                SplitPanel ticketHorizontalSplitPanel = componentsFactory.createComponent(SplitPanel.class);
+                ticketHorizontalSplitPanel.setId("ticketHorizontalSplitPanel".concat(ticketToProcess.getId().toString()));
+                ticketHorizontalSplitPanel.setOrientation(SplitPanel.ORIENTATION_VERTICAL);
+                ticketHorizontalSplitPanel.setSplitPosition(15, SizeUnit.PERCENTAGE);
+                ticketHorizontalSplitPanel.setMaxSplitPosition(15, SizeUnit.PERCENTAGE);
+                ticketHorizontalSplitPanel.setMinSplitPosition(15, SizeUnit.PERCENTAGE);
+                ticketHorizontalSplitPanel.setHeightFull();
+                ticketHorizontalSplitPanel.setWidthFull();
+
+                ticketGroupBox.add(ticketHorizontalSplitPanel);
+
+                VBoxLayout headerBoxLayout = componentsFactory.createComponent(VBoxLayout.class);
+
+                headerBoxLayout.setId("headerBoxLayout".concat(ticketToProcess.getOrder().getId().toString()));
+
+                headerBoxLayout.setHeightFull();
+                headerBoxLayout.setWidthFull();
+                headerBoxLayout.setAlignment(Alignment.TOP_CENTER);
 
                 Button tableName = componentsFactory.createComponent(Button.class);
 
-                tableName.setWidth("475px");
-
+                tableName.setWidthFull();
                 tableName.setHeight("40px");
-
-                tableName.setId("tableName".concat(ticketToProcess.getOrder().getId().toString()));
-
-                tableName.setCaption("TAVOLO ".concat(ticketToProcess.getOrder().getTableItemCaption()).concat("   ").concat(ticketToProcess.getCreateTs().toString()));
-
-                hBoxLayout.add(tableName);
-
-                ticketScrollBox.add(hBoxLayout);
-
-                for (OrderLine orderLine: ticketToProcess.getOrderLines()) {
-
-                    if (orderLine.getPrinterGroup().equals(PrinterGroup.Bar) && showBarTickets) {
-
-                        ticketScrollBox.add(createOrderLineHBox(orderLine));
-                        setOrderLineStyle(orderLine, ticketScrollBox);
-
-                    }
-
-                    if (orderLine.getPrinterGroup().equals(PrinterGroup.Fryer) && showFryerTickets) {
-
-                        ticketScrollBox.add(createOrderLineHBox(orderLine));
-                        setOrderLineStyle(orderLine, ticketScrollBox);
-
-                    }
-
-                    if (orderLine.getPrinterGroup().equals(PrinterGroup.Grill) && showGrillTickets) {
-
-                        ticketScrollBox.add(createOrderLineHBox(orderLine));
-                        setOrderLineStyle(orderLine, ticketScrollBox);
-
-                    }
-
-                }
-
-                kitchenDisplayMainBox.add(ticketScrollBox);
-
-            } else if (operation.equals("modify")) {
-
-                Button tableName = (Button) kitchenDisplayMainBox.getComponent("tableName".concat(ticketToProcess.getId().toString()));
-
-                Button barticketStatus = (Button) kitchenDisplayMainBox.getComponent("barticketStatus".concat(ticketToProcess.getId().toString()));
-                Button fryerticketStatus = (Button) kitchenDisplayMainBox.getComponent("fryerticketStatus".concat(ticketToProcess.getId().toString()));
-                Button grillticketStatus = (Button) kitchenDisplayMainBox.getComponent("grillticketStatus".concat(ticketToProcess.getId().toString()));
-
-                ScrollBoxLayout ticketScrollBox = (ScrollBoxLayout) kitchenDisplayMainBox.getComponent("ticketScrollBox".concat(ticketToProcess.getId().toString()));
-                ticketScrollBox.removeAll();
-                
+                tableName.setId("tableName".concat(ticketToProcess.getId().toString()));
                 tableName.setCaption("TAVOLO ".concat(ticketToProcess.getOrder().getTableItemCaption()).concat(" - TCKET ")
                         .concat(ticketToProcess.getTicketNumber().toString()).concat(" - ")
                         .concat(ticketToProcess.getOrder().getActualSeats().toString()).concat(" PAX - ")
                         .concat(ticketToProcess.getCreateTs().toString().substring(11,16)));
 
                 tableName.setStyleName("tableNameBtn");
+
+                tableName.setAction(new ticketAction());
+
+                headerBoxLayout.add(tableName);
+
+                HBoxLayout infoBoxLayout = componentsFactory.createComponent(HBoxLayout.class);
+                infoBoxLayout.setWidthFull();
+                infoBoxLayout.setHeight("40px");
+                infoBoxLayout.setId("infoBoxLayout".concat(ticketToProcess.getId().toString()));
+
+                headerBoxLayout.add(infoBoxLayout);
+
+                ButtonsPanel buttonsPanel = componentsFactory.createComponent(ButtonsPanel.class);
+
+                buttonsPanel.setWidthFull();
+                buttonsPanel.setHeight("40px");
+                buttonsPanel.setId("buttonsPanel".concat(ticketToProcess.getId().toString()));
+                buttonsPanel.setAlignment(Alignment.TOP_RIGHT);
+
+                infoBoxLayout.add(buttonsPanel);
+
+                Button barticketStatus = componentsFactory.createComponent(Button.class);
+                barticketStatus.setWidth("190px");
+                barticketStatus.setHeight("40px");
+                barticketStatus.setId("barticketStatus".concat(ticketToProcess.getId().toString()));
+                barticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn");
+                barticketStatus.setCaptionAsHtml(true);
+                barticketStatus.setCaption("BAR");
+
+                Button fryerticketStatus = componentsFactory.createComponent(Button.class);
+                fryerticketStatus.setWidth("190px");
+                fryerticketStatus.setHeight("40px");
+                fryerticketStatus.setId("fryerticketStatus".concat(ticketToProcess.getId().toString()));
+                fryerticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn");
+                fryerticketStatus.setCaptionAsHtml(true);
+                fryerticketStatus.setCaption("FRYER");
+
+                Button grillticketStatus = componentsFactory.createComponent(Button.class);
+                grillticketStatus.setWidth("190px");
+                grillticketStatus.setHeight("40px");
+                grillticketStatus.setId("grillticketStatus".concat(ticketToProcess.getId().toString()));
+                grillticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn");
+                grillticketStatus.setCaptionAsHtml(true);
+                grillticketStatus.setCaption("GRILL");
+
+                buttonsPanel.add(barticketStatus); buttonsPanel.add(fryerticketStatus); buttonsPanel.add(grillticketStatus);
+
+                ticketHorizontalSplitPanel.add(headerBoxLayout);
+
+                ScrollBoxLayout ticketScrollBox = componentsFactory.createComponent(ScrollBoxLayout.class);
+                ticketScrollBox.setId("ticketScrollBox".concat(ticketToProcess.getId().toString()));
+                ticketScrollBox.setHeightFull();
+                ticketScrollBox.setWidth("100%");
+
+                ticketHorizontalSplitPanel.add(ticketScrollBox);
 
                 ticketToProcess.getOrderLines().sort(Comparator.comparing(OrderLine::getPrinterGroup).thenComparing(OrderLine::getPosition));
 
@@ -285,12 +314,78 @@ public class KitchenDisplay extends AbstractWindow {
                 else if (ticketToProcess.getSubticketStatus().charAt(7) == 'c')
                 { grillticketStatus.setEnabled(true); grillticketStatus.setCaption("GRILL CHECKED"); grillticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn"); }
 
+                if (ticketScrollBox.getOwnComponents().size() > 0) kitchenDisplayMainBox.add(ticketGroupBox);
+
+            } else if (operation.equals("modify")) {
+
+                Button tableName = (Button) kitchenDisplayMainBox.getComponent("tableName".concat(ticketToProcess.getId().toString()));
+
+                if (tableName == null) return;
+
+                Button barticketStatus = (Button) kitchenDisplayMainBox.getComponent("barticketStatus".concat(ticketToProcess.getId().toString()));
+                Button fryerticketStatus = (Button) kitchenDisplayMainBox.getComponent("fryerticketStatus".concat(ticketToProcess.getId().toString()));
+                Button grillticketStatus = (Button) kitchenDisplayMainBox.getComponent("grillticketStatus".concat(ticketToProcess.getId().toString()));
+
+                ScrollBoxLayout ticketScrollBox = (ScrollBoxLayout) kitchenDisplayMainBox.getComponent("ticketScrollBox".concat(ticketToProcess.getId().toString()));
+                
+                tableName.setCaption("TAVOLO ".concat(ticketToProcess.getOrder().getTableItemCaption()).concat(" - TCKET ")
+                        .concat(ticketToProcess.getTicketNumber().toString()).concat(" - ")
+                        .concat(ticketToProcess.getOrder().getActualSeats().toString()).concat(" PAX - ")
+                        .concat(ticketToProcess.getCreateTs().toString().substring(11,16)));
+
+                tableName.setStyleName("tableNameBtn");
+
+                ticketToProcess.getOrderLines().sort(Comparator.comparing(OrderLine::getPrinterGroup).thenComparing(OrderLine::getPosition));
+
+                for (OrderLine orderLine: ticketToProcess.getOrderLines()) {
+
+                    if (orderLine.getPrinterGroup().equals(PrinterGroup.Bar)) if (showBarTickets) {
+
+                        setOrderLineStyle(orderLine, ticketScrollBox);
+
+                    }
+
+                    if (orderLine.getPrinterGroup().equals(PrinterGroup.Fryer)) if (showFryerTickets) {
+
+                        setOrderLineStyle(orderLine, ticketScrollBox);
+
+                    }
+
+                    if (orderLine.getPrinterGroup().equals(PrinterGroup.Grill)) if (showGrillTickets) {
+
+                        setOrderLineStyle(orderLine, ticketScrollBox);
+
+                    }
+
+                }
+
+                if (ticketToProcess.getSubticketStatus().charAt(1) == 'n')
+                { barticketStatus.setEnabled(false); barticketStatus.setCaption("NO BAR"); barticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn-pushed"); }
+                else if (ticketToProcess.getSubticketStatus().charAt(1) == 'o')
+                { barticketStatus.setEnabled(true); barticketStatus.setCaption("BAR"); barticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn"); }
+                else if (ticketToProcess.getSubticketStatus().charAt(1) == 'c')
+                { barticketStatus.setEnabled(true); barticketStatus.setCaption("BAR CHECKED"); barticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn"); }
+
+                if (ticketToProcess.getSubticketStatus().charAt(4) == 'n')
+                { fryerticketStatus.setEnabled(false); fryerticketStatus.setCaption("NO FRYER"); fryerticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn-pushed"); }
+                else if (ticketToProcess.getSubticketStatus().charAt(4) == 'o')
+                { fryerticketStatus.setEnabled(true); fryerticketStatus.setCaption("FRYER"); fryerticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn"); }
+                else if (ticketToProcess.getSubticketStatus().charAt(4) == 'c')
+                { fryerticketStatus.setEnabled(true); fryerticketStatus.setCaption("FRYER CHECKED"); fryerticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn"); }
+
+                if (ticketToProcess.getSubticketStatus().charAt(7) == 'n')
+                { grillticketStatus.setEnabled(false); grillticketStatus.setCaption("NO GRILL"); grillticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn-pushed"); }
+                else if (ticketToProcess.getSubticketStatus().charAt(7) == 'o')
+                { grillticketStatus.setEnabled(true); grillticketStatus.setCaption("GRILL"); grillticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn"); }
+                else if (ticketToProcess.getSubticketStatus().charAt(7) == 'c')
+                { grillticketStatus.setEnabled(true); grillticketStatus.setCaption("GRILL CHECKED"); grillticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn"); }
+
 
             } else if (operation.equals("remove")) {
 
-                ScrollBoxLayout ticketScrollBox = (ScrollBoxLayout) kitchenDisplayMainBox.getComponent("ticketScrollBox".concat(ticketToProcess.getOrder().getId().toString()));
+                GroupBoxLayout ticketGroupBox = (GroupBoxLayout) kitchenDisplayMainBox.getComponent("ticketGroupBox".concat(ticketToProcess.getId().toString()));
 
-                kitchenDisplayMainBox.remove(ticketScrollBox);
+                kitchenDisplayMainBox.remove(ticketGroupBox);
 
             }
 
@@ -308,9 +403,9 @@ public class KitchenDisplay extends AbstractWindow {
                 SplitPanel ticketHorizontalSplitPanel = componentsFactory.createComponent(SplitPanel.class);
                 ticketHorizontalSplitPanel.setId("ticketHorizontalSplitPanel".concat(localTicketList.get(i).getId().toString()));
                 ticketHorizontalSplitPanel.setOrientation(SplitPanel.ORIENTATION_VERTICAL);
-                ticketHorizontalSplitPanel.setSplitPosition(15, Component.UNITS_PERCENTAGE);
-                ticketHorizontalSplitPanel.setMaxSplitPosition(15, Component.UNITS_PERCENTAGE);
-                ticketHorizontalSplitPanel.setMinSplitPosition(15, Component.UNITS_PERCENTAGE);
+                ticketHorizontalSplitPanel.setSplitPosition(15, SizeUnit.PERCENTAGE);
+                ticketHorizontalSplitPanel.setMaxSplitPosition(15, SizeUnit.PERCENTAGE);
+                ticketHorizontalSplitPanel.setMinSplitPosition(15, SizeUnit.PERCENTAGE);
                 ticketHorizontalSplitPanel.setHeightFull();
                 ticketHorizontalSplitPanel.setWidthFull();
 
@@ -439,7 +534,7 @@ public class KitchenDisplay extends AbstractWindow {
                 else if (localTicketList.get(i).getSubticketStatus().charAt(7) == 'c')
                 { grillticketStatus.setEnabled(true); grillticketStatus.setCaption("GRILL CHECKED"); grillticketStatus.setStyleName("kitchenDisplayGridItem-checkBtn"); }
 
-                if (ticketScrollBox.getOwnComponents().size() > 1) kitchenDisplayMainBox.add(ticketGroupBox);
+                if (ticketScrollBox.getOwnComponents().size() > 0) kitchenDisplayMainBox.add(ticketGroupBox);
 
             }
 
@@ -456,8 +551,8 @@ public class KitchenDisplay extends AbstractWindow {
         Label quantity = componentsFactory.createComponent(Label.class);
         Button itemName = componentsFactory.createComponent(Button.class);
 
-        quantity.setWidth("20px");
-        itemName.setWidth("465px");
+        quantity.setWidth("10px");
+        itemName.setWidth("472px");
 
         quantity.setHeight("40px");
         itemName.setHeight("40px");
@@ -480,17 +575,6 @@ public class KitchenDisplay extends AbstractWindow {
             check.setHeight("36px");
             check.setId("check".concat(orderLine.getId().toString()));
             check.setAlignment(Alignment.MIDDLE_RIGHT);
-
-            if (orderLine.getChecked()) {
-
-                check.setStyleName("kitchenDisplayGridItem-checkBtn-pushed");
-
-            } else {
-
-                check.setStyleName("kitchenDisplayGridItem-checkBtn");
-
-            }
-
             check.setCaption("CHECK");
             check.setAction(new CheckLine());
             hBoxLayout.add(check);
@@ -509,6 +593,7 @@ public class KitchenDisplay extends AbstractWindow {
 
             Label quantity = (Label) scrollBox.getComponent("quantity".concat(orderLine.getId().toString()));
             Button itemName = (Button) scrollBox.getComponent("itemName".concat(orderLine.getId().toString()));
+            Button check = (Button) scrollBox.getComponent("check".concat(orderLine.getId().toString()));
 
             if (orderLine.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
 
@@ -639,6 +724,16 @@ public class KitchenDisplay extends AbstractWindow {
                     }
 
                 }
+
+            }
+
+            if (orderLine.getChecked()) {
+
+                check.setStyleName("kitchenDisplayGridItem-checkBtn-pushed");
+
+            } else {
+
+                check.setStyleName("kitchenDisplayGridItem-checkBtn");
 
             }
 

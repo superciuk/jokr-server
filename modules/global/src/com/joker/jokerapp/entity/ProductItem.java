@@ -45,10 +45,6 @@ public class ProductItem extends StandardEntity {
     @Column(name = "PRICE", nullable = false, precision = 12, scale = 2)
     protected BigDecimal price;
 
-
-
-
-
     @JoinTable(name = "JOKERAPP_PRODUCT_ITEM_PRODUCT_MODIFIER_CATEGORY_LINK",
         joinColumns = @JoinColumn(name = "PRODUCT_ITEM_ID"),
         inverseJoinColumns = @JoinColumn(name = "PRODUCT_MODIFIER_CATEGORY_ID"))
@@ -68,8 +64,6 @@ public class ProductItem extends StandardEntity {
         this.printerGroup = printerGroup == null ? null : printerGroup.getId();
     }
 
-
-
     public void setModifierCategories(List<ProductModifierCategory> modifierCategories) {
         this.modifierCategories = modifierCategories;
     }
@@ -77,7 +71,6 @@ public class ProductItem extends StandardEntity {
     public List<ProductModifierCategory> getModifierCategories() {
         return modifierCategories;
     }
-
 
     public BigDecimal getPrice() {
         return price;
@@ -87,14 +80,6 @@ public class ProductItem extends StandardEntity {
         this.price = price;
     }
 
-
-
-
-
-
-
-
-
     public void setSortOrder(Integer sortOrder) {
         this.sortOrder = sortOrder;
     }
@@ -102,8 +87,6 @@ public class ProductItem extends StandardEntity {
     public Integer getSortOrder() {
         return sortOrder;
     }
-
-
 
     public ProductItemCategory getCategory() {
         return category;
@@ -113,7 +96,6 @@ public class ProductItem extends StandardEntity {
         this.category = category;
     }
 
-
     public void setVisible(Boolean visible) {
         this.visible = visible;
     }
@@ -122,8 +104,6 @@ public class ProductItem extends StandardEntity {
         return visible;
     }
 
-
-
     public void setName(String name) {
         this.name = name;
     }
@@ -131,6 +111,5 @@ public class ProductItem extends StandardEntity {
     public String getName() {
         return name;
     }
-
 
 }

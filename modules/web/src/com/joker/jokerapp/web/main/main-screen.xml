@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://caption"
+        messagesPack="com.joker.jokerapp.web.main">
+    <data>
+        <collection id="tableItemsDc" class="com.joker.jokerapp.entity.TableItem" view="tableItem-view">
+            <loader id="tableItemsDl" softDeletion="true">
+                <query><![CDATA[select e from jokerapp$TableItem e order by e.tableNumber]]></query>
+            </loader>
+        </collection>
+    </data>
+    <timers>
+        <timer id="timer" delay="1000" repeating="true" autostart="true" onTimer="onTimerClick"/>
+    </timers>
+    <layout margin="true"
+            stylename="mainLayout" maxHeight="100%" maxWidth="100%" minHeight="100%" minWidth="100%">
+        <split
+                maxSplitPosition="90%"
+                minSplitPosition="90%"
+                orientation="vertical"
+                pos="90%"
+                settingsEnabled="false"
+                width="100%" height="100%">
+            <split height="100%"
+                   maxSplitPosition="10%"
+                   minSplitPosition="10%"
+                   orientation="vertical"
+                   pos="10%"
+                   settingsEnabled="false"
+                   width="100%">
+                <hbox id="upperHBox"
+                      height="100%"
+                      margin="true"
+                      width="100%" stylename="upperHBox">
+                    <buttonsPanel align="MIDDLE_CENTER"
+                                  height="100%">
+                        <button id="splitTableBtn"
+                                caption="SPLIT TABLE"
+                                height="100%"
+                                invoke="onSplitTableBtnClick"
+                                stylename="tableScreenFunctionBtn"
+                                width="120px"/>
+                        <button id="mergeTableBtn"
+                                caption="MERGE TABLE"
+                                height="100%"
+                                invoke="onMergeTableBtnClick"
+                                stylename="tableScreenFunctionBtn"
+                                width="120px"/>
+                        <button id="moveTableBtn"
+                                caption="MOVE TABLE"
+                                height="100%"
+                                invoke="onMoveTableBtnClick"
+                                stylename="tableScreenFunctionBtn"
+                                width="120px"/>
+                        <button id="reservationBtn"
+                                caption="RESERVATION"
+                                height="100%"
+                                stylename="tableScreenFunctionBtn"
+                                width="120px"/>
+                    </buttonsPanel>
+                    <timeField id="currentTimeField"
+                               align="TOP_CENTER"
+                               editable="false"
+                               height="100%"
+                               width="160px" stylename="currentTimeField"/>
+                    <buttonsPanel align="MIDDLE_CENTER"
+                                  height="100%">
+                        <button id="reopenTableBtn"
+                                caption="REOPEN TABLE"
+                                height="100%"
+                                stylename="tableScreenFunctionBtn"
+                                width="120px"/>
+                        <button id="reprintTicket"
+                                caption="REPRINT TICKET"
+                                height="100%"
+                                stylename="tableScreenFunctionBtn"
+                                width="120px"/>
+                        <button id="backEndBtn"
+                                caption="BACK END"
+                                height="100%"
+                                stylename="tableScreenFunctionBtn"
+                                width="120px"/>
+                        <button id="logOutBtn"
+                                caption="LOG OUT"
+                                height="100%"
+                                stylename="tableScreenFunctionBtn"
+                                width="120px"/>
+                    </buttonsPanel>
+                </hbox>
+                <vbox id="tableBtnsContainer"
+                      height="100%"
+                      margin="true,false,true,false"
+                      stylename="tableBtnsContainer">
+                    <grid id="tableFirstGrid"
+                          align="TOP_CENTER"
+                          height="200px"
+                          width="100%">
+                        <columns count="9"/>
+                        <rows>
+                            <row/>
+                        </rows>
+                    </grid>
+                    <grid id="tableSecondGrid"
+                          align="TOP_CENTER"
+                          height="200px"
+                          width="100%">
+                        <columns count="9"/>
+                        <rows>
+                            <row/>
+                        </rows>
+                    </grid>
+                    <grid id="tableThirdGrid"
+                          align="TOP_CENTER"
+                          height="200px"
+                          width="100%">
+                        <columns count="9"/>
+                        <rows>
+                            <row/>
+                        </rows>
+                    </grid>
+                </vbox>
+            </split>
+            <hbox id="bottomHBox"
+                  height="90%"
+                  margin="true"
+                  width="100%" stylename="bottomHBox">
+                <buttonsPanel align="MIDDLE_CENTER"
+                              height="100%">
+                    <button id="billBtn"
+                            caption="CONTO"
+                            captionAsHtml="true"
+                            height="100%"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                    <button caption="CANCELLA"
+                            captionAsHtml="true"
+                            height="100%"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                    <button id="closeBtn"
+                            caption="CHIUDI"
+                            captionAsHtml="true"
+                            height="100%"
+                            invoke="onCloseBtnClick"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                </buttonsPanel>
+                <buttonsPanel align="MIDDLE_CENTER"
+                              height="100%">
+                    <button caption="PAPERINO"
+                            height="100%"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                    <button caption="NONNA PAPERA"
+                            height="100%"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                    <button caption="GASTONE"
+                            height="100%"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                </buttonsPanel>
+                <buttonsPanel align="MIDDLE_CENTER"
+                              height="100%">
+                    <button caption="QUI"
+                            height="100%"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                    <button caption="QUO"
+                            height="100%"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                    <button id="cancelBtn"
+                            caption="QUA"
+                            height="100%"
+                            invoke="onCancelBtnClick"
+                            stylename="tableScreenFunctionBtn"
+                            width="120px"/>
+                </buttonsPanel>
+            </hbox>
+        </split>
+    </layout>
+</window>

@@ -3,9 +3,6 @@ package com.joker.jokerapp.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
@@ -15,12 +12,6 @@ import java.math.BigDecimal;
 import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
 import com.haulmont.cuba.core.global.DeletePolicy;
-import javax.persistence.OrderBy;
-import com.haulmont.chile.core.annotations.MetaProperty;
-import javax.persistence.Transient;
-import com.haulmont.cuba.core.entity.annotation.Listeners;
-import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
-import javax.persistence.OneToOne;
 
 @NamePattern("%s|id")
 @Table(name = "JOKERAPP_ORDER")
@@ -35,10 +26,6 @@ public class Order extends StandardEntity {
     @NotNull
     @Column(name = "STATUS", nullable = false)
     protected String status;
-
-
-
-
 
     @Column(name = "TABLE_ITEM_CAPTION")
     protected String tableItemCaption;
@@ -56,7 +43,6 @@ public class Order extends StandardEntity {
     @Column(name = "TAXES")
     protected BigDecimal taxes;
 
-
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "order")
@@ -70,7 +56,6 @@ public class Order extends StandardEntity {
         return tickets;
     }
 
-
     public void setTableItemCaption(String tableItemCaption) {
         this.tableItemCaption = tableItemCaption;
     }
@@ -79,7 +64,6 @@ public class Order extends StandardEntity {
         return tableItemCaption;
     }
 
-
     public void setWithService(Boolean withService) {
         this.withService = withService;
     }
@@ -87,7 +71,6 @@ public class Order extends StandardEntity {
     public Boolean getWithService() {
         return withService;
     }
-
 
     public void setCharge(BigDecimal charge) {
         this.charge = charge;
@@ -105,9 +88,6 @@ public class Order extends StandardEntity {
         return taxes;
     }
 
-
-
-
     public void setActualSeats(Integer actualSeats) {
         this.actualSeats = actualSeats;
     }
@@ -116,7 +96,6 @@ public class Order extends StandardEntity {
         return actualSeats;
     }
 
-
     public void setDiscount(BigDecimal discount) {
         this.discount = discount;
     }
@@ -124,7 +103,6 @@ public class Order extends StandardEntity {
     public BigDecimal getDiscount() {
         return discount;
     }
-
 
     public void setStatus(OrderStatus status) {
         this.status = status == null ? null : status.getId();

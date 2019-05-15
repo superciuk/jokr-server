@@ -46,7 +46,6 @@ public class Ticket extends StandardEntity {
         return subticketStatus;
     }
 
-
     public void setTicketNumber(Integer ticketNumber) {
         this.ticketNumber = ticketNumber;
     }
@@ -54,7 +53,6 @@ public class Ticket extends StandardEntity {
     public Integer getTicketNumber() {
         return ticketNumber;
     }
-
 
     public void setOrderLines(List<OrderLine> orderLines) {
         this.orderLines = orderLines;
@@ -64,7 +62,6 @@ public class Ticket extends StandardEntity {
         return orderLines;
     }
 
-
     public void setTicketStatus(TicketStatus ticketStatus) {
         this.ticketStatus = ticketStatus == null ? null : ticketStatus.getId();
     }
@@ -73,7 +70,6 @@ public class Ticket extends StandardEntity {
         return ticketStatus == null ? null : TicketStatus.fromId(ticketStatus);
     }
 
-
     public void setOrder(Order order) {
         this.order = order;
     }
@@ -81,7 +77,5 @@ public class Ticket extends StandardEntity {
     public Order getOrder() {
         return order;
     }
-
-
 
 }

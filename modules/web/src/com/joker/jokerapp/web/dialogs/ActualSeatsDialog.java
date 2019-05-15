@@ -50,7 +50,7 @@ public class ActualSeatsDialog extends AbstractWindow {
 
         if (handler != null) {
 
-            int seatsNum = seatsTextField.getValue();
+            int seatsNum = (int) seatsTextField.getValue();
             handler.onClose(seatsNum);
 
         }

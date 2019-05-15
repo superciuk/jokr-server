@@ -6,13 +6,6 @@ import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
-import com.haulmont.cuba.core.entity.annotation.OnDelete;
-import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
-import com.haulmont.cuba.core.global.DeletePolicy;
-import java.util.List;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 @NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_MODIFIER_CATEGORY")
@@ -27,8 +20,6 @@ public class ProductModifierCategory extends StandardEntity {
     @Column(name = "SORT_ORDER")
     protected Integer sortOrder;
 
-
-
     public void setSortOrder(Integer sortOrder) {
         this.sortOrder = sortOrder;
     }
@@ -36,7 +27,6 @@ public class ProductModifierCategory extends StandardEntity {
     public Integer getSortOrder() {
         return sortOrder;
     }
-
 
     public void setName(String name) {
         this.name = name;

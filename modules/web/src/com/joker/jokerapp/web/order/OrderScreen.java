@@ -1,4 +1,4 @@
-package com.joker.jokerapp.web.screens;
+package com.joker.jokerapp.web.order;
 
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Metadata;
@@ -13,28 +13,37 @@ import com.haulmont.cuba.gui.components.Timer;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
+import com.haulmont.cuba.gui.model.CollectionPropertyContainer;
+import com.haulmont.cuba.gui.model.InstancePropertyContainer;
+import com.haulmont.cuba.gui.screen.Screen;
+import com.haulmont.cuba.gui.screen.Subscribe;
+import com.haulmont.cuba.gui.screen.UiController;
+import com.haulmont.cuba.gui.screen.UiDescriptor;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.security.global.UserSession;
 import com.haulmont.cuba.web.gui.components.WebButton;
 import com.joker.jokerapp.entity.*;
-import com.joker.jokerapp.web.dialogs.ItemPriceManualModifierDialog;
 import com.joker.jokerapp.web.dialogs.ItemManualModifierDialog;
-import com.joker.jokerapp.web.dialogs.ItemModifierDialog;
+import com.joker.jokerapp.web.dialogs.ItemPriceManualModifierDialog;
+import com.joker.jokerapp.web.screens.OrderScreenOLD;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.print.*;
-import javax.print.attribute.*;
-import javax.print.attribute.standard.*;
+import javax.print.attribute.DocAttributeSet;
+import javax.print.attribute.HashDocAttributeSet;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.MediaPrintableArea;
+import javax.print.attribute.standard.MediaSizeName;
 import java.awt.*;
-
 import java.awt.image.BufferedImage;
-import java.awt.print.*;
-
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.math.BigDecimal;
-
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -42,31 +51,24 @@ import java.util.*;
 import java.util.Calendar;
 import java.util.List;
 
-public class OrderScreen extends AbstractWindow {
+@UiController("jokerapp_OrderScreen")
+@UiDescriptor("order-screen.xml")
+public class OrderScreen extends Screen {
+
+    @Inject
+    private Metadata metadata;
 
     @Inject
     private UserSession userSession;
 
     @Inject
-    private Datasource<TableItem> tableItemDs;
+    private InstancePropertyContainer<Order> orderDc;
 
     @Inject
-    private CollectionDatasource<Ticket, UUID> ticketsDs;
-
-    @Inject
-    private CollectionDatasource<ProductItemCategory, UUID> productItemCategoriesDs;
-
-    @Inject
-    private CollectionDatasource<ProductItem, UUID> productItemsDs;
-
-    @Inject
-    private ComponentsFactory componentsFactory;
+    private CollectionPropertyContainer<Ticket> ticketsDc;
 
     @Inject
     private DataManager dataManager;
-
-    @Inject
-    private Metadata metadata;
 
     @Named("categoriesGrid")
     private GridLayout categoriesGrid;
@@ -137,14 +139,23 @@ public class OrderScreen extends AbstractWindow {
 
     private ArrayList<ProductItem> productItemsToShow = new ArrayList<>();
 
-    private Boolean doNotPrint = false;
+    private boolean doNotPrint = false;
 
-    private Boolean withFries = false;
-    private Boolean isGrillTicket = false;
+    private boolean withFries = false;
+    private boolean isGrillTicket = false;
 
-    private Boolean clientIsTablet = true;
+    private boolean clientIsTablet = true;
 
     private UUID selectedLineId;
+
+    @Subscribe
+    protected void onInit(InitEvent event) {
+
+        //orderDc.setItem();
+
+    }
+
+/*
 
     @Override
     public void init(Map<String, Object> params) {
@@ -298,7 +309,7 @@ public class OrderScreen extends AbstractWindow {
 
                 for (int l = 0; l < categoryName.length(); l++) {
 
-                    Character ch = categoryName.charAt(l);
+                    char ch = categoryName.charAt(l);
 
                     if (Character.isWhitespace(ch) || l == categoryName.length() - 1) {
 
@@ -425,7 +436,7 @@ public class OrderScreen extends AbstractWindow {
 
                 for (int l = 0; l < productName.length(); l++) {
 
-                    Character ch = productName.charAt(l);
+                    char ch = productName.charAt(l);
 
                     if (Character.isWhitespace(ch) || l == productName.length() - 1) {
 
@@ -573,13 +584,14 @@ public class OrderScreen extends AbstractWindow {
 
     }
 
-    public void onAddModifierClick() {
+*/
+/*    public void onAddModifierClick() {
 
         if (selectedLineId == null) return;
 
         OrderLine founded = null;
 
-        for (Ticket ticket : ticketsDs.getItems()) for (OrderLine line : ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
+        for (Ticket ticket: ticketsDs.getItems()) for (OrderLine line: ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
 
             founded = line;
             break;
@@ -592,8 +604,8 @@ public class OrderScreen extends AbstractWindow {
 
         List<OrderLine> modifierOrderLines = new ArrayList<>();
 
-        if (selectedLine.getHasModifier()) for (OrderLine line : selectedLine.getTicket().getOrderLines())
-            if (line.getItemToModifyId().equals(selectedLine.getId())) modifierOrderLines.add(line);
+        if (selectedLine.getHasModifier()) for (OrderLine line: selectedLine.getTicket().getOrderLines())
+            if (line != selectedLine && line.getItemToModifyId().equals(selectedLine.getId())) modifierOrderLines.add(line);
 
         Map<String, Object> params = new HashMap<>();
 
@@ -620,9 +632,9 @@ public class OrderScreen extends AbstractWindow {
 
         openWindow("jokerapp$ItemModifier.dialog", WindowManager.OpenType.DIALOG, params).addCloseListener(closeString -> {
 
-            if (closeString.equals("ok")) {
+            if (closeString.equals("close")) {
 
-                for (OrderLine line : selectedLine.getTicket().getOrderLines()) {
+                for (OrderLine line: selectedLine.getTicket().getOrderLines()) {
 
                     if (line.getIsModifier() && line.getItemToModifyId().equals(selectedLine.getId()) && !modifierOrderLinesToAdd.contains(line)) {
 
@@ -640,7 +652,7 @@ public class OrderScreen extends AbstractWindow {
 
                 } else {
 
-                    for (OrderLine newModifierLine : modifierOrderLinesToAdd) {
+                    for (OrderLine newModifierLine: modifierOrderLinesToAdd) {
 
                         selectedLine.setPrice(selectedLine.getPrice().add(newModifierLine.getPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity()))));
                         dataManager.commit(newModifierLine);
@@ -661,7 +673,8 @@ public class OrderScreen extends AbstractWindow {
 
         });
 
-    }
+    }*//*
+
 
     public void onAddManualModifierClick() {
 
@@ -669,7 +682,7 @@ public class OrderScreen extends AbstractWindow {
 
         OrderLine founded = null;
 
-        for (Ticket ticket : ticketsDs.getItems()) for (OrderLine line : ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
+        for (Ticket ticket: ticketsDs.getItems()) for (OrderLine line: ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
 
             founded = line;
             break;
@@ -850,7 +863,7 @@ public class OrderScreen extends AbstractWindow {
         OrderLine lineToRemove = null;
         Ticket lineToRemoveTicket = null;
 
-        for (Ticket ticket : ticketsDs.getItems()) for (OrderLine line: ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
+        for (Ticket ticket: ticketsDs.getItems()) for (OrderLine line: ticket.getOrderLines()) if (line.getId().equals(selectedLineId)) {
 
             lineToRemove = line;
             lineToRemoveTicket = line.getTicket();
@@ -881,20 +894,23 @@ public class OrderScreen extends AbstractWindow {
 
                 orderLineModified.setPrice(orderLineModified.getPrice().subtract(lineToRemove.getPrice().multiply(BigDecimal.valueOf(orderLineModified.getQuantity()))));
 
+                lineToRemoveTicket.getOrderLines().remove(lineToRemove);
                 dataManager.remove(lineToRemove);
 
                 tableItemDs.refresh();
 
                 drawOrderLinesGrid(lineToRemove, "removed");
 
-                Boolean modifiedItemHasMoreModifier = false;
+                boolean modifiedItemHasMoreModifier = false;
 
                 for (OrderLine line: lineToRemoveTicket.getOrderLines()) if (line != lineToRemove && (line.getItemToModifyId() != null) && line.getItemToModifyId().equals(orderLineModified.getId()))
                     modifiedItemHasMoreModifier = true;
 
                 if (!modifiedItemHasMoreModifier) {
 
-                    for (OrderLine line: lineToRemoveTicket.getOrderLines()) if ((line != orderLineModified) && line.getItemId().equals(orderLineModified.getItemId())) if (!line.getHasModifier()) {
+                    boolean orderLineModifiedDuplicateFound = false;
+
+                    for (OrderLine line: lineToRemoveTicket.getOrderLines()) if (line != orderLineModified && line.getItemId().equals(orderLineModified.getItemId())) if (!line.getHasModifier()) {
 
                         line.setQuantity(line.getQuantity() + orderLineModified.getQuantity());
                         line.setPrice(line.getPrice().add(orderLineModified.getPrice()));
@@ -909,9 +925,13 @@ public class OrderScreen extends AbstractWindow {
 
                         drawOrderLinesGrid(line, "updated");
 
+                        orderLineModifiedDuplicateFound = true;
+
                         break;
 
-                    } else { orderLineModified.setHasModifier(false); dataManager.commit(orderLineModified); tableItemDs.refresh(); drawOrderLinesGrid(orderLineModified, "updated"); }
+                    }
+
+                    if (!orderLineModifiedDuplicateFound) { orderLineModified.setHasModifier(false); dataManager.commit(orderLineModified); tableItemDs.refresh(); drawOrderLinesGrid(orderLineModified, "updated"); }
 
                 }
 
@@ -953,7 +973,7 @@ public class OrderScreen extends AbstractWindow {
 
         tableItemDs.getItem().getCurrentOrder().setCharge(subTotal);
 
-        subtotalField.setValue(subTotal.toString().concat(" €"));
+        subtotalField.setCaption(subTotal.toString().concat(" €"));
 
         if (tableItemDs.getItem().getCurrentOrder().getWithService()) {
 
@@ -964,11 +984,11 @@ public class OrderScreen extends AbstractWindow {
 
             total = subTotal.add(service);
 
-            serviceField.setValue(service.toString().concat(" €"));
+            serviceField.setCaption(service.toString().concat(" €"));
 
-            totalField.setValue(total.toString().concat(" €"));
+            totalField.setCaption(total.toString().concat(" €"));
 
-        } else totalField.setValue(subTotal.toString().concat(" €"));
+        } else totalField.setCaption(subTotal.toString().concat(" €"));
 
         dataManager.commit(tableItemDs.getItem().getCurrentOrder());
 
@@ -1236,7 +1256,7 @@ public class OrderScreen extends AbstractWindow {
 
             docAttributeSet.add(mpa);
 
-            Bill bill = new Bill();
+            OrderScreenOLD.Bill bill = new OrderScreenOLD.Bill();
 
             DocPrintJob docPrintJob = printServices[0].createPrintJob();
             SimpleDoc doc1 = new SimpleDoc(bill, flavor, docAttributeSet);
@@ -1407,7 +1427,7 @@ public class OrderScreen extends AbstractWindow {
 
             printerGroupToSendTicket = printerGroup;
 
-            Boolean printerGroupLinesExixts = false;
+            boolean printerGroupLinesExixts = false;
 
             for (OrderLine line: ticketToPrint.getOrderLines())
                 if (line.getPrinterGroup().equals(printerGroupToSendTicket)) printerGroupLinesExixts = true;
@@ -1434,7 +1454,7 @@ public class OrderScreen extends AbstractWindow {
 
                     docAttributeSet.add(mpa);
 
-                    PrinterTicket printerticket = new PrinterTicket();
+                    OrderScreenOLD.PrinterTicket printerticket = new OrderScreenOLD.PrinterTicket();
                     printerticket.setTicketToPrint(ticketToPrint);
 
                     DocPrintJob docPrintJob = printServices[0].createPrintJob();
@@ -1486,7 +1506,7 @@ public class OrderScreen extends AbstractWindow {
                 graphics2D.setFont(font3);
                 graphics2D.drawString("Coperti: ".concat(tableItemDs.getItem().getCurrentOrder().getActualSeats().toString()), xMin, y);
                 y += 20;
-                Calendar cal = Calendar.getInstance();
+                java.util.Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 graphics2D.drawString("Time: ".concat(sdf.format(cal.getTime())), xMin, y);
                 y += 30;
@@ -1612,10 +1632,10 @@ public class OrderScreen extends AbstractWindow {
         itemName.setId("itemName".concat(orderLine.getId().toString()));
         price.setId("price".concat(orderLine.getId().toString()));
 
-        quantity.setAlignment(Alignment.MIDDLE_LEFT);
-        price.setAlignment(Alignment.MIDDLE_RIGHT);
+        quantity.setAlignment(Component.Alignment.MIDDLE_LEFT);
+        price.setAlignment(Component.Alignment.MIDDLE_RIGHT);
 
-        itemName.setAction(new SelectCurrentLineAction());
+        itemName.setAction(new OrderScreenOLD.SelectCurrentLineAction());
 
         if (!orderLine.getIsModifier()) quantity.setValue(orderLine.getQuantity());
 
@@ -1894,5 +1914,14 @@ public class OrderScreen extends AbstractWindow {
         }
 
     }
+
+    public void onAddModifierClick() {
+
+        openWindow("jokerapp$ItemModifier.dialog", WindowManager.OpenType.DIALOG);
+
+    }
+
+
+*/
 
 }

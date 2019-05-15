@@ -1,25 +1,12 @@
 package com.joker.jokerapp.entity;
 
-// import javax.inject.Inject;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
-import com.haulmont.cuba.core.global.DeletePolicy;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
-import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
+import com.haulmont.cuba.core.entity.StandardEntity;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import javax.persistence.Column;
-import com.haulmont.cuba.core.entity.annotation.OnDelete;
-
-// import com.haulmont.cuba.core.global.DataManager;
-
 import java.util.UUID;
-import com.haulmont.chile.core.annotations.MetaProperty;
-import javax.persistence.Transient;
 
 @NamePattern("%s|id")
 @Table(name = "JOKERAPP_ORDER_LINE")
@@ -53,7 +40,6 @@ public class OrderLine extends StandardEntity {
     @Column(name = "TAXES", nullable = false, precision = 12, scale = 2)
     protected BigDecimal taxes;
 
-
     @Column(name = "POSITION_")
     protected Integer position;
 
@@ -70,8 +56,6 @@ public class OrderLine extends StandardEntity {
 
     @Column(name = "ITEM_TO_MODIFY_ID")
     protected UUID itemToModifyId;
-
-
 
     @Column(name = "CHECKED")
     protected Boolean checked;
@@ -99,9 +83,6 @@ public class OrderLine extends StandardEntity {
         this.printerGroup = printerGroup == null ? null : printerGroup.getId();
     }
 
-
-
-
     public void setIsReversed(Boolean isReversed) {
         this.isReversed = isReversed;
     }
@@ -109,7 +90,6 @@ public class OrderLine extends StandardEntity {
     public Boolean getIsReversed() {
         return isReversed;
     }
-
 
     public void setTicket(Ticket ticket) {
         this.ticket = ticket;
@@ -119,7 +99,6 @@ public class OrderLine extends StandardEntity {
         return ticket;
     }
 
-
     public void setItemId(UUID itemId) {
         this.itemId = itemId;
     }
@@ -127,10 +106,6 @@ public class OrderLine extends StandardEntity {
     public UUID getItemId() {
         return itemId;
     }
-
-
-
-
 
     public void setNextModifierPosition(Integer nextModifierPosition) {
         this.nextModifierPosition = nextModifierPosition;
@@ -140,7 +115,6 @@ public class OrderLine extends StandardEntity {
         return nextModifierPosition;
     }
 
-
     public void setItemToModifyId(UUID itemToModifyId) {
         this.itemToModifyId = itemToModifyId;
     }
@@ -148,7 +122,6 @@ public class OrderLine extends StandardEntity {
     public UUID getItemToModifyId() {
         return itemToModifyId;
     }
-
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
@@ -158,8 +131,6 @@ public class OrderLine extends StandardEntity {
         return unitPrice;
     }
 
-
-
     public void setHasModifier(Boolean hasModifier) {
         this.hasModifier = hasModifier;
     }
@@ -167,8 +138,6 @@ public class OrderLine extends StandardEntity {
     public Boolean getHasModifier() {
         return hasModifier;
     }
-
-
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
@@ -178,8 +147,6 @@ public class OrderLine extends StandardEntity {
         return quantity;
     }
 
-
-
     public void setIsModifier(Boolean isModifier) {
         this.isModifier = isModifier;
     }
@@ -187,7 +154,6 @@ public class OrderLine extends StandardEntity {
     public Boolean getIsModifier() {
         return isModifier;
     }
-
 
     public void setPosition(Integer position) {
         this.position = position;
@@ -197,8 +163,6 @@ public class OrderLine extends StandardEntity {
         return position;
     }
 
-
-
     public void setItemName(String itemName) {
         this.itemName = itemName;
     }
@@ -207,21 +171,17 @@ public class OrderLine extends StandardEntity {
         return itemName;
     }
 
-
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-
 
     public void setTaxes(BigDecimal taxes) {
         this.taxes = taxes;
     }
 
-
     public BigDecimal getTaxes() {
         return taxes;
     }
-
 
     public BigDecimal getPrice() {
         return price;

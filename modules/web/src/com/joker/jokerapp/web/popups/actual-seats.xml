@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://caption"
+        messagesPack="com.joker.jokerapp.web.popups">
+    <dialogMode forceDialog="true"
+                height="520"
+                width="800"/>
+    <layout margin="true"
+            stylename="mainLayout">
+        <groupBox height="100%"
+                  orientation="horizontal"
+                  width="100%">
+            <vbox height="100%"
+                  spacing="true">
+                <vbox height="250px">
+                    <hbox height="100px"
+                          spacing="true"
+                          width="250px">
+                        <label id="seats"
+                               align="MIDDLE_LEFT"
+                               height="40px"
+                               stylename="seatsLabel"
+                               value="msg://actualSeatsDialog.msg"/>
+                        <textField id="seatsTextField"
+                                   align="MIDDLE_LEFT"
+                                   datatype="string"
+                                   height="40px"
+                                   stylename="seatsTextField"
+                                   width="120px"/>
+                    </hbox>
+                </vbox>
+                <buttonsPanel align="BOTTOM_LEFT"
+                              height="60px"
+                              width="350px">
+                    <button id="okBtn"
+                            align="MIDDLE_LEFT"
+                            caption="msg://OK"
+                            height="60px"
+                            stylename="okBtn"
+                            width="150px"/>
+                    <button id="cancelBtn"
+                            align="MIDDLE_RIGHT"
+                            caption="msg://Cancel"
+                            height="60px"
+                            stylename="cancelBtn"
+                            width="150px"/>
+                </buttonsPanel>
+            </vbox>
+            <vbox height="100%">
+                <buttonsPanel align="TOP_RIGHT"
+                              margin="true">
+                    <button id="numPadBtn7"
+                            caption="7"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                    <button id="numPadBtn8"
+                            caption="8"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                    <button id="numPadBtn9"
+                            caption="9"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                </buttonsPanel>
+                <buttonsPanel align="TOP_RIGHT"
+                              margin="true">
+                    <button id="numPadBtn4"
+                            caption="4"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                    <button id="numPadBtn5"
+                            caption="5"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                    <button id="numPadBtn6"
+                            caption="6"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                </buttonsPanel>
+                <buttonsPanel align="TOP_RIGHT"
+                              margin="true">
+                    <button id="numPadBtn1"
+                            caption="1"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                    <button id="numPadBtn2"
+                            caption="2"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                    <button id="numPadBtn3"
+                            caption="3"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                </buttonsPanel>
+                <buttonsPanel align="TOP_RIGHT"
+                              margin="true">
+                    <button id="numPadBtnC"
+                            caption="C"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                    <button id="numPadBtn0"
+                            caption="0"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                    <button id="numPadBtnB"
+                            caption="*"
+                            enable="false"
+                            height="100px"
+                            stylename="virtualKeyBtn"
+                            width="100px"/>
+                </buttonsPanel>
+            </vbox>
+        </groupBox>
+    </layout>
+</window>
