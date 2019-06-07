@@ -11,6 +11,6 @@
         <item screen="jokerapp$Kitchen.display"/>
         <item screen="jokerapp$ItemModifier.dialog"/>
         <item screen="jokerapp_MainScreen"/>
-        <item screen="jokerapp_ActualSeats"/>
+        <item screen="jokerapp_KitchenDisplayScreen"/>
     </menu>
 </menu-config>

@@ -14,8 +14,12 @@
                 <query><![CDATA[select e from jokerapp$ProductItem e order by e.sortOrder]]></query>
             </loader>
         </collection>
-        <instance id="tableItemDc" class="com.joker.jokerapp.entity.TableItem" view="tableItem-view">
-            <loader id="tableItemDl">
+        <instance id="currentTicketDc" class="com.joker.jokerapp.entity.Ticket" view="ticket-view">
+            <loader id="">
+            </loader>
+        </instance>
+        <instance id="orderLineDc" class="com.joker.jokerapp.entity.OrderLine" view="order-line-view">
+            <loader id="">
             </loader>
         </instance>
     </data>
@@ -46,29 +50,24 @@
                                 align="MIDDLE_LEFT"
                                 caption="-"
                                 height="60px"
-                                invoke="onSubtractBtnClick"
-                                stylename="orderScreenFunctionBtn"
-                                width="130px"/>
+                                width="130px" stylename="orderScreenFunctionBtn"/>
                         <button id="addBtn"
                                 align="MIDDLE_LEFT"
                                 caption="+"
                                 height="60px"
-                                invoke="onAddBtnClick"
                                 stylename="orderScreenFunctionBtn"
                                 width="130px"/>
-                        <button id="addModifier"
+                        <button id="addModifierBtn"
                                 align="MIDDLE_LEFT"
                                 caption="MODIFICA"
                                 height="60px"
-                                invoke="onAddModifierClick"
                                 stylename="orderScreenFunctionBtn"
                                 width="130px"/>
-                        <button id="addManualModifier"
+                        <button id="addManualModifierBtn"
                                 align="MIDDLE_LEFT"
                                 caption="MODIFICA&lt;br&gt;MANUALE"
                                 captionAsHtml="true"
                                 height="60px"
-                                invoke="onAddManualModifierClick"
                                 stylename="orderScreenFunctionBtn"
                                 width="130px"/>
                     </buttonsPanel>
@@ -76,7 +75,7 @@
                                align="MIDDLE_CENTER"
                                editable="false"
                                height="60px"
-                               width="145px"/>
+                               width="145px" stylename="tableTimeField-normal"/>
                     <buttonsPanel align="MIDDLE_CENTER"
                                   height="100%"
                                   width="100%">
@@ -84,8 +83,7 @@
                                 align="MIDDLE_RIGHT"
                                 captionAsHtml="true"
                                 height="60px"
-                                invoke="onDoNotPrintBtnClick"
-                                width="150px"/>
+                                width="150px" stylename="doNotPrintBtnNotPushed" caption="STAMPA&lt;br&gt;LE COMANDE"/>
                     </buttonsPanel>
                 </hbox>
                 <split height="100%"
@@ -111,13 +109,11 @@
                                         caption="CONTO"
                                         captionAsHtml="true"
                                         height="100%"
-                                        invoke="onBillBtnClick"
                                         stylename="orderScreenBillBtn"
                                         width="250px"/>
                                 <vbox id="billGroupBox"
                                       align="TOP_RIGHT"
                                       height="100%"
-                                      settingsEnabled="false"
                                       stylename="billBox"
                                       width="250px">
                                     <hbox align="MIDDLE_CENTER"
@@ -126,36 +122,36 @@
                                         <label id="subtotalLabel"
                                                align="MIDDLE_RIGHT"
                                                value="Subtotal"
-                                               width="120px"/>
+                                               width="120px" stylename="subtotalLabel"/>
                                         <textField id="subtotalField"
                                                    align="MIDDLE_RIGHT"
                                                    editable="false"
                                                    height="16px"
-                                                   width="115px"/>
+                                                   width="115px" stylename="subtotalField"/>
                                     </hbox>
                                     <hbox align="MIDDLE_CENTER"
                                           width="215px">
                                         <label id="serviceLabel"
                                                align="MIDDLE_RIGHT"
                                                value="Service 10%"
-                                               width="120px"/>
+                                               width="120px" stylename="serviceLabel"/>
                                         <textField id="serviceField"
                                                    align="MIDDLE_RIGHT"
                                                    editable="false"
                                                    height="16px"
-                                                   width="115px"/>
+                                                   width="115px" stylename="serviceField"/>
                                     </hbox>
                                     <hbox align="MIDDLE_CENTER"
                                           width="215px">
                                         <label id="totalLabel"
                                                align="MIDDLE_RIGHT"
                                                value="TOTAL"
-                                               width="120px"/>
+                                               width="120px" stylename="totalLabel"/>
                                         <textField id="totalField"
                                                    align="MIDDLE_RIGHT"
                                                    editable="false"
                                                    height="16px"
-                                                   width="115px"/>
+                                                   width="115px" stylename="totalField"/>
                                     </hbox>
                                 </vbox>
                             </hbox>
@@ -216,7 +212,6 @@
                             caption="INVIA&lt;br&gt;E CHIUDI"
                             captionAsHtml="true"
                             height="60px"
-                            invoke="onSendAndCloseBtnClick"
                             stylename="orderScreenFunctionBtn"
                             width="120px"/>
                     <button id="sendBtn"
@@ -224,7 +219,6 @@
                             caption="INVIA"
                             captionAsHtml="true"
                             height="60px"
-                            invoke="onSendBtnClick"
                             stylename="orderScreenFunctionBtn"
                             width="120px"/>
                     <button id="reSendBtn"
@@ -232,7 +226,6 @@
                             caption="RISTAMPA&lt;br&gt;TUTTO"
                             captionAsHtml="true"
                             height="60px"
-                            invoke="onReSendBtnClick"
                             stylename="orderScreenFunctionBtn"
                             width="120px"/>
                     <button id="closeBtn"
@@ -240,7 +233,6 @@
                             caption="CHIUDI"
                             captionAsHtml="true"
                             height="60px"
-                            invoke="onCloseBtnClick"
                             stylename="orderScreenFunctionBtn"
                             width="120px"/>
                 </buttonsPanel>
@@ -251,7 +243,6 @@
                             caption="MODIFICA&lt;br&gt;PREZZO"
                             captionAsHtml="true"
                             height="60px"
-                            invoke="onModifyPriceBtnClick"
                             stylename="orderScreenFunctionBtn"
                             width="120px"/>
                     <button id="removeBtn"
@@ -259,7 +250,6 @@
                             caption="CANCELLA&lt;br&gt;RIGA"
                             captionAsHtml="true"
                             height="60px"
-                            invoke="onRemoveBtnClick"
                             stylename="orderScreenFunctionBtn"
                             width="140px"/>
                 </buttonsPanel>

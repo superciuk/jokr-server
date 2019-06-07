@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://caption"
+        messagesPack="com.joker.jokerapp.web.main">
+    <data>
+        <collection id="ticketsDc" class="com.joker.jokerapp.entity.Ticket" view="ticket-view">
+            <loader>
+                <query><![CDATA[select e from jokerapp$Ticket e where e.order.status = 'open' order by e.createTs]]></query>
+            </loader>
+        </collection>
+    </data>
+    <timers>
+        <timer id="kitchenTimer" delay="5000" repeating="true" autostart="true" onTimer="onKitchenTimerClick"/>
+    </timers>
+    <layout margin="true"
+            stylename="mainLayout">
+        <split height="100%"
+               maxSplitPosition="90%"
+               minSplitPosition="90%"
+               orientation="vertical"
+               pos="90%"
+               settingsEnabled="false"
+               width="100%">
+            <scrollBox id="kitchenDisplayMainBox"
+                       height="100%"
+                       orientation="horizontal"
+                       scrollBars="horizontal"
+                       width="100%"/>
+            <hbox id="bottomHBox"
+                  height="90%"
+                  margin="true"
+                  width="100%">
+                <buttonsPanel align="MIDDLE_LEFT"
+                              height="100%">
+                    <button id="pippo"
+                            caption="pippo"
+                            height="100%"
+                            stylename="kitchenDisplayBtn"
+                            width="160px"/>
+                    <button id="button_5"
+                            height="100%"
+                            stylename="kitchenDisplayGridItem-checkBtn"
+                            visible="false"
+                            width="160px"/>
+                    <button id="button_6"
+                            height="100%"
+                            stylename="kitchenDisplayGridItem-checkBtn"
+                            visible="false"
+                            width="160px"/>
+                </buttonsPanel>
+                <buttonsPanel align="MIDDLE_CENTER"
+                              height="100%">
+                    <button id="showBarTicketsBtn"
+                            caption="BAR"
+                            height="100%"
+                            stylename="kitchenDisplayBtnPressed"
+                            width="160px"/>
+                    <button id="showFryerTicketsBtn"
+                            caption="FRIGGITRICE"
+                            height="100%"
+                            stylename="kitchenDisplayBtnPressed"
+                            width="160px"/>
+                    <button id="showGrillTicketsBtn"
+                            caption="PIASTRA"
+                            height="100%"
+                            stylename="kitchenDisplayBtnPressed"
+                            width="160px"/>
+                </buttonsPanel>
+                <buttonsPanel align="MIDDLE_RIGHT"
+                              height="100%">
+                    <button id="checkAllBtn"
+                            caption="CHECK ALL"
+                            height="100%"
+                            stylename="kitchenDisplayBtn"
+                            width="160px"/>
+                    <button id="button_2"
+                            height="100%"
+                            stylename="kitchenDisplayGridItem-checkBtn"
+                            visible="false"
+                            width="160px"/>
+                    <button id="button_3"
+                            caption="PIASTRA"
+                            height="100%"
+                            stylename="kitchenDisplayGridItem-checkBtn"
+                            visible="false"
+                            width="160px"/>
+                </buttonsPanel>
+            </hbox>
+        </split>
+    </layout>
+</window>

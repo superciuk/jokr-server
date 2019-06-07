@@ -30,6 +30,9 @@ public class MainScreen extends Screen {
     private CollectionContainer<TableItem> tableItemsDc;
 
     @Inject
+    private DataContext dataContext;
+
+    @Inject
     private DataManager dataManager;
 
     @Inject
@@ -410,26 +413,57 @@ public class MainScreen extends Screen {
 
                 ActualSeats actualSeats = screenBuilders.screen(this)
                         .withScreenClass(ActualSeats.class)
-                        .withAfterCloseListener(afterCloseEvent -> {
-                            ActualSeats screen = afterCloseEvent.getScreen();
-                            if (afterCloseEvent.getCloseAction().equals(WINDOW_COMMIT_AND_CLOSE_ACTION)) {
+                        .withAfterCloseListener(actualSeatsAfterScreenCloseEvent -> {
+                            ActualSeats screen = actualSeatsAfterScreenCloseEvent.getScreen();
+                            if (actualSeatsAfterScreenCloseEvent.getCloseAction().equals(WINDOW_COMMIT_AND_CLOSE_ACTION)) {
 
-                        String seats = screen.getSeats();
+                                String seats = screen.getSeats();
 
-                        closeWithDefaultAction();
+                                OrderScreen orderScreen = screenBuilders.screen(this)
+                                        .withScreenClass(OrderScreen.class)
+                                        .withAfterCloseListener(orderScreenAfterScreenCloseEvent -> {
 
-                    }
+                                            if (orderScreenAfterScreenCloseEvent.getCloseAction().equals(WINDOW_COMMIT_AND_CLOSE_ACTION)) {
+
+                                                //timer.start();
+                                                refreshData();
+
+                                            }
+
+                                        })
+                                        .build();
+
+                                orderScreen.setParentDataContext(dataContext);
+                                orderScreen.setTableItem(selectedTable, seats);
+                                orderScreen.show();
+
+                            }
 
                         })
                         .build();
 
+                //timer.stop();
                 actualSeats.setSeatsCapacity(selectedTable.getSeatsCapacity().toString());
                 actualSeats.show();
 
             } else if (tableItemStatus.equals(TableItemStatus.open)) {
 
-                closeWithDefaultAction();
-                //openWindow("orderScreen", WindowManager.OpenType.THIS_TAB, orderParams);
+                OrderScreen orderScreen = screenBuilders.screen(this)
+                        .withScreenClass(OrderScreen.class)
+                        .withAfterCloseListener(orderScreenAfterScreenCloseEvent -> {
+
+                            if (orderScreenAfterScreenCloseEvent.getCloseAction().equals(WINDOW_COMMIT_AND_CLOSE_ACTION)) {
+
+                                refreshData();
+
+                            }
+
+                        })
+                        .build();
+
+                orderScreen.setParentDataContext(dataContext);
+                orderScreen.setTableItem(selectedTable, null);
+                orderScreen.show();
 
             } else if (tableItemStatus.equals(TableItemStatus.closed)) {
 
@@ -451,9 +485,10 @@ public class MainScreen extends Screen {
 
     }
 
-    public void onTimerClick(Timer source) {
+    public void onMainScreenTimerClick(Timer source) {
 
         refreshData();
 
     }
+
 }

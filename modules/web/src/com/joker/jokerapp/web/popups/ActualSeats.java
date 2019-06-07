@@ -16,7 +16,7 @@ public class ActualSeats extends Screen {
 
     public String getSeats () {
 
-        return  seatsTextField.getValue().toString();
+        return seatsTextField.getValue().toString();
 
     }
 

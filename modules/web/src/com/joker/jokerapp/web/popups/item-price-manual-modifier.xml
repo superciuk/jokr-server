@@ -2,11 +2,8 @@
 <window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
         caption="msg://caption"
         messagesPack="com.joker.jokerapp.web.popups">
-    <dialogMode
-            height="520"
-            width="800" forceDialog="true" modal="false"/>
-    <layout margin="true"
-            stylename="mainLayout">
+    <dialogMode height="520px" width="800px" forceDialog="true"/>
+    <layout margin="true">
         <groupBox height="100%"
                   orientation="horizontal"
                   width="100%">
@@ -20,12 +17,12 @@
                                align="MIDDLE_LEFT"
                                height="40px"
                                stylename="seatsLabel"
-                               value="msg://actualSeatsDialog.msg"/>
-                        <textField id="seatsTextField"
+                               value="Prezzo:"/>
+                        <textField id="priceModifier"
                                    align="MIDDLE_LEFT"
                                    datatype="string"
                                    height="40px"
-                                   stylename="seatsTextField"
+                                   stylename="newPriceTextField"
                                    width="120px"/>
                     </hbox>
                 </vbox>
@@ -113,9 +110,8 @@
                             height="100px"
                             stylename="virtualKeyBtn"
                             width="100px"/>
-                    <button id="numPadBtnB"
-                            caption="*"
-                            enable="false"
+                    <button id="numPadBtnDot"
+                            caption="."
                             height="100px"
                             stylename="virtualKeyBtn"
                             width="100px"/>

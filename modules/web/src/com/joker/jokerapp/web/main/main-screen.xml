@@ -10,7 +10,7 @@
         </collection>
     </data>
     <timers>
-        <timer id="timer" delay="1000" repeating="true" autostart="true" onTimer="onTimerClick"/>
+        <timer id="mainScreenTimer" delay="1000" repeating="true" autostart="true" onTimer="onMainScreenTimerClick"/>
     </timers>
     <layout margin="true"
             stylename="mainLayout" maxHeight="100%" maxWidth="100%" minHeight="100%" minWidth="100%">

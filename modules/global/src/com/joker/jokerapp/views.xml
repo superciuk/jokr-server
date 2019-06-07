@@ -29,15 +29,35 @@
           extends="_local"
           name="order-line-view"
           systemProperties="true">
-        <property name="ticket"
-                  view="_minimal">
+        <property name="ticket" view="_minimal">
+            <property name="ticketNumber"/>
             <property name="ticketStatus"/>
+            <property name="subticketStatus"/>
+            <property name="orderLines" view="_minimal">
+                <property name="ticket" view="_minimal"/>
+                <property name="quantity"/>
+                <property name="itemName"/>
+                <property name="itemId"/>
+                <property name="unitPrice"/>
+                <property name="price"/>
+                <property name="taxes"/>
+                <property name="position"/>
+                <property name="nextModifierPosition"/>
+                <property name="hasModifier"/>
+                <property name="isModifier"/>
+                <property name="itemToModifyId"/>
+                <property name="checked"/>
+                <property name="isReversed"/>
+                <property name="printerGroup"/>
+                <property name="createTs"/>
+                <property name="createdBy"/>
+                <property name="updateTs"/>
+                <property name="updatedBy"/>
+            </property>
             <property name="createTs"/>
             <property name="createdBy"/>
             <property name="updateTs"/>
             <property name="updatedBy"/>
-            <property name="ticketNumber"/>
-            <property name="subticketStatus"/>
         </property>
     </view>
     <view class="com.joker.jokerapp.entity.TableItem"
@@ -103,25 +123,7 @@
           extends="_local"
           name="ticket-view"
           systemProperties="true">
-        <property name="orderLines"
-                  view="_minimal">
-            <property name="quantity"/>
-            <property name="printerGroup"/>
-            <property name="itemName"/>
-            <property name="itemId"/>
-            <property name="price"/>
-            <property name="hasModifier"/>
-            <property name="isModifier"/>
-            <property name="itemToModifyId"/>
-            <property name="isReversed"/>
-            <property name="position"/>
-            <property name="checked"/>
-        </property>
-        <property name="order"
-                  view="_minimal">
-            <property name="actualSeats"/>
-            <property name="tableItemCaption"/>
-            <property name="status"/>
-        </property>
+        <property name="order" view="_local"/>
+        <property name="orderLines" view="_local"/>
     </view>
 </views>
