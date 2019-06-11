@@ -10,7 +10,7 @@
         </collection>
     </data>
     <timers>
-        <timer id="kitchenTimer" delay="5000" repeating="true" autostart="true" onTimer="onKitchenTimerClick"/>
+        <timer id="kitchenTimer" delay="2000" repeating="true" autostart="true" onTimer="onKitchenTimerClick"/>
     </timers>
     <layout margin="true"
             stylename="mainLayout">
@@ -32,21 +32,18 @@
                   width="100%">
                 <buttonsPanel align="MIDDLE_LEFT"
                               height="100%">
-                    <button id="pippo"
-                            caption="pippo"
+                    <button id="openTicketsCounterBtn"
+                            height="100%"
+                            width="200px" stylename="kitchenDisplayBtn" captionAsHtml="true"/>
+                    <button id="closedTicketsCounterBtn"
                             height="100%"
                             stylename="kitchenDisplayBtn"
-                            width="160px"/>
-                    <button id="button_5"
+                            width="200px" captionAsHtml="true"/>
+                    <button id="closeTicketBtn"
+                            caption="CLOSE&lt;br&gt;TICKET"
                             height="100%"
-                            stylename="kitchenDisplayGridItem-checkBtn"
-                            visible="false"
-                            width="160px"/>
-                    <button id="button_6"
-                            height="100%"
-                            stylename="kitchenDisplayGridItem-checkBtn"
-                            visible="false"
-                            width="160px"/>
+                            stylename="kitchenDisplayBtn"
+                            width="160px" captionAsHtml="true"/>
                 </buttonsPanel>
                 <buttonsPanel align="MIDDLE_CENTER"
                               height="100%">

@@ -52,9 +52,6 @@ public class OrderScreen extends Screen {
     @Inject
     private Metadata metadata;
 
-/*    @Inject
-    private Timer clockTimer;*/
-
     @Inject
     private UiComponents uiComponents;
 
@@ -1014,10 +1011,10 @@ public class OrderScreen extends Screen {
 
 /*    public void onClockTimerClick(Timer source) {
 
-        *//*if (Instant.now().getEpochSecond() - tableItem.getCurrentOrder().getCreateTs().toInstant().getEpochSecond() > 3600)
+        *//**//*if (Instant.now().getEpochSecond() - tableItem.getCurrentOrder().getCreateTs().toInstant().getEpochSecond() > 3600)
             tableTimeField.setStyleName("tableTimeField-hot");
 
-        tableTimeField.setValue(Date.from(Instant.ofEpochSecond(Instant.now().getEpochSecond() - tableItem.getCurrentOrder().getCreateTs().toInstant().getEpochSecond() - 3600)));*//*
+        tableTimeField.setValue(Date.from(Instant.ofEpochSecond(Instant.now().getEpochSecond() - tableItem.getCurrentOrder().getCreateTs().toInstant().getEpochSecond() - 3600)));*//**//*
 
     }*/
 
@@ -1128,12 +1125,13 @@ public class OrderScreen extends Screen {
                 if (orderLine.getIsModifier() && orderLine.getItemToModifyId().equals(lineToRemove.getId())) {
 
                 orderLine.setIsReversed(true);
+                orderLine.setChecked(true);
                 drawOrderLinesGrid(orderLine,"updated");
 
             }
 
             lineToRemove.setIsReversed(true);
-
+            lineToRemove.setChecked(true);
             dataContext.getParent().commit();
 
             drawOrderLinesGrid(lineToRemove,"updated");
@@ -1263,13 +1261,10 @@ public class OrderScreen extends Screen {
 
                         refreshBill();
 
-                        //clockTimer.start();
-
                     }
                 })
                 .build();
 
-        //clockTimer.stop();
         itemManualModifier.show();
 
     }

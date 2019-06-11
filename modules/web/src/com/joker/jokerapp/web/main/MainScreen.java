@@ -1,7 +1,5 @@
 package com.joker.jokerapp.web.main;
 
-import com.haulmont.cuba.core.global.DataManager;
-
 import com.haulmont.cuba.gui.*;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
@@ -10,14 +8,13 @@ import com.haulmont.cuba.gui.model.DataContext;
 import com.haulmont.cuba.gui.screen.*;
 import com.haulmont.cuba.web.gui.components.WebButton;
 import com.haulmont.cuba.web.gui.components.WebGroupBox;
-import com.joker.jokerapp.entity.OrderStatus;
-import com.joker.jokerapp.entity.TableItem;
-import com.joker.jokerapp.entity.TableItemStatus;
+import com.joker.jokerapp.entity.*;
 import com.joker.jokerapp.web.popups.ActualSeats;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 
 @UiController("jokerapp_MainScreen")
@@ -31,9 +28,6 @@ public class MainScreen extends Screen {
 
     @Inject
     private DataContext dataContext;
-
-    @Inject
-    private DataManager dataManager;
 
     @Inject
     private UiComponents uiComponents;
@@ -84,15 +78,8 @@ public class MainScreen extends Screen {
         currentTimeField.setValue(Date.from(Instant.now()));
 
         getScreenData().loadAll();
+
         drawTableElements();
-
-    }
-
-    private void freeTable(TableItem tableToFree) {
-
-        tableToFree.setTableStatus(TableItemStatus.free);
-        tableToFree.setCurrentOrder(null);
-        dataManager.commit(tableToFree);
 
     }
 
@@ -221,7 +208,8 @@ public class MainScreen extends Screen {
 
     }
 
-    public void onSplitTableBtnClick() {
+    @Subscribe("splitTableBtn")
+    public void onSplitTableBtnClick(Button.ClickEvent event) {
 
         if (!isSplitTableBtnPressed) {
 
@@ -239,7 +227,8 @@ public class MainScreen extends Screen {
 
     }
 
-    public void onMergeTableBtnClick() {
+    @Subscribe("mergeTableBtn")
+    public void onMergeTableBtnClick(Button.ClickEvent event) {
 
         if (!isMergeTableBtnPressed) {
 
@@ -257,7 +246,8 @@ public class MainScreen extends Screen {
 
     }
 
-    public void onMoveTableBtnClick() {
+    @Subscribe("moveTableBtn")
+    public void onMoveTableBtnClick(Button.ClickEvent event) {
 
         if (!isMoveTableBtnPressed) {
 
@@ -294,7 +284,8 @@ public class MainScreen extends Screen {
 
     }
 
-    public void onCancelBtnClick() {
+    @Subscribe("cancelBtn")
+    public void onCancelBtnClick(Button.ClickEvent event) {
 
         if (!isCancelBtnPressed) {
 
@@ -312,7 +303,8 @@ public class MainScreen extends Screen {
 
     }
 
-    public void onCloseBtnClick() {
+    @Subscribe("closeBtn")
+    public void onCloseBtnClick(Button.ClickEvent event) {
 
         if (!isCloseBtnPressed) {
 
@@ -366,11 +358,16 @@ public class MainScreen extends Screen {
             if (selectedTable.getCurrentOrder() != null) {
 
                 selectedTable.getCurrentOrder().setStatus(OrderStatus.cancelled);
-                dataManager.commit(selectedTable.getCurrentOrder());
+
+                ArrayList<Ticket> removeList = new ArrayList<>();
+
+                for (Ticket ticket: selectedTable.getCurrentOrder().getTickets()) if (ticket.getOrder().equals(selectedTable.getCurrentOrder())) removeList.add(ticket);
+                removeList.forEach(ticket -> dataContext.remove(ticket));
+
                 selectedTable.setCurrentOrder(null);
                 selectedTable.setTableStatus(TableItemStatus.free);
 
-                dataManager.commit(selectedTable);
+                dataContext.commit();
 
                 deselectFunctionButtons();
 
@@ -388,12 +385,12 @@ public class MainScreen extends Screen {
 
                 selectedTable.getCurrentOrder().setStatus(OrderStatus.closed);
 
-                dataManager.commit(selectedTable.getCurrentOrder());
+                for (Ticket ticket: selectedTable.getCurrentOrder().getTickets()) ticket.setTicketStatus(TicketStatus.closed);
 
                 selectedTable.setCurrentOrder(null);
                 selectedTable.setTableStatus(TableItemStatus.free);
 
-                dataManager.commit(selectedTable);
+                dataContext.commit();
 
                 deselectFunctionButtons();
 
@@ -425,7 +422,6 @@ public class MainScreen extends Screen {
 
                                             if (orderScreenAfterScreenCloseEvent.getCloseAction().equals(WINDOW_COMMIT_AND_CLOSE_ACTION)) {
 
-                                                //timer.start();
                                                 refreshData();
 
                                             }
@@ -442,7 +438,6 @@ public class MainScreen extends Screen {
                         })
                         .build();
 
-                //timer.stop();
                 actualSeats.setSeatsCapacity(selectedTable.getSeatsCapacity().toString());
                 actualSeats.show();
 
@@ -467,7 +462,7 @@ public class MainScreen extends Screen {
 
             } else if (tableItemStatus.equals(TableItemStatus.closed)) {
 
-                /*showOptionDialog(
+/*                showOptionDialog(
                         getMessage("freeTableDialog.title"),
                         getMessage("freeTableDialog.msg"),
                         Frame.MessageType.CONFIRMATION,
@@ -485,10 +480,13 @@ public class MainScreen extends Screen {
 
     }
 
+
+/*
     public void onMainScreenTimerClick(Timer source) {
 
         refreshData();
 
     }
+*/
 
 }
