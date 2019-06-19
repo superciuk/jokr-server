@@ -273,7 +273,8 @@ public class ItemModifier extends Screen {
 
         for (OrderLine line: ticketDc.getItem().getOrderLines()) {
 
-            if (line.getItemName().equals(" + ".concat(productModifierToAdd.getName())) || line.getItemName().equals(" - ".concat(productModifierToAdd.getName()))) return;
+            if ((line.getIsModifier() && line.getItemToModifyId().equals(lineToModify.getId())) &&
+                    (line.getItemName().equals(" + ".concat(productModifierToAdd.getName())) || line.getItemName().equals(" - ".concat(productModifierToAdd.getName())))) return;
 
         }
 

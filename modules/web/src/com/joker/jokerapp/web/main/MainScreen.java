@@ -35,6 +35,9 @@ public class MainScreen extends Screen {
     @Inject
     private ScreenBuilders screenBuilders;
 
+    @Inject
+    private Timer mainScreenTimer;
+
     @Named("tableFirstGrid")
     private GridLayout tableBtnFirstGrid;
 
@@ -109,7 +112,7 @@ public class MainScreen extends Screen {
             WebButton btn = uiComponents.create(WebButton.class);
             WebGroupBox groupBox = uiComponents.create(WebGroupBox.class);
             groupBox.setWidth("190px");
-            groupBox.setHeight("140px");
+            groupBox.setHeight("170px");
             groupBox.setAlignment(Component.Alignment.TOP_CENTER);
             groupBox.setId("groupBoxLayout".concat(tableItem.getTableNumber().toString()));
 
@@ -130,15 +133,24 @@ public class MainScreen extends Screen {
                 tableBtnTimeField.setValue(Date.from(Instant.ofEpochSecond(tableTime)));
 
                 TextField paxTextField = uiComponents.create(TextField.class);
-                getWindow();
                 paxTextField.setAlignment(Component.Alignment.MIDDLE_CENTER);
                 paxTextField.setWidth("160px");
                 paxTextField.setHeight("30px");
                 paxTextField.setStyleName("tableInfoPaxTextField");
-                paxTextField.setValue("PAX: ".concat(tableItem.getCurrentOrder().getActualSeats().toString()));
+                paxTextField.setValue("COPERTI: ".concat(tableItem.getCurrentOrder().getActualSeats().toString()));
 
-                groupBox.add(tableBtnTimeField);
-                groupBox.add(paxTextField);
+                TextField ticketsCounterTextField = uiComponents.create(TextField.class);
+                ticketsCounterTextField.setAlignment(Component.Alignment.MIDDLE_CENTER);
+                ticketsCounterTextField.setWidth("160px");
+                ticketsCounterTextField.setHeight("30px");
+                ticketsCounterTextField.setStyleName("tableInfoTicketsCounterTextField");
+
+                Integer openTickets = 0;
+                Integer closedTickets = 0;
+                for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) if (ticket.getTicketStatus().equals(TicketStatus.sended)) openTickets++;
+                else if (ticket.getTicketStatus().equals(TicketStatus.closed)) closedTickets++;
+
+                ticketsCounterTextField.setValue("Tk: Op.".concat(openTickets.toString().concat(" - Cl.").concat(closedTickets.toString())));
 
                 TextField totalAmountTextField = uiComponents.create(TextField.class);
                 totalAmountTextField.setAlignment(Component.Alignment.BOTTOM_CENTER);
@@ -148,8 +160,7 @@ public class MainScreen extends Screen {
                 if (tableItem.getCurrentOrder().getWithService()) {
 
                     totalAmountTextField.setStyleName("tableInfoTotalAmountTextFieldService");
-                    totalAmountTextField.setValue("€  ".concat(tableItem.getCurrentOrder().getCharge()
-                            .add(tableItem.getCurrentOrder().getTaxes()).toString()));
+                    totalAmountTextField.setValue("€  ".concat(tableItem.getCurrentOrder().getCharge().add(tableItem.getCurrentOrder().getTaxes()).toString()));
 
                 } else {
 
@@ -158,12 +169,15 @@ public class MainScreen extends Screen {
 
                 }
 
+                groupBox.add(tableBtnTimeField);
+                groupBox.add(paxTextField);
+                groupBox.add(ticketsCounterTextField);
                 groupBox.add(totalAmountTextField);
 
             }
 
             btn.setWidth("190px");
-            btn.setHeight("110px");
+            btn.setHeight("80px");
             btn.setAlignment(Component.Alignment.BOTTOM_CENTER);
 
             if (tableItem.getTableCaption().length() <= 3) {
@@ -422,13 +436,14 @@ public class MainScreen extends Screen {
 
                                             if (orderScreenAfterScreenCloseEvent.getCloseAction().equals(WINDOW_COMMIT_AND_CLOSE_ACTION)) {
 
-                                                refreshData();
+                                                mainScreenTimer.start();
 
                                             }
 
                                         })
                                         .build();
 
+                                mainScreenTimer.stop();
                                 orderScreen.setParentDataContext(dataContext);
                                 orderScreen.setTableItem(selectedTable, seats);
                                 orderScreen.show();
@@ -449,13 +464,14 @@ public class MainScreen extends Screen {
 
                             if (orderScreenAfterScreenCloseEvent.getCloseAction().equals(WINDOW_COMMIT_AND_CLOSE_ACTION)) {
 
-                                refreshData();
+                                mainScreenTimer.start();
 
                             }
 
                         })
                         .build();
 
+                mainScreenTimer.stop();
                 orderScreen.setParentDataContext(dataContext);
                 orderScreen.setTableItem(selectedTable, null);
                 orderScreen.show();
@@ -480,13 +496,10 @@ public class MainScreen extends Screen {
 
     }
 
-
-/*
     public void onMainScreenTimerClick(Timer source) {
 
         refreshData();
 
     }
-*/
 
 }

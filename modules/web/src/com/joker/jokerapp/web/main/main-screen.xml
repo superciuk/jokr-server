@@ -9,8 +9,11 @@
             </loader>
         </collection>
     </data>
-    <layout margin="true"
-            stylename="mainLayout" maxHeight="100%" maxWidth="100%" minHeight="100%" minWidth="100%">
+    <timers>
+        <timer id="mainScreenTimer" delay="1000" repeating="true" autostart="true" onTimer="onMainScreenTimerClick"/>
+    </timers>
+    <layout
+            stylename="mainLayout" maxHeight="98%" maxWidth="100%" minHeight="98%" minWidth="100%" margin="true">
         <split
                 maxSplitPosition="90%"
                 minSplitPosition="90%"

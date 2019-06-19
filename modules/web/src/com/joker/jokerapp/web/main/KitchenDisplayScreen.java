@@ -309,7 +309,7 @@ public class KitchenDisplayScreen extends Screen {
 
                 GroupBoxLayout ticketGroupBox = (GroupBoxLayout) kitchenDisplayMainBox.getComponent("ticketGroupBox".concat(ticketToProcess.getId().toString()));
 
-                kitchenDisplayMainBox.remove(ticketGroupBox);
+                if (ticketGroupBox != null) kitchenDisplayMainBox.remove(ticketGroupBox);
 
             }
 
@@ -864,38 +864,26 @@ public class KitchenDisplayScreen extends Screen {
             Boolean isLineChecked = null;
             String linePrinterGroup = null;
 
-            for (OrderLine orderLine: orderLineToCheckTicket.getOrderLines()) {
+            for (OrderLine orderLine: orderLineToCheckTicket.getOrderLines()) if (orderLine.getId().equals(orderLineToCheck)) {
 
-                if (orderLine.getId().equals(orderLineToCheck)) {
+                if (orderLine.getChecked()) {
 
-                    if (orderLine.getChecked()) {
+                    orderLine.setChecked(false);
+                    checkBtn.setStyleName("kitchenDisplayGridItem-checkBtn");
 
-                        orderLine.setChecked(false);
-                        checkBtn.setStyleName("kitchenDisplayGridItem-checkBtn");
+                } else {
 
-                    } else {
-
-                        orderLine.setChecked(true);
-                        checkBtn.setStyleName("kitchenDisplayGridItem-checkBtn-pushed");
-
-                    }
-
-                    isLineChecked = orderLine.getChecked();
-                    linePrinterGroup = orderLine.getPrinterGroup().toString();
-
-                    dataContext.commit();
-
-                    localTicketList.clear();
-
-                    for (Ticket ticket:ticketsDc.getItems()) if (ticket.getTicketStatus().equals(TicketStatus.sended)) {
-
-                        localTicketList.add(ticket);
-
-                    }
-
-                    break;
+                    orderLine.setChecked(true);
+                    checkBtn.setStyleName("kitchenDisplayGridItem-checkBtn-pushed");
 
                 }
+
+                isLineChecked = orderLine.getChecked();
+                linePrinterGroup = orderLine.getPrinterGroup().toString();
+
+                dataContext.commit();
+
+                break;
 
             }
 
@@ -930,7 +918,27 @@ public class KitchenDisplayScreen extends Screen {
 
             dataContext.commit();
 
-            drawTickets(orderLineToCheckTicket, "modified");
+            if (orderLineToCheckTicket.getSubticketStatus().contains("o")) {
+
+                drawTickets(orderLineToCheckTicket, "modified");
+
+                return;
+
+            } else {
+
+                orderLineToCheckTicket.setTicketStatus(TicketStatus.closed);
+
+                localTicketList.remove(orderLineToCheckTicket);
+
+                dataContext.commit();
+
+                openTicketsCounter--;
+                closedTicketsCounter++;
+
+                openTicketsCounterBtn.setCaption("Open Tickets:<br>".concat(String.valueOf(openTicketsCounter)));
+                closedTicketsCounterBtn.setCaption("Closed Tickets:<br>".concat(String.valueOf(closedTicketsCounter)));
+
+                drawTickets(orderLineToCheckTicket, "removed"); }
 
         }
 
@@ -967,8 +975,6 @@ public class KitchenDisplayScreen extends Screen {
 
                         orderLine.setChecked(true);
 
-                        dataContext.commit();
-
                         scrollBoxLayout.getComponent("check".concat(orderLine.getId().toString())).setStyleName("kitchenDisplayGridItem-checkBtn-pushed");
 
                     }
@@ -984,15 +990,29 @@ public class KitchenDisplayScreen extends Screen {
 
                 dataContext.commit();
 
-                localTicketList.clear();
-
-                for (Ticket ticket:ticketsDc.getItems()) if (ticket.getTicketStatus().equals(TicketStatus.sended)) localTicketList.add(ticket);
-
                 checkAllBtn.setStyleName("kitchenDisplayBtn");
                 checkAll = false;
 
-                drawTickets(ticketToBump, "modified");
-                
+                if (ticketToBump.getSubticketStatus().contains("o")) {
+
+                    drawTickets(ticketToBump, "modified");
+
+                } else {
+
+                    ticketToBump.setTicketStatus(TicketStatus.closed);
+
+                    localTicketList.remove(ticketToBump);
+
+                    dataContext.commit();
+
+                    openTicketsCounter--;
+                    closedTicketsCounter++;
+
+                    openTicketsCounterBtn.setCaption("Open Tickets:<br>".concat(String.valueOf(openTicketsCounter)));
+                    closedTicketsCounterBtn.setCaption("Closed Tickets:<br>".concat(String.valueOf(closedTicketsCounter)));
+
+                    drawTickets(ticketToBump, "removed"); }
+
                 return;
 
             }
@@ -1003,22 +1023,16 @@ public class KitchenDisplayScreen extends Screen {
 
                 for (OrderLine orderLine: ticketToClose.getOrderLines()) if (!orderLine.getIsModifier() && !orderLine.getChecked()) return;
 
-                kitchenDisplayMainBox.remove(kitchenDisplayMainBox.getComponent("ticketHorizontalSplitPanel".concat(ticketToClose.getId().toString())));
-
                 ticketToClose.setTicketStatus(TicketStatus.closed);
 
+                localTicketList.remove(ticketToClose);
+
                 dataContext.commit();
-
-                localTicketList.clear();
-
-                for (Ticket ticket:ticketsDc.getItems()) if (ticket.getTicketStatus().equals(TicketStatus.sended)) localTicketList.add(ticket);
 
                 closeTicketBtn.setStyleName("kitchenDisplayBtn");
                 closeTicket = false;
 
                 drawTickets(ticketToClose, "removed");
-
-
 
             }
 

@@ -28,16 +28,36 @@
 
 
 
-/* SELECT TABLE SCREEN */
+/* MAIN SCREEN */
 
 .Joker .tableBtnsContainer{background-color:#1a1a1a !important;border-radius:10px}
 
 .Joker .tableSelectVBox{border:0px solid #384620 !important; border-radius:10px}
 
-.Joker .tableInfoPaxTextField{font-size:20px;color:black;text-align:center;font-weight:bold;border:3px solid #000000;padding:0}
+.Joker .tableTimeField-normal {color:#101010 !important;font-size:28px;font-weight:bold;text-align:center;border:4px solid #000000;-webkit-box-shadow:none;box-shadow:none;background-image:-webkit-radial-gradient(#70a6db, #2e73b8) !important;background-image:radial-gradient(#70a6db, #2e73b8) !important}
+.Joker .tableTimeField-hot {color:#ffffff !important;font-size:28px;font-weight:bold;text-align:center;border:4px solid #000000;-webkit-box-shadow:none;box-shadow:none;background-image:-webkit-radial-gradient(#e63d00, #992900) !important;background-image:radial-gradient(#e63d00, #992900) !important}
+
+.Joker .tableInfoPaxTextField{font-size:20px;color:black;text-align:center;font-weight:bold;border:4px solid #00802b;padding:0}
+
+.Joker .tableInfoTicketsCounterTextField{font-size:20px;color:black;text-align:center;font-weight:bold;border:4px solid #00802b;padding:0}
 
 .Joker .tableInfoTotalAmountTextFieldService{font-size:24px;color:black;text-align:center;font-weight:bold;border:4px solid #347C98}
 .Joker .tableInfoTotalAmountTextFieldNoService{font-size:24px;color:black;text-align:center;font-weight:bold;border:4px solid #FCCC1A}
+
+/*
+.Joker .tableInfoPaxTextField{background-color:#1a1a1a;font-size:20px;color:black;text-align:center;font-weight:bold;border:0px solid #000000;padding:0}
+
+.Joker .tableInfoTicketsCounterTextField{background-color:#1a1a1a;font-size:20px;color:red;text-align:center;font-weight:bold;border:0px solid #000000;padding:0}
+
+.Joker .tableInfoTotalAmountTextFieldService{background-color:#1a1a1a;font-size:24px;color:black;text-align:center;font-weight:bold;border:0px solid #347C98}
+.Joker .tableInfoTotalAmountTextFieldNoService{background-color:#1a1a1a;font-size:24px;color:black;text-align:center;font-weight:bold;border:0px solid #FCCC1A}
+
+.Joker .tableTimeField-normal {background-color:#1a1a1a;color:#101010 !important;margin:0px;padding:10px;font-size:28px;font-weight:bold;text-align:center;border:0px solid #000000;-webkit-box-shadow:none;box-shadow:none;background-image:-webkit-radial-gradient(#70a6db, #2e73b8) !important;background-image:radial-gradient(#70a6db, #2e73b8) !important}
+.Joker .tableTimeField-hot {background-color:#1a1a1a;color:#ffffff !important;margin:0px;padding:10px;font-size:28px;font-weight:bold;text-align:center;border:0px solid #000000;-webkit-box-shadow:none;box-shadow:none;background-image:-webkit-radial-gradient(#e63d00, #992900) !important;background-image:radial-gradient(#e63d00, #992900) !important}
+
+*/
+
+
 
 .Joker .upperHBox {background-color:#1a1a1a !important;border-radius:10px}
 
@@ -76,9 +96,6 @@
 
 /* ORDER SCREEN */
 
-.Joker .tableTimeField-normal {color:#101010 !important;margin:0px;padding:10px;font-size:28px;font-weight:bold;text-align:center;border:3px solid #000000;-webkit-box-shadow:none;box-shadow:none;background-image:-webkit-radial-gradient(#70a6db, #2e73b8) !important;background-image:radial-gradient(#70a6db, #2e73b8) !important}
-.Joker .tableTimeField-hot {color:#ffffff !important;margin:0px;padding:10px;font-size:28px;font-weight:bold;text-align:center;border:3px solid #000000;-webkit-box-shadow:none;box-shadow:none;background-image:-webkit-radial-gradient(#e63d00, #992900) !important;background-image:radial-gradient(#e63d00, #992900) !important}
-
 .Joker .orderScreenFunctionBtn {background-image:-webkit-radial-gradient(#006080, #00394d);background-image:radial-gradient(#006080, #00394d);border:0px;border-radius:10px; color:#c6d9ec;font-size:20px;font-weight: bold}
 
 .Joker .billGroupBox{border:0px !important}
@@ -98,8 +115,8 @@
 .Joker .gridItem-label{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
 .Joker .gridItem-button{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6b3}
 
-.Joker .gridItem-label-selected{background-color:transparent;margin:1px 0px;border:0px;color:#d9f2d9;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .gridItem-button-selected{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#d9f2d9}
+.Joker .gridItem-label-selected{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#b3e6b3}
 
 .Joker .gridItem-label-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
 .Joker .gridItem-button-isSended-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#b3e6ff}
@@ -113,48 +130,48 @@
 .Joker .gridItem-label-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffd9b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
 .Joker .gridItem-button-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffd9b3;text-decoration:line-through}
 
-.Joker .gridItem-label-selected-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .gridItem-button-selected-isSended-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff}
+.Joker .gridItem-label-selected-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isSended-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#b3e6ff}
 
-.Joker .gridItem-label-selected-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
-.Joker .gridItem-button-selected-isSended-isReversed-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#cceeff;text-decoration:line-through}
+.Joker .gridItem-label-selected-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-selected-isSended-isReversed-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#b3e6ff;text-decoration:line-through}
 
-.Joker .gridItem-label-selected-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffcc99;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .gridItem-button-selected-isSended-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffcc99}
+.Joker .gridItem-label-selected-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffd9b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isSended-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffd9b3}
 
-.Joker .gridItem-label-selected-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffcc99;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
-.Joker .gridItem-button-selected-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffcc99;text-decoration:line-through}
+.Joker .gridItem-label-selected-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffd9b3;font-size:18px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-selected-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffd9b3;text-decoration:line-through}
 
 
-.Joker .gridItem-label-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:#79d279;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .gridItem-button-isModifier{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#79d279}
+.Joker .gridItem-label-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6b3;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-isModifier{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#b3e6b3}
 
-.Joker .gridItem-label-selected-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:#d9f2d9;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .gridItem-button-selected-isModifier{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#d9f2d9}
+.Joker .gridItem-label-selected-isModifier{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6b3;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isModifier{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#b3e6b3}
 
-.Joker .gridItem-label-isModifier-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#66ccff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .gridItem-button-isModifier-isSended-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#66ccff}
+.Joker .gridItem-label-isModifier-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-isModifier-isSended-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#b3e6ff}
 
-.Joker .gridItem-label-isModifier-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#66ccff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
-.Joker .gridItem-button-isModifier-isSended-isReversed-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#66ccff;text-decoration:line-through}
+.Joker .gridItem-label-isModifier-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-isModifier-isSended-isReversed-even{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#b3e6ff;text-decoration:line-through}
 
-.Joker .gridItem-label-isModifier-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffb366;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .gridItem-button-isModifier-isSended-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffb366}
+.Joker .gridItem-label-isModifier-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffd9b3;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-isModifier-isSended-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffd9b3}
 
-.Joker .gridItem-label-isModifier-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffb366;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
-.Joker .gridItem-button-isModifier-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffb366;text-decoration:line-through}
+.Joker .gridItem-label-isModifier-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffd9b3;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-isModifier-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:16px;text-align:left;color:#ffd9b3;text-decoration:line-through}
 
-.Joker .gridItem-label-selected-isModifier-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .gridItem-button-selected-isModifier-isSended-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#cceeff}
+.Joker .gridItem-label-selected-isModifier-isSended-even{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isModifier-isSended-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#b3e6ff}
 
-.Joker .gridItem-label-selected-isModifier-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#cceeff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
-.Joker .gridItem-button-selected-isModifier-isSended-isReversed-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#cceeff;text-decoration:line-through}
+.Joker .gridItem-label-selected-isModifier-isSended-isReversed-even{background-color:transparent;margin:1px 0px;border:0px;color:#b3e6ff;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-selected-isModifier-isSended-isReversed-even{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#b3e6ff;text-decoration:line-through}
 
-.Joker .gridItem-label-selected-isModifier-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffe6cc;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
-.Joker .gridItem-button-selected-isModifier-isSended-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffe6cc}
+.Joker .gridItem-label-selected-isModifier-isSended-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffd9b3;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none}
+.Joker .gridItem-button-selected-isModifier-isSended-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffd9b3}
 
-.Joker .gridItem-label-selected-isModifier-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffe6cc;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
-.Joker .gridItem-button-selected-isModifier-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffe6cc;text-decoration:line-through}
+.Joker .gridItem-label-selected-isModifier-isSended-isReversed-odd{background-color:transparent;margin:1px 0px;border:0px;color:#ffd9b3;font-size:16px;text-align:center;vertical-align:-2px;-webkit-box-shadow:none;box-shadow:none;text-decoration:line-through}
+.Joker .gridItem-button-selected-isModifier-isSended-isReversed-odd{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:16px;text-align:left;color:#ffd9b3;text-decoration:line-through}
 
 .Joker .doNotPrintBtnPushed{background-image:-webkit-radial-gradient(#cc0000, #500000);background-image:radial-gradient(#cc0000, #500000);border:1px !important;font-size:16px;color:#ffffff}
 
@@ -227,32 +244,32 @@
 
 
 
-.Joker .kitchenDisplayGridItem-button-isModifier-isSended-bar{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#99ddff}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-bar{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#33bbff}
 
-.Joker .kitchenDisplayGridItem-button-isModifier-isSended-fryer{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffe6b3}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-fryer{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffcc66}
 
-.Joker .kitchenDisplayGridItem-button-isModifier-isSended-grill{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffe6e6}
-
-
-.Joker .kitchenDisplayGridItem-button-isModifier-isSended-isReversed-bar{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#99ddff;text-decoration:line-through}
-
-.Joker .kitchenDisplayGridItem-button-isModifier-isSended-isReversed-fryer{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffe6b3;text-decoration:line-through}
-
-.Joker .kitchenDisplayGridItem-button-isModifier-isSended-isReversed-grill{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffe6e6;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-grill{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffb3b3}
 
 
-.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-bar{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#99ddff}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-isReversed-bar{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#33bbff;text-decoration:line-through}
 
-.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-fryer{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffe6b3}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-isReversed-fryer{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffcc66;text-decoration:line-through}
 
-.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-grill{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffe6e6}
+.Joker .kitchenDisplayGridItem-button-isModifier-isSended-isReversed-grill{background-image:-webkit-radial-gradient(#1a1a1a, #1a1a1a);background-image:radial-gradient(#1a1a1a, #1a1a1a);border:0px !important;font-size:18px;text-align:left;color:#ffb3b3;text-decoration:line-through}
 
 
-.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-isReversed-bar{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#99ddff;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-bar{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#33bbff}
 
-.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-isReversed-fryer{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffe6b3;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-fryer{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffcc66}
 
-.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-isReversed-grill{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffe6e6;text-decoration:line-through}
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-grill{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffb3b3}
+
+
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-isReversed-bar{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#33bbff;text-decoration:line-through}
+
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-isReversed-fryer{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffcc66;text-decoration:line-through}
+
+.Joker .kitchenDisplayGridItem-button-selected-isModifier-isSended-isReversed-grill{background-image:-webkit-radial-gradient(#374049, #374049);background-image:radial-gradient(#374049, #374049);border:0px !important;font-size:18px;text-align:left;color:#ffb3b3;text-decoration:line-through}
 
 
 .Joker .kitchenDisplayGridItem-checkBtn-pushed{margin:0px 10px 0px 3px;background-image:-webkit-radial-gradient(#006400, #003400);background-image:radial-gradient(#006400, #003400);border:0px !important;font-size:16px;text-align:center;color:#ffffff}

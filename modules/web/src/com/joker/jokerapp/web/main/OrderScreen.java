@@ -130,6 +130,8 @@ public class OrderScreen extends Screen {
 
     private boolean doNotPrint = false;
 
+    private boolean resendTicket = false;
+
     private boolean withFries = false;
     private boolean isGrillTicket = false;
 
@@ -141,6 +143,16 @@ public class OrderScreen extends Screen {
 
     @Subscribe
     private void onBeforeShow(BeforeShowEvent event) {
+
+
+        /*--------------------------*/
+
+        doNotPrint = true;
+        doNotPrintBtn.setStyleName("doNotPrintBtnPushed");
+        doNotPrintBtn.setCaption("NON STAMPARE<br>LE COMANDE");
+
+        /*--------------------------*/
+
 
         getScreenData().loadAll();
 
@@ -676,6 +688,8 @@ public class OrderScreen extends Screen {
 
             orderLineScrollBox.removeAll();
 
+            tableItem.getCurrentOrder().getTickets().sort(Comparator.comparing(Ticket::getTicketNumber));
+
             for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) {
 
                 ticket.getOrderLines().sort(Comparator.comparing(OrderLine::getPosition));
@@ -751,7 +765,7 @@ public class OrderScreen extends Screen {
 
             if (orderLine == selectedLine) {
 
-                if (orderLine.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
+                if (orderLine.getTicket().getTicketStatus().equals(TicketStatus.sended) || orderLine.getTicket().getTicketStatus().equals(TicketStatus.closed)) {
 
                     if (orderLine.getIsModifier()) {
 
@@ -847,7 +861,7 @@ public class OrderScreen extends Screen {
 
             } else {
 
-                if (orderLine.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
+                if (orderLine.getTicket().getTicketStatus().equals(TicketStatus.sended) || orderLine.getTicket().getTicketStatus().equals(TicketStatus.closed)) {
 
                     if (orderLine.getIsModifier()) {
 
@@ -990,6 +1004,34 @@ public class OrderScreen extends Screen {
 
     }
 
+    public void setTableItem(TableItem selectedTable, String seats) {
+
+        tableItem = selectedTable;
+        if (seats != null) actualSeats = Integer.parseInt(seats);
+
+    }
+
+    public void setParentDataContext(DataContext parentDataContext) {
+
+        dataContext.setParent(parentDataContext);
+
+    }
+
+    private void removeEmptyTickets() {
+
+        ArrayList<Ticket> removeList = new ArrayList<>();
+
+        for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) if (ticket.getOrderLines().size() == 0) {
+
+            if (ticket == currentTicketDc.getItem()) currentTicketDc.setItem(null);
+            removeList.add(ticket);
+
+        }
+
+        removeList.forEach(ticket -> dataContext.getParent().remove(ticket));
+
+    }
+
     @Subscribe("doNotPrintBtn")
     public void onDoNotPrintBtnClick(Button.ClickEvent event) {
 
@@ -1009,34 +1051,12 @@ public class OrderScreen extends Screen {
 
     }
 
-/*    public void onClockTimerClick(Timer source) {
-
-        *//**//*if (Instant.now().getEpochSecond() - tableItem.getCurrentOrder().getCreateTs().toInstant().getEpochSecond() > 3600)
-            tableTimeField.setStyleName("tableTimeField-hot");
-
-        tableTimeField.setValue(Date.from(Instant.ofEpochSecond(Instant.now().getEpochSecond() - tableItem.getCurrentOrder().getCreateTs().toInstant().getEpochSecond() - 3600)));*//**//*
-
-    }*/
-
-    public void setTableItem(TableItem selectedTable, String seats) {
-
-        tableItem = selectedTable;
-        if (seats != null) actualSeats = Integer.parseInt(seats);
-
-    }
-
-    public void setParentDataContext(DataContext parentDataContext) {
-
-        dataContext.setParent(parentDataContext);
-
-    }
-
     @Subscribe("addBtn")
     protected void onAddBtnClick(Button.ClickEvent event) {
 
         if (selectedLine == null || selectedLine.getIsModifier()) return;
 
-        if (selectedLine.getTicket().getTicketStatus().equals(TicketStatus.sended)) {
+        if (selectedLine.getTicket().getTicketStatus().equals(TicketStatus.sended) || selectedLine.getTicket().getTicketStatus().equals(TicketStatus.closed)) {
 
             if (productItemsDc.getItems().size() == 0) getScreenData().loadAll();
 
@@ -1120,6 +1140,8 @@ public class OrderScreen extends Screen {
         Ticket lineToRemoveTicket = lineToRemove.getTicket();
 
         if (lineToRemoveTicket != currentTicketDc.getItemOrNull()) {
+
+            if (lineToRemove.getIsModifier()) return;
 
             if (lineToRemove.getHasModifier()) for (OrderLine orderLine: lineToRemoveTicket.getOrderLines())
                 if (orderLine.getIsModifier() && orderLine.getItemToModifyId().equals(lineToRemove.getId())) {
@@ -1222,7 +1244,7 @@ public class OrderScreen extends Screen {
     @Subscribe("addManualModifierBtn")
     public void onAddManualModifierBtnClick(Button.ClickEvent event) {
 
-        if (selectedLine == null || selectedLine.getTicket().getTicketStatus().equals(TicketStatus.sended) || selectedLine.getIsModifier()) return;
+        if (selectedLine == null || selectedLine.getTicket().getTicketStatus().equals(TicketStatus.sended) || selectedLine.getTicket().getTicketStatus().equals(TicketStatus.closed) || selectedLine.getIsModifier()) return;
 
         orderLineDc.setItem(dataContext.merge(metadata.create(OrderLine.class)));
 
@@ -1272,7 +1294,7 @@ public class OrderScreen extends Screen {
     @Subscribe("addModifierBtn")
     public void onAddModifierBtnClick(Button.ClickEvent event) {
 
-        if (selectedLine == null || selectedLine.getTicket().getTicketStatus().equals(TicketStatus.sended) || selectedLine.getIsModifier()) return;
+        if (selectedLine == null || selectedLine.getTicket().getTicketStatus().equals(TicketStatus.sended) || selectedLine.getTicket().getTicketStatus().equals(TicketStatus.closed) || selectedLine.getIsModifier()) return;
 
         ItemModifier itemModifier = screenBuilders.screen(this)
                 .withScreenClass(ItemModifier.class)
@@ -1299,7 +1321,7 @@ public class OrderScreen extends Screen {
     @Subscribe("modifyPriceBtn")
     public void onModifyPriceBtnClick(Button.ClickEvent event) {
 
-        if (selectedLine == null || selectedLine.getTicket().getTicketStatus().equals(TicketStatus.sended) || selectedLine.getIsModifier()) return;
+        if (selectedLine == null || selectedLine.getIsModifier()) return;
 
         ItemPriceManualModifier itemPriceManualModifier = screenBuilders.screen(this)
                 .withScreenClass(ItemPriceManualModifier.class)
@@ -1350,9 +1372,12 @@ public class OrderScreen extends Screen {
     @Subscribe("sendAndCloseBtn")
     public void onSendAndCloseBtnClick(Button.ClickEvent event) {
 
-        if (currentTicketDc.getItemOrNull() != null && !doNotPrint) {
+        removeEmptyTickets();
 
-            printTicket(currentTicketDc.getItem());
+        if (currentTicketDc.getItemOrNull() != null) {
+
+            if (!doNotPrint) printTicket(currentTicketDc.getItem());
+
             currentTicketDc.getItem().setTicketStatus(TicketStatus.sended);
 
         }
@@ -1367,6 +1392,8 @@ public class OrderScreen extends Screen {
 
     @Subscribe("sendBtn")
     public void onSendBtnClick(Button.ClickEvent event) {
+
+        removeEmptyTickets();
 
         if (currentTicketDc.getItemOrNull() == null) return;
 
@@ -1387,6 +1414,8 @@ public class OrderScreen extends Screen {
 
         if (doNotPrint) return;
 
+        resendTicket = true;
+
         for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) {
 
             printTicket(ticket);
@@ -1400,6 +1429,8 @@ public class OrderScreen extends Screen {
 
         }
 
+        resendTicket = false;
+
         currentTicketDc.setItem(null);
 
         dataContext.getParent().commit();
@@ -1410,6 +1441,8 @@ public class OrderScreen extends Screen {
 
     @Subscribe("closeBtn")
     public void onCloseBtnClick(Button.ClickEvent event) {
+
+        removeEmptyTickets();
 
         tableItem.setChecked(false);
         dataContext.getParent().commit();
@@ -1703,7 +1736,7 @@ public class OrderScreen extends Screen {
 
                 for (OrderLine line : ticket.getOrderLines()) {
 
-                    if (line.getPrinterGroup().equals(printerGroupToSendTicket) && line.getTicket().getTicketStatus().equals(TicketStatus.notSended)) {
+                    if (line.getPrinterGroup().equals(printerGroupToSendTicket) && (line.getTicket().getTicketStatus().equals(TicketStatus.notSended) || resendTicket)) {
 
                         if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
