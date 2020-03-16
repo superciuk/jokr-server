@@ -22,6 +22,7 @@
             <loader id="">
             </loader>
         </instance>
+        <instance id="tableItemDc" class="com.joker.jokerapp.entity.TableItem" view="tableItem-view"/>
     </data>
     <layout margin="true"
             spacing="true"
@@ -71,11 +72,6 @@
                                 stylename="orderScreenFunctionBtn"
                                 width="130px"/>
                     </buttonsPanel>
-                    <timeField id="tableTimeField"
-                               align="MIDDLE_CENTER"
-                               editable="false"
-                               height="60px"
-                               width="145px" stylename="tableTimeField-normal"/>
                     <buttonsPanel align="MIDDLE_CENTER"
                                   height="100%"
                                   width="100%">

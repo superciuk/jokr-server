@@ -6,5 +6,13 @@
     <!-- Annotation-based beans -->
     <context:component-scan base-package="com.joker.jokerapp"/>
     <gui:screens base-packages="com.joker.jokerapp.web"/>
+    <bean id="jokerapp_proxyCreator" class="com.haulmont.cuba.web.sys.remoting.WebRemoteProxyBeanCreator">
+        <property name="serverSelector" ref="cuba_ServerSelector"/>
+        <property name="remoteServices">
+            <map>
+                <entry key="jokerapp_OrderService" value="com.joker.jokerapp.service.OrderService"/>
+            </map>
+        </property>
+    </bean>
 
 </beans>

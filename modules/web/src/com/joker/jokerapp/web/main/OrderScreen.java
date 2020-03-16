@@ -9,7 +9,7 @@ import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.GridLayout;
 import com.haulmont.cuba.gui.components.Label;
 import com.haulmont.cuba.gui.components.TextField;
-import com.haulmont.cuba.gui.components.Timer;
+
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.model.*;
 import com.haulmont.cuba.gui.screen.Screen;
@@ -41,7 +41,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.*;
 import java.util.Calendar;
 
@@ -63,6 +62,9 @@ public class OrderScreen extends Screen {
 
     @Inject
     private InstanceContainer<Ticket> currentTicketDc;
+
+    @Inject
+    private InstanceContainer<TableItem> tableItemDc;
 
     @Inject
     private InstanceContainer<OrderLine> orderLineDc;
@@ -139,11 +141,8 @@ public class OrderScreen extends Screen {
 
     private OrderLine selectedLine;
 
-    private TableItem tableItem;
-
     @Subscribe
     private void onBeforeShow(BeforeShowEvent event) {
-
 
         /*--------------------------*/
 
@@ -156,25 +155,25 @@ public class OrderScreen extends Screen {
 
         getScreenData().loadAll();
 
-        if (tableItem.getTableStatus().equals(TableItemStatus.free)) {
+        if (tableItemDc.getItem().getTableStatus().equals(TableItemStatus.free)) {
 
-            tableItem.setCurrentOrder(metadata.create(Order.class));
-            tableItem.getCurrentOrder().setStatus(OrderStatus.open);
-            tableItem.getCurrentOrder().setTableItemCaption(tableItem.getTableCaption());
-            tableItem.getCurrentOrder().setActualSeats(actualSeats);
-            tableItem.getCurrentOrder().setCharge(BigDecimal.valueOf(0));
-            tableItem.getCurrentOrder().setTaxes(BigDecimal.valueOf(0));
+            tableItemDc.getItem().setCurrentOrder(metadata.create(Order.class));
+            tableItemDc.getItem().getCurrentOrder().setStatus(OrderStatus.open);
+            tableItemDc.getItem().getCurrentOrder().setTableItemCaption(tableItemDc.getItem().getTableCaption());
+            tableItemDc.getItem().getCurrentOrder().setActualSeats(actualSeats);
+            tableItemDc.getItem().getCurrentOrder().setCharge(BigDecimal.valueOf(0));
+            tableItemDc.getItem().getCurrentOrder().setTaxes(BigDecimal.valueOf(0));
 
-            if (tableItem.getWithServiceByDefault()) tableItem.getCurrentOrder().setWithService(true);
-            else tableItem.getCurrentOrder().setWithService(false);
+            if (tableItemDc.getItem().getWithServiceByDefault()) tableItemDc.getItem().getCurrentOrder().setWithService(true);
+            else tableItemDc.getItem().getCurrentOrder().setWithService(false);
 
-            tableItem.setTableStatus(TableItemStatus.open);
+            tableItemDc.getItem().setTableStatus(TableItemStatus.open);
 
         } else {
 
-            if (tableItem.getCurrentOrder().getTickets() != null) {
+            if (tableItemDc.getItem().getCurrentOrder().getTickets() != null) {
 
-                for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) if (ticket.getTicketStatus().equals(TicketStatus.notSended)) {
+                for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets()) if (ticket.getTicketStatus().equals(TicketStatus.notSended)) {
 
                     currentTicketDc.setItem(dataContext.getParent().merge(ticket));
                     break;
@@ -189,7 +188,7 @@ public class OrderScreen extends Screen {
 
         }
 
-        //tableItem.setChecked(true);
+        tableItemDc.getItem().setChecked(true);
 
         dataContext.getParent().commit();
 
@@ -342,24 +341,24 @@ public class OrderScreen extends Screen {
 
             if (productItemSize <= 20) {
 
-                DrawProductItems(0, productItemSize - 1);
+                drawProductItems(0, productItemSize - 1);
 
             } else {
 
-                DrawProductItems(0, 19);
+                drawProductItems(0, 19);
 
             }
 
         } else {
 
             productItemScrollBox.setHeightFull();
-            DrawProductItems(0, productItemSize - 1);
+            drawProductItems(0, productItemSize - 1);
 
         }
 
     }
 
-    private void DrawProductItems(int start, int end) {
+    private void drawProductItems(int start, int end) {
 
         for (int c = start; c <= end; c++) {
 
@@ -435,8 +434,8 @@ public class OrderScreen extends Screen {
             if (maxLineLength <= 14 && spaceToConvert.size() < 4) pBtn.setStyleName("v-button-fontSize20");
             else pBtn.setStyleName("v-button-fontSize16");
 
-            ProductItem toAdd = productItemsToShow.get(c);
-            pBtn.setAction(new BaseAction("addToOrder".concat(productItemsToShow.get(c).getName())).withHandler(e -> addToOrder(toAdd)));
+            ProductItem productToAdd = productItemsToShow.get(c);
+            pBtn.setAction(new BaseAction("addToOrder".concat(productItemsToShow.get(c).getName())).withHandler(e -> addToOrder(productToAdd)));
             itemsGrid.add(pBtn);
 
         }
@@ -447,9 +446,9 @@ public class OrderScreen extends Screen {
 
         int max = 0;
 
-        if (tableItem.getCurrentOrder().getTickets() != null) {
+        if (tableItemDc.getItem().getCurrentOrder().getTickets() != null) {
 
-            for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) for (OrderLine line: ticket.getOrderLines()) {
+            for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets()) for (OrderLine line: ticket.getOrderLines()) {
 
                 if (!line.getIsModifier() && line.getPosition() > max) {
 
@@ -466,18 +465,18 @@ public class OrderScreen extends Screen {
         if (currentTicketDc.getItemOrNull() == null) {
 
             currentTicketDc.setItem(dataContext.getParent().merge(metadata.create(Ticket.class)));
-            currentTicketDc.getItem().setOrder(tableItem.getCurrentOrder());
+            currentTicketDc.getItem().setOrder(tableItemDc.getItem().getCurrentOrder());
             currentTicketDc.getItem().setTicketStatus(TicketStatus.notSended);
-            if (tableItem.getCurrentOrder().getTickets() != null) currentTicketDc.getItem().setTicketNumber(tableItem.getCurrentOrder().getTickets().size() + 1);
+            if (tableItemDc.getItem().getCurrentOrder().getTickets() != null) currentTicketDc.getItem().setTicketNumber(tableItemDc.getItem().getCurrentOrder().getTickets().size() + 1);
             else currentTicketDc.getItem().setTicketNumber(1);
             currentTicketDc.getItem().setSubticketStatus("bn-fn-gn");
             currentTicketDc.getItem().setOrderLines(new ArrayList<>());
 
-            if (tableItem.getCurrentOrder().getTickets() != null) tableItem.getCurrentOrder().getTickets().add(currentTicketDc.getItem());
+            if (tableItemDc.getItem().getCurrentOrder().getTickets() != null) tableItemDc.getItem().getCurrentOrder().getTickets().add(currentTicketDc.getItem());
             else {
 
-                tableItem.getCurrentOrder().setTickets(new ArrayList<>());
-                tableItem.getCurrentOrder().getTickets().add(currentTicketDc.getItem());
+                tableItemDc.getItem().getCurrentOrder().setTickets(new ArrayList<>());
+                tableItemDc.getItem().getCurrentOrder().getTickets().add(currentTicketDc.getItem());
 
             }
 
@@ -546,18 +545,18 @@ public class OrderScreen extends Screen {
 
         subTotal = BigDecimal.ZERO;
 
-        for (Ticket ticket: tableItem.getCurrentOrder().getTickets())
+        for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets())
             for (OrderLine line: ticket.getOrderLines()) if (!line.getIsModifier() && !line.getIsReversed()) subTotal = subTotal.add(line.getPrice().setScale(2));
 
-        tableItem.getCurrentOrder().setCharge(subTotal);
+        tableItemDc.getItem().getCurrentOrder().setCharge(subTotal);
 
         subtotalField.setValue(subTotal.toString().concat(" €"));
 
-        if (tableItem.getCurrentOrder().getWithService()) {
+        if (tableItemDc.getItem().getCurrentOrder().getWithService()) {
 
             service = BigDecimal.valueOf(Math.round(subTotal.multiply(BigDecimal.valueOf(0.1)).subtract(BigDecimal.valueOf(0.2)).multiply(BigDecimal.valueOf(2)).doubleValue()) / 2.0f).setScale(2);
 
-            tableItem.getCurrentOrder().setTaxes(service);
+            tableItemDc.getItem().getCurrentOrder().setTaxes(service);
 
             total = subTotal.add(service);
 
@@ -582,7 +581,7 @@ public class OrderScreen extends Screen {
 
                 if (selectedLine != null) {
 
-                    for (Ticket ticket: tableItem.getCurrentOrder().getTickets())
+                    for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets())
                         for (OrderLine orderLine: ticket.getOrderLines()) if (orderLine == selectedLine) {
 
                         selectedLine = lineToProcess;
@@ -627,12 +626,12 @@ public class OrderScreen extends Screen {
 
                 HBoxLayout hBoxToSelect = (HBoxLayout) orderLineScrollBox.getComponent(index);
 
-                for (Ticket ticket: tableItem.getCurrentOrder().getTickets())
+                for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets())
                     for (OrderLine orderLine: ticket.getOrderLines()) if (orderLine.getId().equals(UUID.fromString(hBoxToSelect.getId().substring(10)))) {
 
                     if (lineToProcess != selectedLine) {
 
-                        for (Ticket tkt: tableItem.getCurrentOrder().getTickets()) for (OrderLine line: tkt.getOrderLines()) if (orderLine == selectedLine) {
+                        for (Ticket tkt: tableItemDc.getItem().getCurrentOrder().getTickets()) for (OrderLine line: tkt.getOrderLines()) if (orderLine == selectedLine) {
 
                             selectedLine = orderLine;
 
@@ -672,7 +671,7 @@ public class OrderScreen extends Screen {
 
                 }
 
-                if (lineToProcess != selectedLine) for (Ticket ticket: tableItem.getCurrentOrder().getTickets())
+                if (lineToProcess != selectedLine) for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets())
                     for (OrderLine orderLine: ticket.getOrderLines()) if (orderLine == selectedLine) {
 
                     selectedLine = lineToProcess;
@@ -688,9 +687,9 @@ public class OrderScreen extends Screen {
 
             orderLineScrollBox.removeAll();
 
-            tableItem.getCurrentOrder().getTickets().sort(Comparator.comparing(Ticket::getTicketNumber));
+            tableItemDc.getItem().getCurrentOrder().getTickets().sort(Comparator.comparing(Ticket::getTicketNumber));
 
-            for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) {
+            for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets()) {
 
                 ticket.getOrderLines().sort(Comparator.comparing(OrderLine::getPosition));
 
@@ -1006,7 +1005,8 @@ public class OrderScreen extends Screen {
 
     public void setTableItem(TableItem selectedTable, String seats) {
 
-        tableItem = selectedTable;
+
+        tableItemDc.setItem(dataContext.getParent().merge(selectedTable));
         if (seats != null) actualSeats = Integer.parseInt(seats);
 
     }
@@ -1019,16 +1019,27 @@ public class OrderScreen extends Screen {
 
     private void removeEmptyTickets() {
 
-        ArrayList<Ticket> removeList = new ArrayList<>();
+        if (tableItemDc.getItem().getCurrentOrder() != null) {
 
-        for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) if (ticket.getOrderLines().size() == 0) {
+            ArrayList<Ticket> removeList = new ArrayList<>();
 
-            if (ticket == currentTicketDc.getItem()) currentTicketDc.setItem(null);
-            removeList.add(ticket);
+            for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets()) if (ticket.getOrderLines().size() == 0) {
+
+                if (ticket == currentTicketDc.getItem()) currentTicketDc.setItem(null);
+                removeList.add(ticket);
+
+            }
+
+            removeList.forEach(ticket -> dataContext.getParent().remove(ticket));
+
+            if (tableItemDc.getItem().getCurrentOrder().getTickets().size() == 0 ) {
+
+                dataContext.getParent().remove(tableItemDc.getItem().getCurrentOrder());
+                tableItemDc.getItem().setTableStatus(TableItemStatus.free);
+
+            }
 
         }
-
-        removeList.forEach(ticket -> dataContext.getParent().remove(ticket));
 
     }
 
@@ -1164,7 +1175,7 @@ public class OrderScreen extends Screen {
 
             if (lineToRemove.getIsModifier()) {
 
-                orderLineDc.setItem(dataContext.find(OrderLine.class, lineToRemove.getItemToModifyId()));
+                orderLineDc.setItem(dataContext.getParent().find(OrderLine.class, lineToRemove.getItemToModifyId()));
 
                 orderLineDc.getItem().setPrice(orderLineDc.getItem().getPrice().setScale(2).subtract(lineToRemove.getPrice().setScale(2).multiply(BigDecimal.valueOf(lineToRemove.getQuantity()))));
 
@@ -1335,7 +1346,7 @@ public class OrderScreen extends Screen {
 
                             BigDecimal modifierPrice = new BigDecimal(0);
 
-                            for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) for (OrderLine line: ticket.getOrderLines())
+                            for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets()) for (OrderLine line: ticket.getOrderLines())
                                 if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedLine.getId()))
                                     modifierPrice = modifierPrice.add(line.getUnitPrice().multiply(BigDecimal.valueOf(selectedLine.getQuantity())));
 
@@ -1382,7 +1393,7 @@ public class OrderScreen extends Screen {
 
         }
 
-        tableItem.setChecked(false);
+        tableItemDc.getItem().setChecked(false);
 
         dataContext.getParent().commit();
 
@@ -1416,7 +1427,7 @@ public class OrderScreen extends Screen {
 
         resendTicket = true;
 
-        for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) {
+        for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets()) {
 
             printTicket(ticket);
 
@@ -1444,7 +1455,7 @@ public class OrderScreen extends Screen {
 
         removeEmptyTickets();
 
-        tableItem.setChecked(false);
+        tableItemDc.getItem().setChecked(false);
         dataContext.getParent().commit();
 
         close(WINDOW_COMMIT_AND_CLOSE_ACTION);
@@ -1488,8 +1499,8 @@ public class OrderScreen extends Screen {
 
         }
 
-        tableItem.getCurrentOrder().setStatus(OrderStatus.bill);
-        tableItem.setChecked(false);
+        tableItemDc.getItem().getCurrentOrder().setStatus(OrderStatus.bill);
+        tableItemDc.getItem().setChecked(false);
 
         dataContext.getParent().commit();
 
@@ -1533,14 +1544,14 @@ public class OrderScreen extends Screen {
 
                 y += 60;
                 graphics2D.setFont(font2);
-                graphics2D.drawString("PRECONTO TAVOLO: ".concat(tableItem.getCurrentOrder().getTableItemCaption()), xMin, y);
+                graphics2D.drawString("PRECONTO TAVOLO: ".concat(tableItemDc.getItem().getCurrentOrder().getTableItemCaption()), xMin, y);
                 y += 20;
 
                 graphics2D.drawLine(xMin, y, paperWidth, y);
 
                 y = y + 2 * yInc2;
 
-                for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) for (OrderLine line: ticket.getOrderLines()) if (line.getTicket().getOrder().equals(tableItem.getCurrentOrder())) {
+                for (Ticket ticket: tableItemDc.getItem().getCurrentOrder().getTickets()) for (OrderLine line: ticket.getOrderLines()) if (line.getTicket().getOrder().equals(tableItemDc.getItem().getCurrentOrder())) {
 
                     if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
@@ -1601,24 +1612,24 @@ public class OrderScreen extends Screen {
                 y = y + 2 * yInc2;
                 graphics2D.setFont(font3);
                 graphics2D.drawString("SUBTOTALE", xMin, y);
-                x = paperWidth - Math.multiplyExact(tableItem.getCurrentOrder().getCharge().toString().length(), font3.getSize() - 3);
-                graphics2D.drawString(tableItem.getCurrentOrder().getCharge().toString(), x, y);
+                x = paperWidth - Math.multiplyExact(tableItemDc.getItem().getCurrentOrder().getCharge().toString().length(), font3.getSize() - 3);
+                graphics2D.drawString(tableItemDc.getItem().getCurrentOrder().getCharge().toString(), x, y);
                 y = y + yInc3 + 3;
                 graphics2D.drawString("SERVIZIO", xMin, y);
-                x = paperWidth - Math.multiplyExact(tableItem.getCurrentOrder().getTaxes().toString().length(), font3.getSize() - 3);
-                graphics2D.drawString(tableItem.getCurrentOrder().getTaxes().toString(), x, y);
+                x = paperWidth - Math.multiplyExact(tableItemDc.getItem().getCurrentOrder().getTaxes().toString().length(), font3.getSize() - 3);
+                graphics2D.drawString(tableItemDc.getItem().getCurrentOrder().getTaxes().toString(), x, y);
                 y = y + yInc3 + 20;
 
                 graphics2D.setFont(font1);
 
                 graphics2D.drawString("TOTALE", xMin, y);
-                x = paperWidth - 4 - Math.multiplyExact(tableItem.getCurrentOrder().getCharge().add(tableItem.getCurrentOrder().getTaxes()).toString().length(), font1.getSize() - 7);
-                graphics2D.drawString(tableItem.getCurrentOrder().getCharge().add(tableItem.getCurrentOrder().getTaxes()).toString(), x, y);
+                x = paperWidth - 4 - Math.multiplyExact(tableItemDc.getItem().getCurrentOrder().getCharge().add(tableItemDc.getItem().getCurrentOrder().getTaxes()).toString().length(), font1.getSize() - 7);
+                graphics2D.drawString(tableItemDc.getItem().getCurrentOrder().getCharge().add(tableItemDc.getItem().getCurrentOrder().getTaxes()).toString(), x, y);
                 y = y + yInc3 + 10;
 
                 graphics2D.setFont(font2);
 
-                graphics2D.drawString("Coperti: ".concat(tableItem.getCurrentOrder().getActualSeats().toString()), xMin, y);
+                graphics2D.drawString("Coperti: ".concat(tableItemDc.getItem().getCurrentOrder().getActualSeats().toString()), xMin, y);
                 y = y + 2 * yInc3;
                 graphics2D.setFont(font2);
                 graphics2D.drawString("NON FISCALE", 60, y);
@@ -1715,10 +1726,10 @@ public class OrderScreen extends Screen {
                 graphics2D.setFont(font1);
                 graphics2D.drawString(printerGroupToSendTicket.toString().toUpperCase(), xMin + 70, y);
                 y += 30;
-                graphics2D.drawString("TAVOLO: ".concat(tableItem.getTableCaption()), xMin, y);
+                graphics2D.drawString("TAVOLO: ".concat(tableItemDc.getItem().getTableCaption()), xMin, y);
                 y += 30;
                 graphics2D.setFont(font3);
-                graphics2D.drawString("Coperti: ".concat(tableItem.getCurrentOrder().getActualSeats().toString()), xMin, y);
+                graphics2D.drawString("Coperti: ".concat(tableItemDc.getItem().getCurrentOrder().getActualSeats().toString()), xMin, y);
                 y += 20;
                 java.util.Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
@@ -1795,5 +1806,29 @@ public class OrderScreen extends Screen {
         }
 
     }
+
+/*    public void onOrderScreenTimerClick(Timer source) {
+
+        if (dataContext.getParent().hasChanges()) {
+
+            BackgroundTask<Integer, Void> task = new BackgroundTask<Integer, Void> (5, this) {
+
+                @Override
+                public Void run(TaskLifeCycle<Integer> taskLifeCycle) {
+
+                    dataContext.getParent().commit();
+
+                    return null;
+
+                }
+
+            };
+
+            BackgroundTaskHandler taskHandler = backgroundWorker.handle(task);
+            taskHandler.execute();
+
+        }
+
+    }*/
 
 }

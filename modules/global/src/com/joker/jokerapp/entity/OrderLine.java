@@ -1,5 +1,6 @@
 package com.joker.jokerapp.entity;
 
+import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.StandardEntity;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 public class OrderLine extends StandardEntity {
     private static final long serialVersionUID = 2123398643400124806L;
 
+    @Composition
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TICKET_ID")
     protected Ticket ticket;

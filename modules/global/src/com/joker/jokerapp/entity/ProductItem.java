@@ -46,8 +46,8 @@ public class ProductItem extends StandardEntity {
     protected BigDecimal price;
 
     @JoinTable(name = "JOKERAPP_PRODUCT_ITEM_PRODUCT_MODIFIER_CATEGORY_LINK",
-        joinColumns = @JoinColumn(name = "PRODUCT_ITEM_ID"),
-        inverseJoinColumns = @JoinColumn(name = "PRODUCT_MODIFIER_CATEGORY_ID"))
+            joinColumns = @JoinColumn(name = "PRODUCT_ITEM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PRODUCT_MODIFIER_CATEGORY_ID"))
     @OnDeleteInverse(DeletePolicy.UNLINK)
     @OnDelete(DeletePolicy.UNLINK)
     @ManyToMany

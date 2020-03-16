@@ -16,7 +16,7 @@
         <description>List of app properties files for Web Client</description>
         <param-name>appPropertiesConfigWeb</param-name>
         <param-value>
-            
+
             classpath:com/joker/jokerapp/web-app.properties
             /WEB-INF/local.app.properties
         </param-value>
@@ -29,7 +29,7 @@
         <description>List of app properties files for Middleware</description>
         <param-name>appPropertiesConfigCore</param-name>
         <param-value>
-            
+
             classpath:com/joker/jokerapp/app.properties
             /WEB-INF/local.app.properties
         </param-value>
@@ -37,7 +37,7 @@
     <!--Application components-->
     <context-param>
         <param-name>appComponents</param-name>
-        <param-value>com.haulmont.cuba</param-value>
+        <param-value>com.haulmont.cuba com.haulmont.addon.restapi</param-value>
     </context-param>
 
     <!-- Servlet context listeners that load the application blocks -->

@@ -24,6 +24,41 @@
           extends="_local"
           name="order-view"
           systemProperties="true">
+        <property name="tickets"
+                  view="_minimal">
+            <property name="ticketNumber"/>
+            <property name="ticketStatus"/>
+            <property name="subticketStatus"/>
+            <property name="orderLines" view="_minimal">
+                <property name="ticket" view="_minimal">
+                    <property name="ticketNumber"/>
+                    <property name="ticketStatus"/>
+                    <property name="subticketStatus"/>
+                </property>
+                <property name="quantity"/>
+                <property name="itemName"/>
+                <property name="itemId"/>
+                <property name="unitPrice"/>
+                <property name="price"/>
+                <property name="taxes"/>
+                <property name="position"/>
+                <property name="nextModifierPosition"/>
+                <property name="hasModifier"/>
+                <property name="isModifier"/>
+                <property name="itemToModifyId"/>
+                <property name="checked"/>
+                <property name="isReversed"/>
+                <property name="printerGroup"/>
+                <property name="createTs"/>
+                <property name="createdBy"/>
+                <property name="updateTs"/>
+                <property name="updatedBy"/>
+            </property>
+            <property name="createTs"/>
+            <property name="createdBy"/>
+            <property name="updateTs"/>
+            <property name="updatedBy"/>
+        </property>
     </view>
     <view class="com.joker.jokerapp.entity.OrderLine"
           extends="_local"
@@ -34,7 +69,6 @@
             <property name="ticketStatus"/>
             <property name="subticketStatus"/>
             <property name="orderLines" view="_minimal">
-                <property name="ticket" view="_minimal"/>
                 <property name="quantity"/>
                 <property name="itemName"/>
                 <property name="itemId"/>
@@ -69,8 +103,7 @@
         <property name="withServiceByDefault"/>
         <property name="tableCaption"/>
         <property name="checked"/>
-        <property name="currentOrder"
-                  view="_minimal">
+        <property name="currentOrder" view="_minimal">
             <property name="actualSeats"/>
             <property name="status"/>
             <property name="tableItemCaption"/>
@@ -78,14 +111,11 @@
             <property name="discount"/>
             <property name="charge"/>
             <property name="taxes"/>
-            <property name="tickets"
-                      view="_minimal">
-                <property name="order"
-                          view="_minimal"/>
+            <property name="tickets" view="_minimal">
+                <property name="order" view="_minimal"/>
                 <property name="ticketNumber"/>
                 <property name="ticketStatus"/>
-                <property name="orderLines"
-                          view="_minimal">
+                <property name="orderLines" view="_minimal">
                     <property name="quantity"/>
                     <property name="printerGroup"/>
                     <property name="itemName"/>
@@ -102,8 +132,7 @@
                     <property name="createdBy"/>
                     <property name="updateTs"/>
                     <property name="updatedBy"/>
-                    <property name="ticket"
-                              view="_minimal"/>
+                    <property name="ticket" view="_minimal"/>
                     <property name="isReversed"/>
                     <property name="checked"/>
                 </property>
@@ -123,7 +152,9 @@
           extends="_local"
           name="ticket-view"
           systemProperties="true">
-        <property name="order" view="_local"/>
-        <property name="orderLines" view="_local"/>
+        <property name="order" view="_minimal"/>
+        <property name="orderLines" view="_minimal"/>
     </view>
 </views>
+
+

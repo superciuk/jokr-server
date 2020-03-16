@@ -150,7 +150,7 @@ public class MainScreen extends Screen {
                 for (Ticket ticket: tableItem.getCurrentOrder().getTickets()) if (ticket.getTicketStatus().equals(TicketStatus.sended)) openTickets++;
                 else if (ticket.getTicketStatus().equals(TicketStatus.closed)) closedTickets++;
 
-                ticketsCounterTextField.setValue("Tk: Op.".concat(openTickets.toString().concat(" - Cl.").concat(closedTickets.toString())));
+                ticketsCounterTextField.setValue("TK: OP.".concat(openTickets.toString().concat(" - CL.").concat(closedTickets.toString())));
 
                 TextField totalAmountTextField = uiComponents.create(TextField.class);
                 totalAmountTextField.setAlignment(Component.Alignment.BOTTOM_CENTER);
