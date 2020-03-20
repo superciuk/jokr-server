@@ -11,6 +11,7 @@
         <property name="remoteServices">
             <map>
                 <entry key="jokerapp_OrderService" value="com.joker.jokerapp.service.OrderService"/>
+                <entry key="jokerapp_PrinterService" value="com.joker.jokerapp.service.PrinterService"/>
             </map>
         </property>
     </bean>

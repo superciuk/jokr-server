@@ -9,6 +9,10 @@
         <method name="addToOrder">
             <param name="orderId"/>
             <param name="productItemId"/>
+            <param name="isModifier"/>
+            <param name="selectedOrderLineId"/>
+            <param name="plusOrMinus"/>
+            <param name="withModifiers"/>
         </method>
         <method name="plusButtonPressed">
             <param name="orderId"/>
@@ -19,7 +23,10 @@
             <param name="orderLineId"/>
         </method>
         <method name="sendOrder">
-            <param name="orderId"/>
+            <param name="tableItemId"/>
+        </method>
+        <method name="printBill">
+            <param name="tableItemId"/>
         </method>
     </service>
 
