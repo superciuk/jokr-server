@@ -51,7 +51,7 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
-    public String addToOrder(String orderId, String productItemId, String isModifier, String selectedOrderLineId, String plusOrMinus, String withModifiers) {
+    public String addToOrder(String orderId, String productItemId, String isModifier, String selectedOrderLineId, String plusOrMinus, String manualModifierText, String manualModifierPrice, String withModifiers) {
 
         Ticket currentTicket = null;
         int max = 0;
@@ -68,31 +68,41 @@ public class OrderServiceBean implements OrderService {
                 }
             }
 
-            ProductModifier productModifierToAdd = dataManager.load(ProductModifier.class).id(UUID.fromString(productItemId)).view("productModifier-view").one();
-
             OrderLine newLine = metadata.create(OrderLine.class);
 
             newLine.setQuantity(1);
 
-            if (plusOrMinus.equals("plus")) {
+            if (!productItemId.equals("null")) {
 
-                newLine.setItemName(" + ".concat(productModifierToAdd.getName()));
-                newLine.setUnitPrice(productModifierToAdd.getAddPrice());
-                newLine.setPrice(productModifierToAdd.getAddPrice());
-                selectedOrderLine.setPrice(selectedOrderLine.getPrice().setScale(2).add(productModifierToAdd.getAddPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
-                order.setCharge(order.getCharge().setScale(2).add(productModifierToAdd.getAddPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
+                ProductModifier productModifierToAdd = dataManager.load(ProductModifier.class).id(UUID.fromString(productItemId)).view("productModifier-view").one();
+                if (plusOrMinus.equals("plus")) {
 
+                    newLine.setItemName(" + ".concat(productModifierToAdd.getName()));
+                    newLine.setUnitPrice(productModifierToAdd.getAddPrice());
+                    newLine.setPrice(productModifierToAdd.getAddPrice());
+                    selectedOrderLine.setPrice(selectedOrderLine.getPrice().setScale(2).add(productModifierToAdd.getAddPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
+                    order.setCharge(order.getCharge().setScale(2).add(productModifierToAdd.getAddPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
+
+                } else {
+
+                    newLine.setItemName(" - ".concat(productModifierToAdd.getName()));
+                    newLine.setUnitPrice(BigDecimal.valueOf(-((productModifierToAdd.getSubtractPrice()).doubleValue())));
+                    newLine.setPrice(BigDecimal.valueOf(-((productModifierToAdd.getSubtractPrice()).doubleValue())));
+                    selectedOrderLine.setPrice(selectedOrderLine.getPrice().setScale(2).subtract(productModifierToAdd.getSubtractPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
+                    order.setCharge(order.getCharge().setScale(2).subtract(productModifierToAdd.getSubtractPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
+
+                }
+                newLine.setItemId(productModifierToAdd.getId());
             } else {
 
-                newLine.setItemName(" - ".concat(productModifierToAdd.getName()));
-                newLine.setUnitPrice(BigDecimal.valueOf(-((productModifierToAdd.getSubtractPrice()).doubleValue())));
-                newLine.setPrice(BigDecimal.valueOf(-((productModifierToAdd.getSubtractPrice()).doubleValue())));
-                selectedOrderLine.setPrice(selectedOrderLine.getPrice().setScale(2).subtract(productModifierToAdd.getSubtractPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
-                order.setCharge(order.getCharge().setScale(2).subtract(productModifierToAdd.getSubtractPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
+                newLine.setItemName(manualModifierText);
+                newLine.setUnitPrice(new BigDecimal(manualModifierPrice));
+                newLine.setPrice(newLine.getUnitPrice());
+                selectedOrderLine.setPrice(selectedOrderLine.getPrice().setScale(2).add(newLine.getUnitPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
+                order.setCharge(order.getCharge().setScale(2).add(newLine.getUnitPrice().setScale(2).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(2))));
 
             }
 
-            newLine.setItemId(productModifierToAdd.getId());
             newLine.setTaxes(BigDecimal.ZERO);
             newLine.setTicket(selectedOrderLine.getTicket());
             newLine.setPosition(selectedOrderLine.getNextModifierPosition());
@@ -213,7 +223,7 @@ public class OrderServiceBean implements OrderService {
 
             if(selectedOrderLine.getHasModifier()) {
 
-                String newOrderLineId = addToOrder(orderId, selectedOrderLine.getItemId().toString(), "false", null, null, "true");
+                String newOrderLineId = addToOrder(orderId, selectedOrderLine.getItemId().toString(), "false", null, null, null, null, "true");
 
                 dataManager.reload(order, "order-view");
 
@@ -222,10 +232,10 @@ public class OrderServiceBean implements OrderService {
                 for (OrderLine line: selectedOrderLine.getTicket().getOrderLines()) {
                         if ( line.getItemToModifyId()!=null && line.getItemToModifyId().toString().equals(selectedOrderLineId)) {
                             if (line.getItemName().startsWith(" + ")) plusOrMinus = "plus"; else plusOrMinus = "minus";
-                            addToOrder(orderId, line.getItemId().toString(), "true", newOrderLineId, plusOrMinus, "false");
+                            addToOrder(orderId, line.getItemId().toString(), "true", newOrderLineId, plusOrMinus, null, null, "false");
                         }
                     }
-                } else addToOrder(orderId, selectedOrderLine.getItemId().toString(), "false", null, null, "false");
+                } else addToOrder(orderId, selectedOrderLine.getItemId().toString(), "false", null, null, null, null,"false");
 
         } else {
 
@@ -298,6 +308,55 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
+    public boolean quantityButtonPressed(String orderId, String selectedOrderLineId) {
+
+        OrderLine selectedOrderLine = null;
+
+        CommitContext commitContext= new CommitContext();
+
+        Order order = dataManager.load(Order.class).id(UUID.fromString(orderId)).view("order-view").one();
+
+        for (Ticket ticket: order.getTickets()) for (OrderLine line: ticket.getOrderLines()) if (line.getId().toString().equals(selectedOrderLineId)) {selectedOrderLine = line; break;}
+
+        if (selectedOrderLine.getTicket().getTicketStatus().equals(TicketStatus.notSended)) {
+
+            if (selectedOrderLine.getHasModifier()) for (OrderLine line: selectedOrderLine.getTicket().getOrderLines())
+                if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedOrderLine.getId())) commitContext.addInstanceToRemove(line);
+
+            order.setCharge(order.getCharge().setScale(2).subtract(selectedOrderLine.getPrice().setScale(2)));
+            commitContext.addInstanceToRemove(selectedOrderLine);
+
+        } else {
+
+            if (selectedOrderLine.getIsReversed()) {
+
+                if (selectedOrderLine.getHasModifier()) for (OrderLine line: selectedOrderLine.getTicket().getOrderLines())
+                    if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedOrderLine.getId())) {line.setIsReversed(false); commitContext.addInstanceToCommit(line);}
+
+                order.setCharge(order.getCharge().setScale(2).add(selectedOrderLine.getPrice().setScale(2)));
+                selectedOrderLine.setIsReversed(false);
+
+            } else {
+
+                if (selectedOrderLine.getHasModifier()) for (OrderLine line: selectedOrderLine.getTicket().getOrderLines())
+                    if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedOrderLine.getId())) {line.setIsReversed(true); commitContext.addInstanceToCommit(line);}
+
+                order.setCharge(order.getCharge().setScale(2).subtract(selectedOrderLine.getPrice().setScale(2)));
+                selectedOrderLine.setIsReversed(true);
+
+            }
+
+            commitContext.addInstanceToCommit(selectedOrderLine);
+
+        }
+
+        commitContext.addInstanceToCommit(order);
+        dataManager.commit(commitContext);
+        return true;
+
+    }
+
+    @Override
     public boolean sendOrder(String tableItemId) {
 
         //removeEmptyTickets();
@@ -320,6 +379,36 @@ public class OrderServiceBean implements OrderService {
             dataManager.commit(currentTicket);
 
         }
+
+        return true;
+
+    }
+
+    @Override
+    public boolean freeTable(String tableItemId) {
+
+        TableItem tableItem = dataManager.load(TableItem.class).id(UUID.fromString(tableItemId)).view("tableItem-view").one();
+        Order currentOrder = tableItem.getCurrentOrder();
+
+        currentOrder.setStatus(OrderStatus.closed);
+        tableItem.setCurrentOrder(null);
+        tableItem.setTableStatus(TableItemStatus.free);
+
+        dataManager.commit(currentOrder, tableItem);
+
+        return true;
+
+    }
+
+    @Override
+    public boolean reopenTable(String tableItemId) {
+
+        TableItem tableItem = dataManager.load(TableItem.class).id(UUID.fromString(tableItemId)).view("tableItem-view").one();
+
+        tableItem.getCurrentOrder().setStatus(OrderStatus.open);
+        tableItem.setTableStatus(TableItemStatus.open);
+
+        dataManager.commit(tableItem.getCurrentOrder(), tableItem);
 
         return true;
 

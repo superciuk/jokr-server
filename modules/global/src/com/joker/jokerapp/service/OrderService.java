@@ -6,14 +6,20 @@ public interface OrderService {
 
     String createNewOrder(String tableId, String actualSeats);
 
-    String addToOrder(String orderId, String productItemId, String isModifier, String selectedOrderLineId, String plusOrMinus, String withModifiers);
+    String addToOrder(String orderId, String productItemId, String isModifier, String selectedOrderLineId, String plusOrMinus, String manualModifierText, String manualModifierPrice, String withModifiers);
 
     boolean plusButtonPressed(String orderId, String orderLineId);
 
     boolean minusButtonPressed(String orderId, String orderLineId);
 
+    boolean quantityButtonPressed(String orderId, String orderLineId);
+
     boolean sendOrder(String tableItemId);
 
     boolean printBill(String tableItemId);
+
+    boolean freeTable(String tableItemId);
+
+    boolean reopenTable(String tableItemId);
 
 }

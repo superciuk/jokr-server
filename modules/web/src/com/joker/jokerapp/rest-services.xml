@@ -12,6 +12,8 @@
             <param name="isModifier"/>
             <param name="selectedOrderLineId"/>
             <param name="plusOrMinus"/>
+            <param name="manualModifierText"/>
+            <param name="manualModifierPrice"/>
             <param name="withModifiers"/>
         </method>
         <method name="plusButtonPressed">
@@ -22,10 +24,20 @@
             <param name="orderId"/>
             <param name="orderLineId"/>
         </method>
+        <method name="quantityButtonPressed">
+            <param name="orderId"/>
+            <param name="orderLineId"/>
+        </method>
         <method name="sendOrder">
             <param name="tableItemId"/>
         </method>
         <method name="printBill">
+            <param name="tableItemId"/>
+        </method>
+        <method name="freeTable">
+            <param name="tableItemId"/>
+        </method>
+        <method name="reopenTable">
             <param name="tableItemId"/>
         </method>
     </service>
