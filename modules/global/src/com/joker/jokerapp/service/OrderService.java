@@ -14,6 +14,8 @@ public interface OrderService {
 
     boolean quantityButtonPressed(String orderId, String orderLineId);
 
+    boolean priceButtonPressed(String orderId, String orderLineId, String price);
+
     boolean sendOrder(String tableItemId);
 
     boolean printBill(String tableItemId);

@@ -28,6 +28,11 @@
             <param name="orderId"/>
             <param name="orderLineId"/>
         </method>
+        <method name="priceButtonPressed">
+            <param name="orderId"/>
+            <param name="orderLineId"/>
+            <param name="price"/>
+        </method>
         <method name="sendOrder">
             <param name="tableItemId"/>
         </method>

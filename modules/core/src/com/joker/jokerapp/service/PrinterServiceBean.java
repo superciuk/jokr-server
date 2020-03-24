@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.persistence.Column;
 import javax.print.*;
 import javax.print.attribute.DocAttributeSet;
 import javax.print.attribute.HashDocAttributeSet;
@@ -20,19 +19,14 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.File;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
-import java.util.UUID;
 
 @Service(PrinterService.NAME)
 public class PrinterServiceBean implements PrinterService {
 
-    @Inject
-    private DataManager dataManager;
-
-    class TicketPrinter implements Printable {
+    static class TicketPrinter implements Printable {
 
         private  TableItem tableToPrint;
         private Ticket ticketToPrint;
@@ -96,7 +90,7 @@ public class PrinterServiceBean implements PrinterService {
 
                         if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
-                        Integer linesToDraw = Math.round(line.getItemName().length() / 20) + 1;
+                        int linesToDraw = Math.round(line.getItemName().length() / 20) + 1;
 
                         int spacePosition = 0;
                         int currentSpacePosition = 0;
@@ -107,7 +101,7 @@ public class PrinterServiceBean implements PrinterService {
 
                             for (int i = spacePosition; i < line.getItemName().length(); i++) {
 
-                                Character c = lineName.charAt(i);
+                                char c = lineName.charAt(i);
 
                                 if (Character.isWhitespace(c)) {
 
@@ -170,7 +164,7 @@ public class PrinterServiceBean implements PrinterService {
                 int y = 20;
                 int paperWidth = (int) pageFormat.getImageableWidth();
 
-                int yInc1 = font1.getSize() / 2;
+                //int yInc1 = font1.getSize() / 2;
                 int yInc2 = font1.getSize() / 2;
                 int yInc3 = font1.getSize() / 2;
 
@@ -205,9 +199,9 @@ public class PrinterServiceBean implements PrinterService {
                         if (line.getTicket().getOrder().equals(tableToPrint.getCurrentOrder())) {
                             if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
-                            Integer linesToDraw = Math.round(line.getItemName().length() / 24) + 1;
+                            int linesToDraw = Math.round(line.getItemName().length() / 24) + 1;
 
-                            String stringToDraw = "";
+                            //String stringToDraw = "";
 
                             int spacePosition = 0;
                             int currentSpacePosition = 0;
@@ -218,7 +212,7 @@ public class PrinterServiceBean implements PrinterService {
 
                                 for (int i = spacePosition; i < line.getItemName().length(); i++) {
 
-                                    Character c = lineName.charAt(i);
+                                    char c = lineName.charAt(i);
 
                                     if (Character.isWhitespace(c)) {
 
@@ -334,7 +328,7 @@ public class PrinterServiceBean implements PrinterService {
 
                     docAttributeSet.add(mpa);
 
-                    PrinterServiceBean.TicketPrinter ticketPrinter = new PrinterServiceBean.TicketPrinter(tableToPrint, ticketToPrint, printerGroupToSendTicket, isGrillTicket, withFries);
+                    PrinterServiceBean.TicketPrinter ticketPrinter = new TicketPrinter(tableToPrint, ticketToPrint, printerGroupToSendTicket, isGrillTicket, withFries);
 
                     DocPrintJob docPrintJob = printServices[0].createPrintJob();
                     SimpleDoc doc1 = new SimpleDoc(ticketPrinter, flavor, docAttributeSet);
