@@ -244,9 +244,11 @@ public class OrderServiceBean implements OrderService {
                 }
             }
 
+
             order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(addedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
+            addedOrderLine.setPrice(addedOrderLine.getPrice().subtract(addedOrderLine.getUnitPrice().multiply(BigDecimal.valueOf(addedOrderLine.getQuantity()))));
             addedOrderLine.setUnitPrice(selectedOrderLine.getUnitPrice());
-            addedOrderLine.setPrice(addedOrderLine.getUnitPrice().multiply(BigDecimal.valueOf(addedOrderLine.getQuantity())).setScale(1, RoundingMode.HALF_DOWN));
+            addedOrderLine.setPrice(addedOrderLine.getPrice().add(addedOrderLine.getUnitPrice().multiply(BigDecimal.valueOf(addedOrderLine.getQuantity())).setScale(1, RoundingMode.HALF_DOWN)));
             order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(addedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
 
             dataManager.commit(addedOrderLine, order);
@@ -284,12 +286,21 @@ public class OrderServiceBean implements OrderService {
 
             OrderLine selectedOrderLineParent = null;
 
+            boolean hasMoreModifiers = false;
+
             for (OrderLine line: currentTicket.getOrderLines()) {
                 if (line.getId().equals(selectedOrderLine.getItemToModifyId())) {selectedOrderLineParent = line; break;}
             }
 
             order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().multiply(BigDecimal.valueOf(selectedOrderLineParent.getQuantity()))));
             selectedOrderLineParent.setPrice(selectedOrderLineParent.getPrice().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().multiply(BigDecimal.valueOf(selectedOrderLineParent.getQuantity()))));
+
+            for (OrderLine line: currentTicket.getOrderLines()) {
+                if (line.getIsModifier() && line.getItemToModifyId().equals(selectedOrderLineParent.getId()) && !line.getId().equals(selectedOrderLine.getId())) {hasMoreModifiers = true; break;}
+            }
+
+            if (!hasMoreModifiers) selectedOrderLineParent.setHasModifier(false);
+
             commitContext.addInstanceToRemove(selectedOrderLine);
             commitContext.addInstanceToCommit(selectedOrderLineParent);
 
@@ -379,8 +390,9 @@ public class OrderServiceBean implements OrderService {
         for (Ticket ticket: order.getTickets()) for (OrderLine line: ticket.getOrderLines()) if (line.getId().toString().equals(selectedOrderLineId)) {selectedOrderLine = line; break;}
 
         order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
+        BigDecimal modifiersPrice = selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getUnitPrice().setScale(1, RoundingMode.HALF_DOWN).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity())));
         selectedOrderLine.setPrice(new BigDecimal(price));
-        selectedOrderLine.setUnitPrice(selectedOrderLine.getPrice().divide(BigDecimal.valueOf(selectedOrderLine.getQuantity()), 1, RoundingMode.HALF_DOWN));
+        selectedOrderLine.setUnitPrice(selectedOrderLine.getPrice().subtract(modifiersPrice).divide(BigDecimal.valueOf(selectedOrderLine.getQuantity()), 1, RoundingMode.HALF_DOWN));
         order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
 
         dataManager.commit(selectedOrderLine, order);
