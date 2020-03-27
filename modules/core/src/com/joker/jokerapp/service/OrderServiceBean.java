@@ -366,6 +366,12 @@ public class OrderServiceBean implements OrderService {
                     if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedOrderLine.getId())) {line.setIsReversed(true); commitContext.addInstanceToCommit(line);}
 
                 order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
+
+                selectedOrderLine.setChecked(true);
+                boolean areAllChecked = true;
+                for (OrderLine line: selectedOrderLine.getTicket().getOrderLines()) if (!line.getChecked()) {areAllChecked = false; break;}
+                if (areAllChecked) {selectedOrderLine.getTicket().setTicketStatus(TicketStatus.closed); commitContext.addInstanceToCommit(selectedOrderLine.getTicket());}
+
                 selectedOrderLine.setIsReversed(true);
 
             }
@@ -401,9 +407,9 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
-    public boolean sendOrder(String tableItemId) {
+    public boolean sendOrder(String tableItemId, String printTicket) {
 
-        //removeEmptyTickets();
+        removeEmptyTickets(tableItemId);
 
         TableItem tableItem = dataManager.load(TableItem.class).id(UUID.fromString(tableItemId)).view("tableItem-view").one();
 
@@ -417,10 +423,39 @@ public class OrderServiceBean implements OrderService {
 
         if (currentTicket != null) {
 
-            printerService.printTicket(tableItem, currentTicket);
-            //if (!doNotPrint) printTicket(currentTicketDc.getItem());
+            if (printTicket.equals("true")) printerService.printTicket(tableItem, currentTicket);
             currentTicket.setTicketStatus(TicketStatus.sended);
             dataManager.commit(currentTicket);
+
+        }
+
+        return true;
+
+    }
+    @Override
+    public boolean removeEmptyTickets(String tableItemId) {
+
+        TableItem table = dataManager.load(TableItem.class).id(UUID.fromString(tableItemId)).view("tableItem-view").one();
+        CommitContext commitContext = new CommitContext();
+
+        for (Ticket ticket: table.getCurrentOrder().getTickets()) if (ticket.getOrderLines().size() == 0) {
+
+            commitContext.addInstanceToRemove(ticket);
+
+        }
+
+        dataManager.commit(commitContext);
+
+        table = dataManager.reload(table, "tableItem-view");
+
+        if (table.getCurrentOrder().getTickets().size() == 0 ) {
+
+            dataManager.remove(table.getCurrentOrder());
+
+            table.setCurrentOrder(null);
+            table.setTableStatus(TableItemStatus.free);
+
+            dataManager.commit(table);
 
         }
 

@@ -35,6 +35,10 @@
         </method>
         <method name="sendOrder">
             <param name="tableItemId"/>
+            <param name="printTicket"/>
+        </method>
+        <method name="removeEmptyTickets">
+            <param name="tableItemId"/>
         </method>
         <method name="printBill">
             <param name="tableItemId"/>

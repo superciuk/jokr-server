@@ -1,5 +1,7 @@
 package com.joker.jokerapp.service;
 
+import com.joker.jokerapp.entity.TableItem;
+
 public interface OrderService {
 
     String NAME = "jokerapp_OrderService";
@@ -16,7 +18,9 @@ public interface OrderService {
 
     boolean priceButtonPressed(String orderId, String orderLineId, String price);
 
-    boolean sendOrder(String tableItemId);
+    boolean sendOrder(String tableItemId, String printTicket);
+
+    boolean removeEmptyTickets(String tableItemId);
 
     boolean printBill(String tableItemId);
 
