@@ -369,7 +369,7 @@ public class OrderServiceBean implements OrderService {
 
                 selectedOrderLine.setChecked(true);
                 boolean areAllChecked = true;
-                for (OrderLine line: selectedOrderLine.getTicket().getOrderLines()) if (!line.getChecked()) {areAllChecked = false; break;}
+                for (OrderLine line: selectedOrderLine.getTicket().getOrderLines()) if (!line.getIsModifier() && !line.getChecked()) {areAllChecked = false; break;}
                 if (areAllChecked) {selectedOrderLine.getTicket().setTicketStatus(TicketStatus.closed); commitContext.addInstanceToCommit(selectedOrderLine.getTicket());}
 
                 selectedOrderLine.setIsReversed(true);

@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <queries xmlns="http://schemas.haulmont.com/cuba/rest-queries.xsd">
   <query name="tableItems" entity="jokerapp$TableItem" view="tableItem-view" anonymousAllowed="true">
-    <jpql><![CDATA[select c from jokerapp$TableItem c order by c.tableNumber ]]></jpql>
+    <jpql><![CDATA[select c from jokerapp$TableItem c order by c.tableNumber]]></jpql>
+  </query>
+  <query name="activeOrders" entity="jokerapp$Order" view="order-view">
+    <jpql><![CDATA[select c from jokerapp$Order c where c.status = 'open' OR c.status = 'bill' order by c.createTs]]></jpql>
   </query>
   <query name="order" entity="jokerapp$Order" view="order-view">
-    <jpql><![CDATA[select c from jokerapp$Order c where c.id = :orderId ]]></jpql>
+    <jpql><![CDATA[select c from jokerapp$Order c where c.id = :orderId]]></jpql>
       <params>
         <param name="orderId" type="java.util.UUID"/>
       </params>
   </query>
   <query name="productItemCategories" entity="jokerapp$ProductItemCategory" view="productCategory-view">
-    <jpql><![CDATA[select c from jokerapp$ProductItemCategory c order by c.sortOrder ]]></jpql>
+    <jpql><![CDATA[select c from jokerapp$ProductItemCategory c order by c.sortOrder]]></jpql>
   </query>
   <query name="productItems" entity="jokerapp$ProductItem" view="productItem-view">
-    <jpql><![CDATA[select c from jokerapp$ProductItem c order by c.sortOrder ]]></jpql>
+    <jpql><![CDATA[select c from jokerapp$ProductItem c order by c.sortOrder]]></jpql>
   </query>
   <query name="productModifierCategories" entity="jokerapp$ProductModifierCategory" view="productModifierCategory-view">
-    <jpql><![CDATA[select c from jokerapp$ProductModifierCategory c order by c.sortOrder ]]></jpql>
+    <jpql><![CDATA[select c from jokerapp$ProductModifierCategory c order by c.sortOrder]]></jpql>
   </query>
   <query name="productModifiers" entity="jokerapp$ProductModifier" view="productModifier-view">
-    <jpql><![CDATA[select c from jokerapp$ProductModifier c order by c.sortOrder ]]></jpql>
+    <jpql><![CDATA[select c from jokerapp$ProductModifier c order by c.sortOrder]]></jpql>
   </query>
 </queries>
