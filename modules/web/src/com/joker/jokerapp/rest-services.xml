@@ -51,4 +51,11 @@
         </method>
     </service>
 
+    <service name="jokerapp_KitchenService">
+        <method name="bumpLine">
+            <param name="ticketId"/>
+            <param name="orderLineId"/>
+        </method>
+    </service>
+
 </services>

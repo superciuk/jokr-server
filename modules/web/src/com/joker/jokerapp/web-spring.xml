@@ -12,6 +12,7 @@
             <map>
                 <entry key="jokerapp_OrderService" value="com.joker.jokerapp.service.OrderService"/>
                 <entry key="jokerapp_PrinterService" value="com.joker.jokerapp.service.PrinterService"/>
+                <entry key="jokerapp_KitchenService" value="com.joker.jokerapp.service.KitchenService"/>
             </map>
         </property>
     </bean>

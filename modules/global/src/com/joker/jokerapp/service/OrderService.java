@@ -1,7 +1,5 @@
 package com.joker.jokerapp.service;
 
-import com.joker.jokerapp.entity.TableItem;
-
 public interface OrderService {
 
     String NAME = "jokerapp_OrderService";

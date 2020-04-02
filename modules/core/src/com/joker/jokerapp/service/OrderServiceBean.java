@@ -359,6 +359,12 @@ public class OrderServiceBean implements OrderService {
 
                 order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
                 selectedOrderLine.setIsReversed(false);
+                if(selectedOrderLine.getPrinterGroup().equals(PrinterGroup.Bar) && !selectedOrderLine.getChecked() && selectedOrderLine.getTicket().getSubticketStatus().charAt(1) == 'c')
+                    selectedOrderLine.getTicket().setSubticketStatus(selectedOrderLine.getTicket().getSubticketStatus().replace("bc", "bo")); else
+                if(selectedOrderLine.getPrinterGroup().equals(PrinterGroup.Fryer) && !selectedOrderLine.getChecked() && selectedOrderLine.getTicket().getSubticketStatus().charAt(4) == 'c')
+                    selectedOrderLine.getTicket().setSubticketStatus(selectedOrderLine.getTicket().getSubticketStatus().replace("fc", "fo")); else
+                if(selectedOrderLine.getPrinterGroup().equals(PrinterGroup.Grill) && !selectedOrderLine.getChecked() && selectedOrderLine.getTicket().getSubticketStatus().charAt(7) == 'c')
+                    selectedOrderLine.getTicket().setSubticketStatus(selectedOrderLine.getTicket().getSubticketStatus().replace("gc", "go"));
 
             } else {
 
@@ -367,10 +373,10 @@ public class OrderServiceBean implements OrderService {
 
                 order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
 
-                selectedOrderLine.setChecked(true);
+                /*selectedOrderLine.setChecked(true);
                 boolean areAllChecked = true;
                 for (OrderLine line: selectedOrderLine.getTicket().getOrderLines()) if (!line.getIsModifier() && !line.getChecked()) {areAllChecked = false; break;}
-                if (areAllChecked) {selectedOrderLine.getTicket().setTicketStatus(TicketStatus.closed); commitContext.addInstanceToCommit(selectedOrderLine.getTicket());}
+                if (areAllChecked) {selectedOrderLine.getTicket().setTicketStatus(TicketStatus.closed); commitContext.addInstanceToCommit(selectedOrderLine.getTicket());}*/
 
                 selectedOrderLine.setIsReversed(true);
 

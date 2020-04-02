@@ -153,7 +153,12 @@
           name="ticket-view"
           systemProperties="true">
         <property name="order" view="_minimal"/>
-        <property name="orderLines" view="_minimal"/>
+        <property name="orderLines" view="_minimal">
+            <property name="checked"/>
+            <property name="isModifier"/>
+            <property name="isReversed"/>
+            <property name="printerGroup"/>
+        </property>
     </view>
 </views>
 
