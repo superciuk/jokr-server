@@ -56,6 +56,10 @@
             <param name="ticketId"/>
             <param name="orderLineId"/>
         </method>
+        <method name="bumpAll">
+            <param name="ticketId"/>
+            <param name="subticketsToBump"/>
+        </method>
     </service>
 
 </services>

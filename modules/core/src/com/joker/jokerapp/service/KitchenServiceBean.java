@@ -1,5 +1,6 @@
 package com.joker.jokerapp.service;
 
+import com.haulmont.cuba.core.global.CommitContext;
 import com.haulmont.cuba.core.global.DataManager;
 import com.joker.jokerapp.entity.OrderLine;
 import com.joker.jokerapp.entity.PrinterGroup;
@@ -39,14 +40,41 @@ public class KitchenServiceBean implements KitchenService {
         if (allCheckedGrill) ticket.setSubticketStatus(ticket.getSubticketStatus().replace("go", "gc")); else
                                 ticket.setSubticketStatus(ticket.getSubticketStatus().replace("gc", "go"));
 
-        if ((allCheckedBar || ticket.getSubticketStatus().charAt(1) == 'n') &&
-                (allCheckedFryer || ticket.getSubticketStatus().charAt(4) == 'n') &&
-                (allCheckedGrill || ticket.getSubticketStatus().charAt(7) == 'n')) ticket.setTicketStatus(TicketStatus.closed);
+        if ((ticket.getSubticketStatus().charAt(1) != 'o') && (ticket.getSubticketStatus().charAt(4) != 'o') && (ticket.getSubticketStatus().charAt(7) != 'o')) ticket.setTicketStatus(TicketStatus.closed);
 
         dataManager.commit(ticket);
 
         return true;
 
     };
+
+    @Override
+    public boolean bumpAll(String ticketId, String subticketsToBump) {
+
+        CommitContext commitContext= new CommitContext();
+        Ticket ticket = dataManager.load(Ticket.class).id(UUID.fromString(ticketId)).view("ticket-view").one();
+
+        for (OrderLine line: ticket.getOrderLines()) {
+
+            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Bar) && subticketsToBump.charAt(0)=='y') {line.setChecked(!line.getChecked()); commitContext.addInstanceToCommit(line);}
+            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Fryer) && subticketsToBump.charAt(1)=='y') {line.setChecked(!line.getChecked()); commitContext.addInstanceToCommit(line);}
+            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Grill) && subticketsToBump.charAt(2)=='y') {line.setChecked(!line.getChecked()); commitContext.addInstanceToCommit(line);}
+
+        }
+
+        if (subticketsToBump.charAt(0)=='y') ticket.setSubticketStatus(ticket.getSubticketStatus().replace("bo", "bc"));
+        if (subticketsToBump.charAt(1)=='y') ticket.setSubticketStatus(ticket.getSubticketStatus().replace("fo", "fc"));
+        if (subticketsToBump.charAt(2)=='y') ticket.setSubticketStatus(ticket.getSubticketStatus().replace("go", "gc"));
+
+        if ((ticket.getSubticketStatus().charAt(1) != 'o') && (ticket.getSubticketStatus().charAt(4) != 'o') && (ticket.getSubticketStatus().charAt(7) != 'o')) ticket.setTicketStatus(TicketStatus.closed);
+
+        commitContext.addInstanceToCommit(ticket);
+
+        dataManager.commit(commitContext);
+
+        return true;
+
+    };
+
 
 }
