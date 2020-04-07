@@ -56,9 +56,9 @@ public class KitchenServiceBean implements KitchenService {
 
         for (OrderLine line: ticket.getOrderLines()) {
 
-            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Bar) && subticketsToBump.charAt(0)=='y') {line.setChecked(!line.getChecked()); commitContext.addInstanceToCommit(line);}
-            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Fryer) && subticketsToBump.charAt(1)=='y') {line.setChecked(!line.getChecked()); commitContext.addInstanceToCommit(line);}
-            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Grill) && subticketsToBump.charAt(2)=='y') {line.setChecked(!line.getChecked()); commitContext.addInstanceToCommit(line);}
+            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Bar) && subticketsToBump.charAt(0)=='y') {line.setChecked(true); commitContext.addInstanceToCommit(line);}
+            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Fryer) && subticketsToBump.charAt(1)=='y') {line.setChecked(true); commitContext.addInstanceToCommit(line);}
+            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Grill) && subticketsToBump.charAt(2)=='y') {line.setChecked(true); commitContext.addInstanceToCommit(line);}
 
         }
 
@@ -75,6 +75,5 @@ public class KitchenServiceBean implements KitchenService {
         return true;
 
     };
-
 
 }
