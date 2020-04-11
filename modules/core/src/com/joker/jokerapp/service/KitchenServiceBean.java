@@ -41,6 +41,7 @@ public class KitchenServiceBean implements KitchenService {
                                 ticket.setSubticketStatus(ticket.getSubticketStatus().replace("gc", "go"));
 
         if ((ticket.getSubticketStatus().charAt(1) != 'o') && (ticket.getSubticketStatus().charAt(4) != 'o') && (ticket.getSubticketStatus().charAt(7) != 'o')) ticket.setTicketStatus(TicketStatus.closed);
+            else ticket.setTicketStatus(TicketStatus.sended);
 
         dataManager.commit(ticket);
 
@@ -56,9 +57,9 @@ public class KitchenServiceBean implements KitchenService {
 
         for (OrderLine line: ticket.getOrderLines()) {
 
-            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Bar) && subticketsToBump.charAt(0)=='y') {line.setChecked(true); commitContext.addInstanceToCommit(line);}
-            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Fryer) && subticketsToBump.charAt(1)=='y') {line.setChecked(true); commitContext.addInstanceToCommit(line);}
-            if (!line.getIsModifier() && line.getPrinterGroup().equals(PrinterGroup.Grill) && subticketsToBump.charAt(2)=='y') {line.setChecked(true); commitContext.addInstanceToCommit(line);}
+            if (!line.getIsModifier() && !line.getIsReversed() && line.getPrinterGroup().equals(PrinterGroup.Bar) && subticketsToBump.charAt(0)=='y') {line.setChecked(true); commitContext.addInstanceToCommit(line);}
+            if (!line.getIsModifier() && !line.getIsReversed() && line.getPrinterGroup().equals(PrinterGroup.Fryer) && subticketsToBump.charAt(1)=='y') {line.setChecked(true); commitContext.addInstanceToCommit(line);}
+            if (!line.getIsModifier() && !line.getIsReversed() && line.getPrinterGroup().equals(PrinterGroup.Grill) && subticketsToBump.charAt(2)=='y') {line.setChecked(true); commitContext.addInstanceToCommit(line);}
 
         }
 
@@ -67,6 +68,7 @@ public class KitchenServiceBean implements KitchenService {
         if (subticketsToBump.charAt(2)=='y') ticket.setSubticketStatus(ticket.getSubticketStatus().replace("go", "gc"));
 
         if ((ticket.getSubticketStatus().charAt(1) != 'o') && (ticket.getSubticketStatus().charAt(4) != 'o') && (ticket.getSubticketStatus().charAt(7) != 'o')) ticket.setTicketStatus(TicketStatus.closed);
+            else ticket.setTicketStatus(TicketStatus.sended);
 
         commitContext.addInstanceToCommit(ticket);
 

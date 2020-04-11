@@ -174,15 +174,15 @@ public class PrinterServiceBean implements PrinterService {
 
                 try {
 
-                    bufferedImage = ImageIO.read(new File("/home/joker/Desktop/logo3.jpg"));
+                    bufferedImage = ImageIO.read(new File("/home/toma/Desktop/logo.jpg"));
 
                 } catch (Exception e) {
                     System.err.println(e);
                 }
 
-                graphics2D.drawImage(bufferedImage, null, 30, -10);
+                graphics2D.drawImage(bufferedImage, null, 16, -10);
 
-                y += 60;
+                y += 80;
                 graphics2D.setFont(font2);
                 graphics2D.drawString("PRECONTO TAVOLO: ".concat(tableToPrint.getCurrentOrder().getTableItemCaption()), xMin, y);
                 y += 20;

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -91,6 +92,8 @@ public class OrderServiceBean implements OrderService {
                     order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(productModifierToAdd.getSubtractPrice().setScale(1, RoundingMode.HALF_DOWN).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(1, RoundingMode.HALF_DOWN))));
 
                 }
+
+                setOrderTaxes(order);
                 newLine.setItemId(productModifierToAdd.getId());
 
             } else {
@@ -100,6 +103,7 @@ public class OrderServiceBean implements OrderService {
                 newLine.setPrice(newLine.getUnitPrice());
                 selectedOrderLine.setPrice(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN).add(newLine.getUnitPrice().setScale(1, RoundingMode.HALF_DOWN).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(1, RoundingMode.HALF_DOWN))));
                 order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(newLine.getUnitPrice().setScale(1, RoundingMode.HALF_DOWN).multiply(BigDecimal.valueOf(selectedOrderLine.getQuantity()).setScale(1, RoundingMode.HALF_DOWN))));
+                setOrderTaxes(order);
 
             }
 
@@ -153,6 +157,7 @@ public class OrderServiceBean implements OrderService {
                         existentLine.setPrice(existentLine.getPrice().setScale(1, RoundingMode.HALF_DOWN).add(existentLine.getUnitPrice().setScale(1, RoundingMode.HALF_DOWN)));
 
                         order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(existentLine.getUnitPrice().setScale(1, RoundingMode.HALF_DOWN)));
+                        setOrderTaxes(order);
                         dataManager.commit(existentLine, currentTicket, order);
                         return existentLine.getId().toString();
 
@@ -195,6 +200,7 @@ public class OrderServiceBean implements OrderService {
 
             currentTicket.getOrderLines().add(newOrderLine);
             order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(newOrderLine.getUnitPrice().setScale(1, RoundingMode.HALF_DOWN)));
+            setOrderTaxes(order);
 
             dataManager.commit(newOrderLine, currentTicket, order);
             return newOrderLine.getId().toString();
@@ -250,6 +256,7 @@ public class OrderServiceBean implements OrderService {
             addedOrderLine.setUnitPrice(selectedOrderLine.getUnitPrice());
             addedOrderLine.setPrice(addedOrderLine.getPrice().add(addedOrderLine.getUnitPrice().multiply(BigDecimal.valueOf(addedOrderLine.getQuantity())).setScale(1, RoundingMode.HALF_DOWN)));
             order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(addedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
+            setOrderTaxes(order);
 
             dataManager.commit(addedOrderLine, order);
 
@@ -258,6 +265,7 @@ public class OrderServiceBean implements OrderService {
             selectedOrderLine.setPrice(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN).add(selectedOrderLine.getPrice().divide(BigDecimal.valueOf(selectedOrderLine.getQuantity()), 1, RoundingMode.HALF_DOWN)));
             selectedOrderLine.setQuantity(selectedOrderLine.getQuantity() + 1);
             order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(selectedOrderLine.getPrice().divide(BigDecimal.valueOf(selectedOrderLine.getQuantity()), 1, RoundingMode.HALF_DOWN)));
+            setOrderTaxes(order);
 
             dataManager.commit(selectedOrderLine, order);
         }
@@ -293,6 +301,7 @@ public class OrderServiceBean implements OrderService {
             }
 
             order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().multiply(BigDecimal.valueOf(selectedOrderLineParent.getQuantity()))));
+            setOrderTaxes(order);
             selectedOrderLineParent.setPrice(selectedOrderLineParent.getPrice().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().multiply(BigDecimal.valueOf(selectedOrderLineParent.getQuantity()))));
 
             for (OrderLine line: currentTicket.getOrderLines()) {
@@ -313,11 +322,13 @@ public class OrderServiceBean implements OrderService {
                             commitContext.addInstanceToRemove(line);
                 }
                 order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
+                setOrderTaxes(order);
                 commitContext.addInstanceToRemove(selectedOrderLine);
 
             } else {
 
                 order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().divide(BigDecimal.valueOf(selectedOrderLine.getQuantity()), 1, RoundingMode.HALF_DOWN)));
+                setOrderTaxes(order);
                 selectedOrderLine.setPrice(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().divide(BigDecimal.valueOf(selectedOrderLine.getQuantity()), 1, RoundingMode.HALF_DOWN)));
                 selectedOrderLine.setQuantity(selectedOrderLine.getQuantity() - 1);
                 commitContext.addInstanceToCommit(selectedOrderLine);
@@ -348,6 +359,7 @@ public class OrderServiceBean implements OrderService {
                 if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedOrderLine.getId())) commitContext.addInstanceToRemove(line);
 
             order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
+            setOrderTaxes(order);
             commitContext.addInstanceToRemove(selectedOrderLine);
 
         } else {
@@ -358,6 +370,7 @@ public class OrderServiceBean implements OrderService {
                     if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedOrderLine.getId())) {line.setIsReversed(false); commitContext.addInstanceToCommit(line);}
 
                 order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
+                setOrderTaxes(order);
                 selectedOrderLine.setIsReversed(false);
                 if(selectedOrderLine.getPrinterGroup().equals(PrinterGroup.Bar) && !selectedOrderLine.getChecked() && selectedOrderLine.getTicket().getSubticketStatus().charAt(1) == 'c')
                     selectedOrderLine.getTicket().setSubticketStatus(selectedOrderLine.getTicket().getSubticketStatus().replace("bc", "bo")); else
@@ -372,12 +385,7 @@ public class OrderServiceBean implements OrderService {
                     if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedOrderLine.getId())) {line.setIsReversed(true); commitContext.addInstanceToCommit(line);}
 
                 order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
-
-                /*selectedOrderLine.setChecked(true);
-                boolean areAllChecked = true;
-                for (OrderLine line: selectedOrderLine.getTicket().getOrderLines()) if (!line.getIsModifier() && !line.getChecked()) {areAllChecked = false; break;}
-                if (areAllChecked) {selectedOrderLine.getTicket().setTicketStatus(TicketStatus.closed); commitContext.addInstanceToCommit(selectedOrderLine.getTicket());}*/
-
+                setOrderTaxes(order);
                 selectedOrderLine.setIsReversed(true);
 
             }
@@ -406,8 +414,10 @@ public class OrderServiceBean implements OrderService {
         selectedOrderLine.setPrice(new BigDecimal(price));
         selectedOrderLine.setUnitPrice(selectedOrderLine.getPrice().subtract(modifiersPrice).divide(BigDecimal.valueOf(selectedOrderLine.getQuantity()), 1, RoundingMode.HALF_DOWN));
         order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).add(selectedOrderLine.getPrice().setScale(1, RoundingMode.HALF_DOWN)));
+        setOrderTaxes(order);
 
         dataManager.commit(selectedOrderLine, order);
+
         return true;
 
     }
@@ -438,6 +448,7 @@ public class OrderServiceBean implements OrderService {
         return true;
 
     }
+
     @Override
     public boolean removeEmptyTickets(String tableItemId) {
 
@@ -514,6 +525,17 @@ public class OrderServiceBean implements OrderService {
         }
 
         return true;
+
+    }
+
+    protected void setOrderTaxes (Order currentOrder) {
+
+        if (currentOrder.getWithService()) {
+
+            BigDecimal service = BigDecimal.valueOf(Math.round(currentOrder.getCharge().multiply(BigDecimal.valueOf(0.1)).subtract(BigDecimal.valueOf(0.2)).multiply(BigDecimal.valueOf(2)).doubleValue()) / 2.0f).setScale(2);
+            currentOrder.setTaxes(service);
+
+        }
 
     }
 
