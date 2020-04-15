@@ -1,14 +1,18 @@
 <Context>
+
     <!-- Database connection -->
-    <Resource driverClassName="org.postgresql.Driver"
-              maxIdle="2"
-              maxTotal="20"
-              maxWaitMillis="5000"
-              name="jdbc/CubaDS"
-              password="cuba"
-              type="javax.sql.DataSource"
-              url="jdbc:postgresql://localhost/jokerapp"
-              username="cuba"/>
+    <Resource
+      name="jdbc/CubaDS"
+      type="javax.sql.DataSource"
+      maxTotal="20"
+      maxIdle="2"
+      maxWaitMillis="5000"
+      driverClassName="org.postgresql.Driver"
+      url="jdbc:postgresql://localhost/jokerapp"
+      username="cuba"
+      password="cuba"/>
+
     <!-- Switch off session serialization -->
     <Manager pathname=""/>
+
 </Context>

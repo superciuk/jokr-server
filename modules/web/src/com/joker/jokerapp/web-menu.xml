@@ -4,13 +4,8 @@
           insertBefore="administration">
         <item screen="jokerapp$ProductItemCategory.browse"/>
         <item screen="jokerapp$ProductModifier.browse"/>
-        <item screen="tableselect"/>
         <item screen="jokerapp$TableItem.browse"/>
         <item screen="jokerapp$ProductModifierCategory.browse"/>
         <item screen="jokerapp$ProductItem.browse"/>
-        <item screen="jokerapp$Kitchen.display"/>
-        <item screen="jokerapp$ItemModifier.dialog"/>
-        <item screen="jokerapp_MainScreen"/>
-        <item screen="jokerapp_KitchenDisplayScreen"/>
     </menu>
 </menu-config>

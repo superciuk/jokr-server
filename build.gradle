@@ -237,12 +237,12 @@ task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefi
 
 apply from: 'extra.gradle'
 
-
 task buildWar(type: CubaWarBuilding) {
-    coreContextXmlPath = 'modules/core/web/META-INF/war-context.xml'
+    appProperties = ['cuba.automaticDatabaseUpdate': true,
+                     'cuba.dataSourceProvider'     : 'jndi']
     webXmlPath = 'modules/web/web/WEB-INF/single-war-web.xml'
-    appProperties = ['cuba.automaticDatabaseUpdate': true]
-    includeContextXml = true
+    logbackConfigurationFile = 'etc/war-logback.xml'
     includeJdbcDriver = true
-    appHome = '../jokerapp_home'
+    includeContextXml = true
+    coreContextXmlPath = 'modules/core/web/META-INF/war-context.xml'
 }

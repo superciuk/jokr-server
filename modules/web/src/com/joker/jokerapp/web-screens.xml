@@ -5,25 +5,10 @@
             template="com/joker/jokerapp/web/productitemcategory/product-item-category-browse.xml"/>
     <screen id="jokerapp$ProductModifier.browse"
             template="com/joker/jokerapp/web/productmodifier/product-modifier-browse.xml"/>
-    <screen id="tableselect"
-            template="com/joker/jokerapp/web/screens/table-select.xml"/>
     <screen id="jokerapp$TableItem.browse"
             template="com/joker/jokerapp/web/tableitem/table-item-browse.xml"/>
-    <screen id="jokerapp$ActualSeats.dialog"
-            template="com/joker/jokerapp/web/dialogs/actual-seats-dialog.xml"/>
-    <screen id="orderScreen"
-            template="com/joker/jokerapp/web/screens/order-screenOLD.xml"/>
     <screen id="jokerapp$ProductModifierCategory.browse"
             template="com/joker/jokerapp/web/productmodifiercategory/product-modifier-category-browse.xml"/>
     <screen id="jokerapp$ProductItem.browse"
             template="com/joker/jokerapp/web/productitem/product-item-browse.xml"/>
-    <screen id="jokerapp$ItemManualModifier.dialog"
-            template="com/joker/jokerapp/web/dialogs/item-manual-modifier-dialog.xml"/>
-    <screen id="jokerapp$ItemModifier.dialog"
-            template="com/joker/jokerapp/web/dialogs/item-modifier-dialog.xml"/>
-    <screen id="jokerapp$itemPriceManualModifier.dialog"
-            template="com/joker/jokerapp/web/dialogs/item-price-manual-modifier-dialog.xml"/>
-    <screen id="jokerapp$Kitchen.display"
-            multipleOpen="true"
-            template="com/joker/jokerapp/web/screens/kitchen-display.xml"/>
 </screen-config>

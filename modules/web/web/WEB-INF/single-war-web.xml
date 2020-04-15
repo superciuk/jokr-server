@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright (c) 2016 Haulmont Technology Ltd. All Rights Reserved.
-  ~ Haulmont Technology proprietary and confidential.
-  ~ Use is subject to license terms.
-  -->
-
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
@@ -16,12 +10,12 @@
         <description>List of app properties files for Web Client</description>
         <param-name>appPropertiesConfigWeb</param-name>
         <param-value>
-
             classpath:com/joker/jokerapp/web-app.properties
             /WEB-INF/local.app.properties
+            "file:${app.home}/local.app.properties"
         </param-value>
     </context-param>
-
+    
 
     <!-- Middleware parameters -->
 
@@ -29,9 +23,9 @@
         <description>List of app properties files for Middleware</description>
         <param-name>appPropertiesConfigCore</param-name>
         <param-value>
-
             classpath:com/joker/jokerapp/app.properties
             /WEB-INF/local.app.properties
+            "file:${app.home}/local.app.properties"
         </param-value>
     </context-param>
     <!--Application components-->
@@ -41,7 +35,7 @@
     </context-param>
 
     <!-- Servlet context listeners that load the application blocks -->
-
+    
     <listener>
         <listener-class>com.haulmont.cuba.core.sys.singleapp.SingleAppCoreServletListener</listener-class>
     </listener>

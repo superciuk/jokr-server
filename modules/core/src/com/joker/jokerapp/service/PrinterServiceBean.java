@@ -1,11 +1,9 @@
 package com.joker.jokerapp.service;
 
-import com.haulmont.cuba.core.global.DataManager;
 import com.joker.jokerapp.entity.*;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import javax.inject.Inject;
 import javax.print.*;
 import javax.print.attribute.DocAttributeSet;
 import javax.print.attribute.HashDocAttributeSet;
@@ -86,7 +84,7 @@ public class PrinterServiceBean implements PrinterService {
 
                 for (OrderLine line : ticketToPrint.getOrderLines()) {
 
-                    if (line.getPrinterGroup().equals(printerGroupToSendTicket) && (line.getTicket().getTicketStatus().equals(TicketStatus.notSended) /*|| resendTicket*/)) {
+                    if (line.getPrinterGroup().equals(printerGroupToSendTicket) && (line.getTicket().getTicketStatus().equals(TicketStatus.notSended))) {
 
                         if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
@@ -174,7 +172,12 @@ public class PrinterServiceBean implements PrinterService {
 
                 try {
 
+                    /*linux
                     bufferedImage = ImageIO.read(new File("/home/toma/Desktop/logo.jpg"));
+                    */
+
+                    //windows
+                    bufferedImage = ImageIO.read(new File("./logo.jpg"));
 
                 } catch (Exception e) {
                     System.err.println(e);

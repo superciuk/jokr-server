@@ -8,9 +8,4 @@
         <functionality id="newFkConstraintNaming"
                        state="ENABLE"/>
     </functionalitySettings>
-    <screenDesigner>
-        <screen module="web"
-                presentSize="1920x1080"
-                reference="com/joker/jokerapp/web/screens/kitchen-display.xml"/>
-    </screenDesigner>
 </studio>
