@@ -10,6 +10,7 @@
                   view="_minimal"/>
         <property name="modifierCategories"
                   view="_minimal"/>
+        <property name="image" view="_base" />
     </view>
     <view class="com.joker.jokerapp.entity.ProductModifierCategory"
           extends="_local"

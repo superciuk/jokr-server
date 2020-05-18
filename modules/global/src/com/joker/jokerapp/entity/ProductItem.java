@@ -1,13 +1,10 @@
 package com.joker.jokerapp.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.entity.StandardEntity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
 import com.haulmont.cuba.core.global.DeletePolicy;
@@ -16,8 +13,6 @@ import com.haulmont.cuba.core.entity.annotation.Lookup;
 import com.haulmont.cuba.core.entity.annotation.LookupType;
 import java.math.BigDecimal;
 import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 @NamePattern("%s|name")
 @Table(name = "JOKERAPP_PRODUCT_ITEM")
@@ -55,6 +50,33 @@ public class ProductItem extends StandardEntity {
 
     @Column(name = "PRINTER_GROUP")
     protected String printerGroup;
+
+    @Lookup(type = LookupType.SCREEN, actions = {"lookup", "open", "clear"})
+    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @OnDelete(DeletePolicy.UNLINK)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IMAGE_ID")
+    protected FileDescriptor image;
+
+    @Lob
+    @Column(name = "DESCRIPTION")
+    protected String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public FileDescriptor getImage() {
+        return image;
+    }
+
+    public void setImage(FileDescriptor image) {
+        this.image = image;
+    }
 
     public PrinterGroup getPrinterGroup() {
         return printerGroup == null ? null : PrinterGroup.fromId(printerGroup);

@@ -33,6 +33,8 @@ create table JOKERAPP_PRODUCT_ITEM (
     VISIBLE boolean,
     PRICE decimal(12, 2) not null,
     PRINTER_GROUP varchar(50),
+    IMAGE_ID uuid,
+    DESCRIPTION text,
     --
     primary key (ID)
 )^

@@ -7,5 +7,6 @@
         <item screen="jokerapp$TableItem.browse"/>
         <item screen="jokerapp$ProductModifierCategory.browse"/>
         <item screen="jokerapp$ProductItem.browse"/>
+        <item screen="jokerapp$Product Item Manager"/>
     </menu>
 </menu-config>

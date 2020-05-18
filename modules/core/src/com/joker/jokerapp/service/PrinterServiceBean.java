@@ -177,7 +177,7 @@ public class PrinterServiceBean implements PrinterService {
                     */
 
                     //windows
-                    bufferedImage = ImageIO.read(new File("./logo.jpg"));
+                    bufferedImage = ImageIO.read(new File("c:\\logo.jpg"));
 
                 } catch (Exception e) {
                     System.err.println(e);
