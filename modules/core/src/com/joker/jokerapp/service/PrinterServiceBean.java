@@ -1,6 +1,7 @@
 package com.joker.jokerapp.service;
 
 import com.joker.jokerapp.entity.*;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -12,11 +13,13 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.MediaPrintableArea;
 import javax.print.attribute.standard.MediaSizeName;
 import java.awt.*;
+import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.File;
+import java.text.AttributedString;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -24,13 +27,15 @@ import java.util.Comparator;
 @Service(PrinterService.NAME)
 public class PrinterServiceBean implements PrinterService {
 
+    protected static final Logger log = org.slf4j.LoggerFactory.getLogger(PrinterServiceBean.class);
+
     static class TicketPrinter implements Printable {
 
-        private  TableItem tableToPrint;
-        private Ticket ticketToPrint;
-        private PrinterGroup printerGroupToSendTicket;
-        private boolean isGrillTicket;
-        private boolean withFries;
+        final  TableItem tableToPrint;
+        final Ticket ticketToPrint;
+        final PrinterGroup printerGroupToSendTicket;
+        final boolean isGrillTicket;
+        final boolean withFries;
 
         public TicketPrinter(TableItem table, Ticket ticket, PrinterGroup printerGroup, boolean isGrillTicketParam, boolean withFriesParam) {
 
@@ -138,9 +143,10 @@ public class PrinterServiceBean implements PrinterService {
 
     }
 
-    class BillPrinter implements Printable {
+    static class BillPrinter implements Printable {
 
-        private TableItem tableToPrint;
+        protected static final Logger log = org.slf4j.LoggerFactory.getLogger(BillPrinter.class);
+        final TableItem tableToPrint;
 
         public BillPrinter (TableItem table) {
 
@@ -172,15 +178,14 @@ public class PrinterServiceBean implements PrinterService {
 
                 try {
 
-                    /*linux
-                    bufferedImage = ImageIO.read(new File("/home/toma/Desktop/logo.jpg"));
-                    */
+                    //linux
+                    bufferedImage = ImageIO.read(new File("/home/pi/logo.jpg"));
 
                     //windows
-                    bufferedImage = ImageIO.read(new File("c:\\logo.jpg"));
+                    //bufferedImage = ImageIO.read(new File("c:\\logo.jpg"));
 
                 } catch (Exception e) {
-                    System.err.println(e);
+                    log.error("Error", e);
                 }
 
                 graphics2D.drawImage(bufferedImage, null, 16, -10);
@@ -198,13 +203,11 @@ public class PrinterServiceBean implements PrinterService {
 
                     ticket.getOrderLines().sort(Comparator.comparing(OrderLine::getPosition));
 
-                    for (OrderLine line : ticket.getOrderLines())
-                        if (line.getTicket().getOrder().equals(tableToPrint.getCurrentOrder())) {
+                    for (OrderLine line : ticket.getOrderLines()) {
+
                             if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
                             int linesToDraw = Math.round(line.getItemName().length() / 24) + 1;
-
-                            //String stringToDraw = "";
 
                             int spacePosition = 0;
                             int currentSpacePosition = 0;
@@ -227,14 +230,29 @@ public class PrinterServiceBean implements PrinterService {
 
                                 }
 
-                                graphics2D.drawString(lineName.substring(currentSpacePosition, spacePosition), xMin + font2.getSize(), y);
+                                String stringToDraw = lineName.substring(currentSpacePosition, spacePosition);
+                                AttributedString attributedString = new AttributedString(stringToDraw);
+                                attributedString.addAttribute(TextAttribute.SIZE, font2.getSize());
+
+                                if (line.getIsReversed()) attributedString.addAttribute(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+
+                                graphics2D.drawString(attributedString.getIterator(), xMin + font2.getSize(), y);
 
                                 currentSpacePosition = spacePosition;
 
                                 if (l == 1 && !line.getIsModifier()) {
 
-                                    x = paperWidth - Math.multiplyExact(line.getPrice().toString().length(), font2.getSize() - 3);
-                                    graphics2D.drawString(line.getPrice().toString(), x, y);
+                                    if (line.getIsReversed()) {
+
+                                        x = paperWidth - Math.multiplyExact(4, font2.getSize() - 3);
+                                        graphics2D.drawString("0.00", x, y);
+
+                                    } else {
+
+                                        x = paperWidth - Math.multiplyExact(line.getPrice().toString().length(), font2.getSize() - 3);
+                                        graphics2D.drawString(line.getPrice().toString(), x, y);
+
+                                    }
 
                                 }
 
@@ -242,7 +260,11 @@ public class PrinterServiceBean implements PrinterService {
 
                             }
 
-                            graphics2D.drawString(line.getItemName().substring(currentSpacePosition), xMin + font2.getSize(), y);
+                            String stringToDraw = line.getItemName().substring(currentSpacePosition);
+                            AttributedString attributedString = new AttributedString(stringToDraw);
+                            attributedString.addAttribute(TextAttribute.SIZE, font2.getSize());
+                            if (line.getIsReversed()) attributedString.addAttribute(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                            graphics2D.drawString(attributedString.getIterator(), xMin + font2.getSize(), y);
 
                             if (currentSpacePosition == 0 && !line.getIsModifier()) {
 
@@ -253,7 +275,7 @@ public class PrinterServiceBean implements PrinterService {
 
                             y = y + yInc2 + 4;
 
-                        }
+                       }
                 }
 
                 graphics2D.drawLine(xMin, y, paperWidth, y);
@@ -342,7 +364,7 @@ public class PrinterServiceBean implements PrinterService {
 
                     } catch (PrintException e) {
 
-                        e.printStackTrace();
+                        log.error("Error", e);
 
                     }
 
@@ -384,7 +406,7 @@ public class PrinterServiceBean implements PrinterService {
 
             } catch (PrintException e) {
 
-                e.printStackTrace();
+                log.error("Error", e);
                 return false;
 
             }
