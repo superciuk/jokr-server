@@ -13,10 +13,10 @@
       </params>
   </query>
   <query name="productItemCategories" entity="jokerapp$ProductItemCategory" view="productCategory-view">
-    <jpql><![CDATA[select c from jokerapp$ProductItemCategory c order by c.sortOrder]]></jpql>
+    <jpql><![CDATA[select c from jokerapp$ProductItemCategory c where c.visible = true order by c.sortOrder]]></jpql>
   </query>
   <query name="productItems" entity="jokerapp$ProductItem" view="productItem-view">
-    <jpql><![CDATA[select c from jokerapp$ProductItem c order by c.sortOrder]]></jpql>
+    <jpql><![CDATA[select c from jokerapp$ProductItem c where c.visible = true order by c.sortOrder]]></jpql>
   </query>
   <query name="productModifierCategories" entity="jokerapp$ProductModifierCategory" view="productModifierCategory-view">
     <jpql><![CDATA[select c from jokerapp$ProductModifierCategory c order by c.sortOrder]]></jpql>

@@ -2,6 +2,8 @@
 <services xmlns="http://schemas.haulmont.com/cuba/rest-services-v2.xsd">
 
     <service name="jokerapp_OrderService">
+        <method name="checkConnection">
+        </method>
         <method name="createNewOrder">
             <param name="tableId"/>
             <param name="actualSeats"/>

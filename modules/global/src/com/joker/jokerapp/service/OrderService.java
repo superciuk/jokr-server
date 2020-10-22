@@ -4,6 +4,8 @@ public interface OrderService {
 
     String NAME = "jokerapp_OrderService";
 
+    boolean checkConnection();
+
     String createNewOrder(String tableId, String actualSeats);
 
     String addToOrder(String orderId, String productItemId, String isModifier, String selectedOrderLineId, String plusOrMinus, String manualModifierText, String manualModifierPrice, String withModifiers);

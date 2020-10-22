@@ -26,6 +26,9 @@ public class OrderServiceBean implements OrderService {
     private Metadata metadata;
 
     @Override
+    public boolean checkConnection() { return true; }
+
+    @Override
     public String createNewOrder(String tableId, String actualSeats) {
 
         TableItem tableItem = dataManager.load(TableItem.class).id(UUID.fromString(tableId)).view("tableItem-view").one();
