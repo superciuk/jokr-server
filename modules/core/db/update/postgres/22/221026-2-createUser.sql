@@ -1,0 +1,1 @@
+create unique index IDX_JOKERAPP_USER_UK_USERNAME on JOKERAPP_USER (USERNAME) where DELETE_TS is null ;

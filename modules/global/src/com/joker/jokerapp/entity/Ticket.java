@@ -10,8 +10,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
+
 import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
+import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
 import com.haulmont.cuba.core.global.DeletePolicy;
 
 @NamePattern("%s|id")
@@ -37,6 +40,11 @@ public class Ticket extends StandardEntity {
     @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "ticket")
     protected List<OrderLine> orderLines;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "USER_ID")
+    protected User user;
 
     public void setSubticketStatus(String subticketStatus) {
         this.subticketStatus = subticketStatus;
@@ -78,4 +86,9 @@ public class Ticket extends StandardEntity {
         return order;
     }
 
+    public User getUser() { return user; }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

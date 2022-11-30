@@ -19,6 +19,9 @@ public class ProductItemCategory extends StandardEntity {
     @Column(name = "VISIBLE", nullable = false)
     protected Boolean visible = false;
 
+    @Column(name = "IS_BEVERAGE", nullable = false)
+    protected Boolean isBeverage = false;
+
     @Column(name = "SORT_ORDER", nullable = false)
     protected Integer sortOrder;
 
@@ -36,6 +39,12 @@ public class ProductItemCategory extends StandardEntity {
 
     public Boolean getVisible() {
         return visible;
+    }
+
+    public void setIsBeverage(Boolean isBeverage) { this.isBeverage = isBeverage; }
+
+    public Boolean getIsBeverage() {
+        return isBeverage;
     }
 
     public void setSortOrder(Integer sortOrder) {

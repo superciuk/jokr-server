@@ -5,8 +5,6 @@
             template="com/joker/jokerapp/web/productitemcategory/product-item-category-browse.xml"/>
     <screen id="jokerapp$ProductModifier.browse"
             template="com/joker/jokerapp/web/productmodifier/product-modifier-browse.xml"/>
-    <screen id="jokerapp$TableItem.browse"
-            template="com/joker/jokerapp/web/tableitem/table-item-browse.xml"/>
     <screen id="jokerapp$ProductModifierCategory.browse"
             template="com/joker/jokerapp/web/productmodifiercategory/product-modifier-category-browse.xml"/>
     <screen id="jokerapp$ProductItem.browse"

@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <queries xmlns="http://schemas.haulmont.com/cuba/rest-queries.xsd">
+  <query name="systemUser" entity="sec$User" view="_local">
+    <jpql><![CDATA[select c from sec$User c where c.login = :login]]></jpql>
+    <params>
+      <param name="login" type="java.lang.String"/>
+    </params>
+  </query>
+  <query name="appUser" entity="jokerapp_User" view="user-view">
+    <jpql><![CDATA[select c from jokerapp_User c where c.username = :username AND c.encryptedUserPassword = :userPassword]]></jpql>
+    <params>
+      <param name="username" type="java.lang.String"/>
+      <param name="userPassword" type="java.lang.String"/>
+    </params>
+  </query>
+  <query name="preferences" entity="jokerapp_Preferences" view="_local">
+    <jpql><![CDATA[select c from jokerapp_Preferences c where c.user.id = :userId]]></jpql>
+      <params>
+        <param name="userId" type="java.util.UUID"/>
+      </params>
+  </query>
   <query name="tableItems" entity="jokerapp$TableItem" view="tableItem-view">
     <jpql><![CDATA[select c from jokerapp$TableItem c order by c.tableNumber]]></jpql>
+  </query>
+  <query name="tableItemAreas" entity="jokerapp$TableItemArea" view="tableItemArea-view">
+    <jpql><![CDATA[select c from jokerapp$TableItemArea c order by c.areaNumber]]></jpql>
   </query>
   <query name="activeOrders" entity="jokerapp$Order" view="order-view">
     <jpql><![CDATA[select c from jokerapp$Order c where c.status = 'open' OR c.status = 'bill' order by c.createTs]]></jpql>

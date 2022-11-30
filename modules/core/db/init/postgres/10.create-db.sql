@@ -11,6 +11,7 @@ create table JOKERAPP_PRODUCT_ITEM_CATEGORY (
     --
     NAME varchar(120) not null,
     VISIBLE boolean not null,
+    IS_BEVERAGE boolean not null,
     SORT_ORDER integer not null,
     --
     primary key (ID)
@@ -90,9 +91,15 @@ create table JOKERAPP_TABLE_ITEM (
     --
     TABLE_NUMBER integer not null,
     TABLE_CAPTION varchar(255),
+    TABLE_AREA_ID uuid,
     SEATS_CAPACITY integer,
     TABLE_STATUS varchar(50) not null,
+    TABLE_RESERVATION_NAME varchar(255),
+    TABLE_RESERVATION_SEATS varchar(255),
+    TABLE_RESERVATION_TIME varchar(255),
+    TABLE_RESERVATION_PHONE_NUMBER varchar(255),
     CURRENT_ORDER_ID uuid,
+    LAST_ORDER_ID uuid,
     WITH_SERVICE_BY_DEFAULT boolean not null,
     CHECKED boolean not null,
     --
@@ -111,12 +118,15 @@ create table JOKERAPP_ORDER (
     DELETED_BY varchar(50),
     --
     ACTUAL_SEATS integer not null,
-    STATUS varchar(50) not null,
+    CURRENT_STATUS varchar(50) not null,
+    PREVIOUS_STATUS varchar(50),
+    ORDER_IN_PROGRESS boolean,
     TABLE_ITEM_CAPTION varchar(255),
     WITH_SERVICE boolean not null,
     DISCOUNT decimal(12, 2),
     CHARGE decimal(19, 2),
     TAXES decimal(19, 2),
+    USER_ID uuid not null,
     --
     primary key (ID)
 )^
@@ -144,6 +154,7 @@ create table JOKERAPP_ORDER_LINE (
     HAS_MODIFIER boolean not null,
     IS_MODIFIER boolean not null,
     ITEM_TO_MODIFY_ID uuid,
+    IS_BEVERAGE boolean,
     CHECKED boolean,
     IS_REVERSED boolean,
     PRINTER_GROUP varchar(50),
@@ -173,7 +184,62 @@ create table JOKERAPP_TICKET (
     TICKET_NUMBER integer,
     TICKET_STATUS varchar(50),
     SUBTICKET_STATUS varchar(255),
+    USER_ID uuid not null,
     --
     primary key (ID)
 )^
 -- end JOKERAPP_TICKET
+-- begin JOKERAPP_PREFERENCES
+create table JOKERAPP_PREFERENCES (
+    ID uuid,
+    VERSION integer not null,
+    CREATE_TS timestamp,
+    CREATED_BY varchar(50),
+    UPDATE_TS timestamp,
+    UPDATED_BY varchar(50),
+    DELETE_TS timestamp,
+    DELETED_BY varchar(50),
+    --
+    USER_ID uuid,
+    SCREEN_ORIENTATION varchar(255),
+    TASK varchar(255),
+    --
+    primary key (ID)
+)^
+-- end JOKERAPP_PREFERENCES
+-- begin JOKERAPP_TABLE_ITEM_AREA
+create table JOKERAPP_TABLE_ITEM_AREA (
+    ID uuid,
+    VERSION integer not null,
+    CREATE_TS timestamp,
+    CREATED_BY varchar(50),
+    UPDATE_TS timestamp,
+    UPDATED_BY varchar(50),
+    DELETE_TS timestamp,
+    DELETED_BY varchar(50),
+    --
+    AREA_NUMBER integer not null,
+    AREA_NAME varchar(255) not null,
+    --
+    primary key (ID)
+)^
+-- end JOKERAPP_TABLE_ITEM_AREA
+-- begin JOKERAPP_USER
+create table JOKERAPP_USER (
+    ID uuid,
+    VERSION integer not null,
+    CREATE_TS timestamp,
+    CREATED_BY varchar(50),
+    UPDATE_TS timestamp,
+    UPDATED_BY varchar(50),
+    DELETE_TS timestamp,
+    DELETED_BY varchar(50),
+    --
+    USERNAME varchar(255) not null,
+    ENCRYPTED_USER_PASSWORD varchar(255) not null,
+    USER_TYPE varchar(50) not null,
+    USER_STATUS varchar(50) not null,
+    --
+    primary key (ID)
+)^
+-- end JOKERAPP_USER

@@ -11,5 +11,8 @@
         <class>com.joker.jokerapp.entity.Order</class>
         <class>com.joker.jokerapp.entity.OrderLine</class>
         <class>com.joker.jokerapp.entity.Ticket</class>
+        <class>com.joker.jokerapp.entity.Preferences</class>
+        <class>com.joker.jokerapp.entity.TableItemArea</class>
+        <class>com.joker.jokerapp.entity.User</class>
     </persistence-unit>
 </persistence>

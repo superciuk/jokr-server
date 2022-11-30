@@ -1,0 +1,88 @@
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://preferencesBrowse.caption"
+        focusComponent="table"
+        messagesPack="com.joker.jokerapp.web.preferences">
+    <data>
+        <collection id="preferencesesDc"
+                    class="com.joker.jokerapp.entity.Preferences">
+            <view extends="_local">
+                <property name="user" view="_minimal"/>
+            </view>
+            <loader id="preferencesesDl">
+                <query>
+                    <![CDATA[select e from jokerapp_Preferences e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="preferencesDc"
+                  class="com.joker.jokerapp.entity.Preferences">
+            <view extends="_local">
+                <property name="user" view="_minimal"/>
+            </view>
+            <loader/>
+        </instance>
+        <collection id="usersDc" class="com.haulmont.cuba.security.entity.User" view="_minimal">
+            <loader id="usersDl">
+                <query>
+                    <![CDATA[select e from sec$User e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="save" icon="icons/ok.png" caption="mainMsg://actions.Ok" shortcut="CTRL-ENTER"/>
+        <action id="cancel" icon="icons/cancel.png" caption="mainMsg://actions.Cancel" description="Esc"/>
+    </actions>
+    <dialogMode height="600" width="800"/>
+    <layout>
+        <split id="split" height="100%" orientation="horizontal" reversePosition="true" width="100%">
+            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
+                <filter id="filter" applyTo="table" dataLoader="preferencesesDl">
+                    <properties include=".*"/>
+                </filter>
+                <groupTable id="table"
+                            width="100%"
+                            dataContainer="preferencesesDc"
+                            multiselect="true">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit"/>
+                        <action id="remove" type="remove"/>
+                    </actions>
+                    <columns>
+                        <column id="user"/>
+                        <column id="screenOrientation"/>
+                        <column id="task"/>
+                    </columns>
+                    <rowsCount/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="createBtn" action="table.create"/>
+                        <button id="editBtn" action="table.edit"/>
+                        <button id="removeBtn" action="table.remove"/>
+                    </buttonsPanel>
+                </groupTable>
+                <hbox id="lookupActions" spacing="true" visible="false">
+                    <button action="lookupSelectAction"/>
+                    <button action="lookupCancelAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="editBox" height="100%" margin="false,false,false,true" expand="fieldGroupBox" spacing="true">
+                <scrollBox id="fieldGroupBox">
+                    <form id="form" dataContainer="preferencesDc">
+                        <column width="350px">
+                            <lookupPickerField id="userField" optionsContainer="usersDc" property="user"/>
+                            <textField id="screenOrientationField" property="screenOrientation"/>
+                            <textField id="taskField" property="task"/>
+                        </column>
+                    </form>
+                </scrollBox>
+                <hbox id="actionsPane" spacing="true" visible="false">
+                    <button id="saveBtn" action="save"/>
+                    <button id="cancelBtn" action="cancel"/>
+                </hbox>
+            </vbox>
+        </split>
+    </layout>
+</window>

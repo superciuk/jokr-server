@@ -62,6 +62,7 @@
                     <columns>
                         <column id="name"/>
                         <column id="visible"/>
+                        <column id="isBeverage"/>
                         <column id="sortOrder"/>
                     </columns>
                     <rows datasource="productItemCategoriesDs"/>
@@ -93,6 +94,7 @@
                         <column width="100%">
                             <field property="name"/>
                             <field property="sortOrder"/>
+                            <field property="isBeverage"/>
                             <field property="visible"/>
                         </column>
                     </fieldGroup>

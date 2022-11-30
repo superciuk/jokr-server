@@ -4,9 +4,12 @@
           insertBefore="administration">
         <item screen="jokerapp$ProductItemCategory.browse"/>
         <item screen="jokerapp$ProductModifier.browse"/>
-        <item screen="jokerapp$TableItem.browse"/>
         <item screen="jokerapp$ProductModifierCategory.browse"/>
         <item screen="jokerapp$ProductItem.browse"/>
         <item screen="jokerapp$Product Item Manager"/>
+        <item screen="jokerapp_Preferences.browse" caption="mainMsg://menu_config.jokerapp_Preferences.browse"/>
+        <item screen="jokerapp$TableItem.browse" caption="mainMsg://menu_config.jokerapp_TableItem.browse"/>
+        <item screen="jokerapp_TableItemArea.browse" caption="mainMsg://menu_config.jokerapp_TableItemArea.browse"/>
+        <item screen="jokerapp_User.browse" caption="mainMsg://menu_config.jokerapp_User.browse"/>
     </menu>
 </menu-config>

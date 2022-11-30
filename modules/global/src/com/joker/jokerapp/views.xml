@@ -7,7 +7,7 @@
           extends="_local"
           name="productItem-view">
         <property name="category"
-                  view="_minimal"/>
+                  view="_local"/>
         <property name="modifierCategories"
                   view="_minimal"/>
         <property name="image" view="_base" />
@@ -25,8 +25,7 @@
           extends="_local"
           name="order-view"
           systemProperties="true">
-        <property name="tickets"
-                  view="_minimal">
+        <property name="tickets" view="_minimal">
             <property name="ticketNumber"/>
             <property name="ticketStatus"/>
             <property name="subticketStatus"/>
@@ -47,6 +46,7 @@
                 <property name="hasModifier"/>
                 <property name="isModifier"/>
                 <property name="itemToModifyId"/>
+                <property name="isBeverage"/>
                 <property name="checked"/>
                 <property name="isReversed"/>
                 <property name="printerGroup"/>
@@ -59,6 +59,10 @@
             <property name="createdBy"/>
             <property name="updateTs"/>
             <property name="updatedBy"/>
+            <property name="user" view="_minimal">
+                <property name="username"/>
+                <property name="userType"/>
+            </property>
         </property>
     </view>
     <view class="com.joker.jokerapp.entity.OrderLine"
@@ -81,6 +85,7 @@
                 <property name="hasModifier"/>
                 <property name="isModifier"/>
                 <property name="itemToModifyId"/>
+                <property name="isBeverage"/>
                 <property name="checked"/>
                 <property name="isReversed"/>
                 <property name="printerGroup"/>
@@ -101,12 +106,19 @@
           systemProperties="true">
         <property name="seatsCapacity"/>
         <property name="tableStatus"/>
+        <property name="tableReservationName"/>
+        <property name="tableReservationSeats"/>
+        <property name="tableReservationTime"/>
+        <property name="tableReservationPhoneNumber"/>
         <property name="withServiceByDefault"/>
         <property name="tableCaption"/>
+        <property name="tableItemArea"/>
         <property name="checked"/>
         <property name="currentOrder" view="_minimal">
             <property name="actualSeats"/>
-            <property name="status"/>
+            <property name="currentStatus"/>
+            <property name="orderInProgress"/>
+            <property name="previousStatus"/>
             <property name="tableItemCaption"/>
             <property name="withService"/>
             <property name="discount"/>
@@ -137,18 +149,29 @@
                     <property name="isReversed"/>
                     <property name="checked"/>
                 </property>
+                <property name="user" view="user-view"/>
                 <property name="createTs"/>
                 <property name="createdBy"/>
                 <property name="updateTs"/>
                 <property name="updatedBy"/>
                 <property name="subticketStatus"/>
             </property>
+            <property name="user" view="user-view"/>
             <property name="createTs"/>
             <property name="createdBy"/>
             <property name="updateTs"/>
             <property name="updatedBy"/>
         </property>
+        <property name="lastOrder" view="_minimal">
+            <property name="updateTs"/>
+            <property name="currentStatus"/>
+            <property name="previousStatus"/>
+        </property>
     </view>
+    <view class="com.joker.jokerapp.entity.TableItemArea"
+          extends="_local"
+          name="tableItemArea-view"
+          entity="jokerapp$TableItemArea"/>
     <view class="com.joker.jokerapp.entity.Ticket"
           extends="_local"
           name="ticket-view"
@@ -161,6 +184,16 @@
             <property name="printerGroup"/>
         </property>
     </view>
+    <view class="com.joker.jokerapp.entity.Preferences"
+          extends="_local"
+          name="preferences-view"
+          entity="jokerapp_Preferences"/>
+    <view class="com.joker.jokerapp.entity.User"
+          extends="_local"
+          name="user-view"
+          entity="jokerapp_User">
+    </view>
+
 </views>
 
 

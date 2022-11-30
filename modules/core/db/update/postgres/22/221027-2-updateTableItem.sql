@@ -1,0 +1,4 @@
+alter table JOKERAPP_TABLE_ITEM add column TABLE_RESERVATION_NAME varchar(255) ;
+alter table JOKERAPP_TABLE_ITEM add column TABLE_RESERVATION_TIME varchar(255) ;
+alter table JOKERAPP_TABLE_ITEM add column TABLE_RESERVATION_SEATS varchar(255) ;
+alter table JOKERAPP_TABLE_ITEM add column TABLE_RESERVATION_PHONE_NUMBER varchar(255) ;

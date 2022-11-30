@@ -59,6 +59,9 @@ public class OrderLine extends StandardEntity {
     @Column(name = "ITEM_TO_MODIFY_ID")
     protected UUID itemToModifyId;
 
+    @Column(name = "IS_BEVERAGE")
+    protected Boolean isBeverage = false;
+
     @Column(name = "CHECKED")
     protected Boolean checked;
 
@@ -156,6 +159,10 @@ public class OrderLine extends StandardEntity {
     public Boolean getIsModifier() {
         return isModifier;
     }
+
+    public void setIsBeverage(Boolean isBeverage) { this.isBeverage = isBeverage; }
+
+    public Boolean getIsBeverage() { return isBeverage; }
 
     public void setPosition(Integer position) {
         this.position = position;

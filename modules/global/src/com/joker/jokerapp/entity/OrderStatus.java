@@ -7,7 +7,10 @@ import javax.annotation.Nullable;
 
 public enum OrderStatus implements EnumClass<String> {
 
-    open("open"),
+    empty("empty"),
+    onlyBeverage("onlyBeverage"),
+    onlyFood("onlyFood"),
+    foodAndBeverage("foodAndBeverage"),
     bill("bill"),
     paid("paid"),
     cancelled("cancelled"),

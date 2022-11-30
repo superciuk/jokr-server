@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 public enum PrinterGroup implements EnumClass<String> {
 
     Bar("Bar"),
+    UpBar("UpBar"),
     Fryer("Fryer"),
     Grill("Grill");
 

@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import javax.print.*;
-import javax.print.attribute.DocAttributeSet;
-import javax.print.attribute.HashDocAttributeSet;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.*;
 import javax.print.attribute.standard.MediaPrintableArea;
 import javax.print.attribute.standard.MediaSizeName;
 import java.awt.*;
@@ -36,14 +33,16 @@ public class PrinterServiceBean implements PrinterService {
         final PrinterGroup printerGroupToSendTicket;
         final boolean isGrillTicket;
         final boolean withFries;
+        final int printCopy;
 
-        public TicketPrinter(TableItem table, Ticket ticket, PrinterGroup printerGroup, boolean isGrillTicketParam, boolean withFriesParam) {
+        public TicketPrinter(TableItem table, Ticket ticket, PrinterGroup printerGroup, boolean isGrillTicketParam, boolean withFriesParam, int printCopyParam) {
 
             tableToPrint = table;
             ticketToPrint = ticket;
             printerGroupToSendTicket = printerGroup;
             isGrillTicket = isGrillTicketParam;
             withFries = withFriesParam;
+            printCopy = printCopyParam;
 
         }
 
@@ -66,6 +65,10 @@ public class PrinterServiceBean implements PrinterService {
                 graphics2D.setFont(font1);
                 graphics2D.drawString(printerGroupToSendTicket.toString().toUpperCase(), xMin + 70, y);
                 y += 30;
+                if (printCopy==2) {
+                    graphics2D.drawString("COPIA PER SIMONE", xMin, y);
+                    y += 30;
+                }
                 graphics2D.drawString("TAVOLO: ".concat(tableToPrint.getTableCaption()), xMin, y);
                 y += 30;
                 graphics2D.setFont(font3);
@@ -150,7 +153,7 @@ public class PrinterServiceBean implements PrinterService {
 
         public BillPrinter (TableItem table) {
 
-            tableToPrint=table;
+            tableToPrint = table;
 
         }
 
@@ -179,10 +182,10 @@ public class PrinterServiceBean implements PrinterService {
                 try {
 
                     //linux
-                    bufferedImage = ImageIO.read(new File("/home/pi/logo.jpg"));
+                    //bufferedImage = ImageIO.read(new File("/home/pi/logo.jpg"));
 
                     //windows
-                    //bufferedImage = ImageIO.read(new File("c:\\logo.jpg"));
+                    bufferedImage = ImageIO.read(new File("c:\\logo.jpg"));
 
                 } catch (Exception e) {
                     log.error("Error", e);
@@ -319,12 +322,17 @@ public class PrinterServiceBean implements PrinterService {
 
         PrinterGroup printerGroupToSendTicket;
 
+        int copiesToPrint=0;
         boolean withFries = false;
         boolean isGrillTicket = false;
+        Integer printerIndex=null;
 
         for (PrinterGroup printerGroup: PrinterGroup.values()) {
 
             printerGroupToSendTicket = printerGroup;
+            if (printerGroupToSendTicket.equals(PrinterGroup.Bar)) {printerIndex=0; copiesToPrint=2;}
+            if (printerGroupToSendTicket.equals(PrinterGroup.Fryer) || printerGroupToSendTicket.equals(PrinterGroup.Grill)) {printerIndex=1; copiesToPrint=1;}
+            if (printerGroupToSendTicket.equals(PrinterGroup.UpBar)) {printerIndex=2; copiesToPrint=2;}
 
             boolean printerGroupLinesExixts = false;
 
@@ -340,9 +348,9 @@ public class PrinterServiceBean implements PrinterService {
 
                 PrintService[] printServices = PrintServiceLookup.lookupPrintServices(flavor, null);
 
-                if (printServices[0] != null) {
+                if (printServices[printerIndex] != null) {
 
-                    MediaPrintableArea mpa = new MediaPrintableArea(1, 1, 74, 2000, MediaPrintableArea.MM);
+                    MediaPrintableArea mpa = new MediaPrintableArea(1, 1, 74, 20000, MediaPrintableArea.MM);
 
                     PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
                     printRequestAttributeSet.add(MediaSizeName.ISO_A0);
@@ -353,18 +361,21 @@ public class PrinterServiceBean implements PrinterService {
 
                     docAttributeSet.add(mpa);
 
-                    PrinterServiceBean.TicketPrinter ticketPrinter = new TicketPrinter(tableToPrint, ticketToPrint, printerGroupToSendTicket, isGrillTicket, withFries);
+                    for (int index=1; index<=copiesToPrint; index++) {
 
-                    DocPrintJob docPrintJob = printServices[0].createPrintJob();
-                    SimpleDoc doc1 = new SimpleDoc(ticketPrinter, flavor, docAttributeSet);
+                        PrinterServiceBean.TicketPrinter ticketPrinter = new TicketPrinter(tableToPrint, ticketToPrint, printerGroupToSendTicket, isGrillTicket, withFries, index);
 
-                    try {
+                        DocPrintJob docPrintJob = printServices[printerIndex].createPrintJob();
+                        SimpleDoc doc1 = new SimpleDoc(ticketPrinter, flavor, docAttributeSet);
 
-                        docPrintJob.print(doc1, printRequestAttributeSet);
+                        try {
+                            docPrintJob.print(doc1, printRequestAttributeSet);
+                        }
+                        catch (PrintException e) {
 
-                    } catch (PrintException e) {
+                            log.error("Error", e);
 
-                        log.error("Error", e);
+                        }
 
                     }
 

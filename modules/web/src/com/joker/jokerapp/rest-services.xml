@@ -4,12 +4,19 @@
     <service name="jokerapp_OrderService">
         <method name="checkConnection">
         </method>
+        <method name="userLogin">
+            <param name="username"/>
+            <param name="userPassword"/>
+        </method>
         <method name="createNewOrder">
             <param name="tableId"/>
             <param name="actualSeats"/>
+            <param name="userId"/>
+            <param name="orderInProgress"/>
         </method>
         <method name="addToOrder">
             <param name="orderId"/>
+            <param name="userId"/>
             <param name="productItemId"/>
             <param name="isModifier"/>
             <param name="selectedOrderLineId"/>
@@ -20,6 +27,7 @@
         </method>
         <method name="plusButtonPressed">
             <param name="orderId"/>
+            <param name="userId"/>
             <param name="orderLineId"/>
         </method>
         <method name="minusButtonPressed">
@@ -30,6 +38,10 @@
             <param name="orderId"/>
             <param name="orderLineId"/>
         </method>
+        <method name="splitLineButtonPressed">
+            <param name="orderId"/>
+            <param name="orderLineId"/>
+        </method>
         <method name="priceButtonPressed">
             <param name="orderId"/>
             <param name="orderLineId"/>
@@ -37,6 +49,7 @@
         </method>
         <method name="sendOrder">
             <param name="tableItemId"/>
+            <param name="sendAndClose"/>
             <param name="printTicket"/>
         </method>
         <method name="removeEmptyTickets">
@@ -50,6 +63,31 @@
         </method>
         <method name="reopenTable">
             <param name="tableItemId"/>
+            <param name="whichOrder"/>
+        </method>
+        <method name="tableReservation">
+            <param name="tableItemId"/>
+            <param name="operation"/>
+            <param name="tableItemReservationName"/>
+            <param name="tableItemReservationSeats"/>
+            <param name="tableItemReservationTime"/>
+            <param name="tableItemReservationPhoneNumber"/>
+        </method>
+        <method name="setActualSeats">
+            <param name="orderId"/>
+            <param name="newActualSeats"/>
+        </method>
+        <method name="setWithService">
+            <param name="orderId"/>
+            <param name="trueOrFalse"/>
+        </method>
+        <method name="moveTable">
+            <param name="tableItemToMoveId"/>
+            <param name="newTableItemId"/>
+        </method>
+        <method name="setOrderInProgress">
+            <param name="orderId"/>
+            <param name="trueOrFalse"/>
         </method>
     </service>
 

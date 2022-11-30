@@ -9,8 +9,8 @@ public enum TableItemStatus implements EnumClass<String> {
 
     free("free"),
     reserved("reserved"),
-    open("open"),
-    closed("closed");
+    busy("busy"),
+    busyAndReserved("busyAndReserved");
 
     private String id;
 

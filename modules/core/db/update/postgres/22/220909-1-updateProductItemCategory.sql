@@ -1,0 +1,2 @@
+alter table JOKERAPP_PRODUCT_ITEM_CATEGORY add column IS_BEVERAGE boolean ^
+update JOKERAPP_PRODUCT_ITEM_CATEGORY set IS_BEVERAGE = false where IS_BEVERAGE is null ;

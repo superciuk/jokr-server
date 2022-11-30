@@ -1,16 +1,14 @@
 package com.joker.jokerapp.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
 import java.util.List;
-import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
+import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
 import com.haulmont.cuba.core.global.DeletePolicy;
 
 @NamePattern("%s|id")
@@ -24,8 +22,14 @@ public class Order extends StandardEntity {
     protected Integer actualSeats;
 
     @NotNull
-    @Column(name = "STATUS", nullable = false)
-    protected String status;
+    @Column(name = "CURRENT_STATUS", nullable = false)
+    protected String currentStatus;
+
+    @Column(name = "PREVIOUS_STATUS")
+    protected String previousStatus;
+
+    @Column(name = "ORDER_IN_PROGRESS")
+    protected Boolean orderInProgress;
 
     @Column(name = "TABLE_ITEM_CAPTION")
     protected String tableItemCaption;
@@ -47,6 +51,13 @@ public class Order extends StandardEntity {
     @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "order")
     protected List<Ticket> tickets;
+
+    @NotNull
+    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @OnDelete(DeletePolicy.UNLINK)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "USER_ID")
+    protected User user;
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
@@ -104,13 +115,35 @@ public class Order extends StandardEntity {
         return discount;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status == null ? null : status.getId();
+    public void setCurrentStatus(OrderStatus currentStatus) {
+        this.currentStatus = currentStatus == null ? null : currentStatus.getId();
     }
 
-    public OrderStatus getStatus() {
-        return status == null ? null : OrderStatus.fromId(status);
+    public OrderStatus getCurrentStatus() {
+        return currentStatus == null ? null : OrderStatus.fromId(currentStatus);
     }
 
-
+    public void setPreviousStatus(OrderStatus previousStatus) {
+        this.previousStatus = previousStatus == null ? null : previousStatus.getId();
     }
+
+    public OrderStatus getPreviousStatus() {
+        return previousStatus == null ? null : OrderStatus.fromId(previousStatus);
+    }
+
+    public Boolean getOrderInProgress() {
+        return orderInProgress;
+    }
+
+    public void setOrderInProgress(Boolean orderInProgress) {
+        this.orderInProgress = orderInProgress;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+}
