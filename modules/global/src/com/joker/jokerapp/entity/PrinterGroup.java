@@ -10,7 +10,8 @@ public enum PrinterGroup implements EnumClass<String> {
     Bar("Bar"),
     UpBar("UpBar"),
     Fryer("Fryer"),
-    Grill("Grill");
+    Grill("Grill"),
+    Pizza("Pizza");
 
     private String id;
 

@@ -1,1 +1,0 @@
-alter table JOKERAPP_TABLE_ITEM add constraint FK_JOKERAPP_TABLE_ITEM_LAST_ORDER foreign key (LAST_ORDER_ID) references JOKERAPP_ORDER(ID);

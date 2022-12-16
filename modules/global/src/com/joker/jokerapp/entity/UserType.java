@@ -7,8 +7,10 @@ import javax.annotation.Nullable;
 
 public enum UserType implements EnumClass<String> {
 
+    chief("chief"),
     waiter("waiter"),
-    chief("chief");
+    barman("barman"),
+    chef("chef");
 
     private String id;
 

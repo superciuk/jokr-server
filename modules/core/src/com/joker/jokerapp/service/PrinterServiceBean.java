@@ -25,6 +25,9 @@ import java.util.Comparator;
 public class PrinterServiceBean implements PrinterService {
 
     protected static final Logger log = org.slf4j.LoggerFactory.getLogger(PrinterServiceBean.class);
+    protected static final String barPrinter = "bar";
+    protected static final String kitchenPrinter = "kitchen";
+    protected static final String upBarPrinter = "upbar";
 
     static class TicketPrinter implements Printable {
 
@@ -34,8 +37,9 @@ public class PrinterServiceBean implements PrinterService {
         final boolean isGrillTicket;
         final boolean withFries;
         final int printCopy;
+        final boolean reprint;
 
-        public TicketPrinter(TableItem table, Ticket ticket, PrinterGroup printerGroup, boolean isGrillTicketParam, boolean withFriesParam, int printCopyParam) {
+        public TicketPrinter(TableItem table, Ticket ticket, PrinterGroup printerGroup, boolean isGrillTicketParam, boolean withFriesParam, int printCopyParam, boolean reprintParam) {
 
             tableToPrint = table;
             ticketToPrint = ticket;
@@ -43,6 +47,7 @@ public class PrinterServiceBean implements PrinterService {
             isGrillTicket = isGrillTicketParam;
             withFries = withFriesParam;
             printCopy = printCopyParam;
+            reprint = reprintParam;
 
         }
 
@@ -65,11 +70,25 @@ public class PrinterServiceBean implements PrinterService {
                 graphics2D.setFont(font1);
                 graphics2D.drawString(printerGroupToSendTicket.toString().toUpperCase(), xMin + 70, y);
                 y += 30;
-                if (printCopy==2) {
-                    graphics2D.drawString("COPIA PER SIMONE", xMin, y);
+
+                if (reprint) {
+
+                    String stringToDraw = "RISTAMPA";
+
+                    AttributedString attributedString = new AttributedString(stringToDraw);
+                    attributedString.addAttribute(TextAttribute.SIZE, font2.getSize());
+                    attributedString.addAttribute(TextAttribute.FOREGROUND , Color.WHITE);
+                    attributedString.addAttribute(TextAttribute.BACKGROUND , Color.BLACK);
+                    graphics2D.drawString(attributedString.getIterator(), xMin + 70, y);
+
                     y += 30;
                 }
-                graphics2D.drawString("TAVOLO: ".concat(tableToPrint.getTableCaption()), xMin, y);
+
+                /*if (printCopy==2) {
+                    graphics2D.drawString("COPIA PER SIMONE", xMin, y);
+                    y += 30;
+                }*/
+                graphics2D.drawString("TAVOLO: ".concat(tableToPrint.getCurrentOrder().getTableItemCaption()), xMin, y);
                 y += 30;
                 graphics2D.setFont(font3);
                 graphics2D.drawString("Coperti: ".concat(tableToPrint.getCurrentOrder().getActualSeats().toString()), xMin, y);
@@ -77,6 +96,8 @@ public class PrinterServiceBean implements PrinterService {
                 java.util.Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 graphics2D.drawString("Time: ".concat(sdf.format(cal.getTime())), xMin, y);
+                y += 20;
+                graphics2D.drawString("Ordine Di: ".concat(ticketToPrint.getUser().getUsername()), xMin, y);
                 y += 30;
 
                 if (isGrillTicket && !withFries) {
@@ -90,9 +111,9 @@ public class PrinterServiceBean implements PrinterService {
 
                 ticketToPrint.getOrderLines().sort(Comparator.comparing(OrderLine::getPosition));
 
-                for (OrderLine line : ticketToPrint.getOrderLines()) {
+                for (OrderLine line: ticketToPrint.getOrderLines()) {
 
-                    if (line.getPrinterGroup().equals(printerGroupToSendTicket) && (line.getTicket().getTicketStatus().equals(TicketStatus.notSended))) {
+                    if (line.getPrinterGroup().equals(printerGroupToSendTicket)) {
 
                         if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
@@ -182,10 +203,10 @@ public class PrinterServiceBean implements PrinterService {
                 try {
 
                     //linux
-                    //bufferedImage = ImageIO.read(new File("/home/pi/logo.jpg"));
+                    bufferedImage = ImageIO.read(new File("/home/tomacelli/logo.jpg"));
 
                     //windows
-                    bufferedImage = ImageIO.read(new File("c:\\logo.jpg"));
+                    //bufferedImage = ImageIO.read(new File("c:\\logo.jpg"));
 
                 } catch (Exception e) {
                     log.error("Error", e);
@@ -202,11 +223,11 @@ public class PrinterServiceBean implements PrinterService {
 
                 y = y + 2 * yInc2;
 
-                for (Ticket ticket : tableToPrint.getCurrentOrder().getTickets()) {
+                for (Ticket ticket: tableToPrint.getCurrentOrder().getTickets()) {
 
                     ticket.getOrderLines().sort(Comparator.comparing(OrderLine::getPosition));
 
-                    for (OrderLine line : ticket.getOrderLines()) {
+                    for (OrderLine line: ticket.getOrderLines()) {
 
                             if (!line.getIsModifier()) graphics2D.drawString(line.getQuantity().toString(), xMin, y);
 
@@ -263,16 +284,25 @@ public class PrinterServiceBean implements PrinterService {
 
                             }
 
-                            String stringToDraw = line.getItemName().substring(currentSpacePosition);
-                            AttributedString attributedString = new AttributedString(stringToDraw);
-                            attributedString.addAttribute(TextAttribute.SIZE, font2.getSize());
-                            if (line.getIsReversed()) attributedString.addAttribute(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-                            graphics2D.drawString(attributedString.getIterator(), xMin + font2.getSize(), y);
+                            String stringToDraw1 = line.getItemName().substring(currentSpacePosition);
+
+                            AttributedString attributedString1 = new AttributedString(stringToDraw1);
+                            attributedString1.addAttribute(TextAttribute.SIZE, font2.getSize());
+
+                            if (line.getIsReversed()) attributedString1.addAttribute(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                            graphics2D.drawString(attributedString1.getIterator(), xMin + font2.getSize(), y);
 
                             if (currentSpacePosition == 0 && !line.getIsModifier()) {
 
                                 x = paperWidth - Math.multiplyExact(line.getPrice().toString().length(), font2.getSize() - 3);
-                                graphics2D.drawString(line.getPrice().toString(), x, y);
+
+                                String stringToDraw2 = line.getPrice().toString();
+
+                                AttributedString attributedString2 = new AttributedString(stringToDraw2);
+                                attributedString2.addAttribute(TextAttribute.SIZE, font2.getSize());
+
+                                if (line.getIsReversed()) attributedString2.addAttribute(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+                                graphics2D.drawString(attributedString2.getIterator(), x, y);
 
                             }
 
@@ -318,21 +348,22 @@ public class PrinterServiceBean implements PrinterService {
     }
 
     @Override
-    public void printTicket(TableItem tableToPrint, Ticket ticketToPrint) {
+    public void printTicket(TableItem tableToPrint, Ticket ticketToPrint, boolean reprint) {
 
         PrinterGroup printerGroupToSendTicket;
 
-        int copiesToPrint=0;
+        int copiesToPrint = 0;
         boolean withFries = false;
         boolean isGrillTicket = false;
-        Integer printerIndex=null;
+        String printerToSend = null;
+
 
         for (PrinterGroup printerGroup: PrinterGroup.values()) {
 
             printerGroupToSendTicket = printerGroup;
-            if (printerGroupToSendTicket.equals(PrinterGroup.Bar)) {printerIndex=0; copiesToPrint=2;}
-            if (printerGroupToSendTicket.equals(PrinterGroup.Fryer) || printerGroupToSendTicket.equals(PrinterGroup.Grill)) {printerIndex=1; copiesToPrint=1;}
-            if (printerGroupToSendTicket.equals(PrinterGroup.UpBar)) {printerIndex=2; copiesToPrint=2;}
+            if (printerGroupToSendTicket.equals(PrinterGroup.Bar)) {printerToSend=barPrinter; copiesToPrint=2;}
+            if (printerGroupToSendTicket.equals(PrinterGroup.Fryer) || printerGroupToSendTicket.equals(PrinterGroup.Grill)) {printerToSend=kitchenPrinter; copiesToPrint=1;}
+            if (printerGroupToSendTicket.equals(PrinterGroup.UpBar)) {printerToSend=upBarPrinter; copiesToPrint=2;}
 
             boolean printerGroupLinesExixts = false;
 
@@ -345,10 +376,14 @@ public class PrinterServiceBean implements PrinterService {
             if (printerGroupLinesExixts) {
 
                 DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
+                Integer printerIndex = null;
+                PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null,null) ;
 
-                PrintService[] printServices = PrintServiceLookup.lookupPrintServices(flavor, null);
-
-                if (printServices[printerIndex] != null) {
+                if (printServices.length != 0) {
+                    for (int i=0; i<printServices.length; i++)
+                        if (printServices[i].getName().equals(printerToSend))
+                            printerIndex=i;
+                    if (printerIndex == null) printerIndex=0;
 
                     MediaPrintableArea mpa = new MediaPrintableArea(1, 1, 74, 20000, MediaPrintableArea.MM);
 
@@ -363,7 +398,7 @@ public class PrinterServiceBean implements PrinterService {
 
                     for (int index=1; index<=copiesToPrint; index++) {
 
-                        PrinterServiceBean.TicketPrinter ticketPrinter = new TicketPrinter(tableToPrint, ticketToPrint, printerGroupToSendTicket, isGrillTicket, withFries, index);
+                        PrinterServiceBean.TicketPrinter ticketPrinter = new TicketPrinter(tableToPrint, ticketToPrint, printerGroupToSendTicket, isGrillTicket, withFries, index, reprint);
 
                         DocPrintJob docPrintJob = printServices[printerIndex].createPrintJob();
                         SimpleDoc doc1 = new SimpleDoc(ticketPrinter, flavor, docAttributeSet);
@@ -372,28 +407,29 @@ public class PrinterServiceBean implements PrinterService {
                             docPrintJob.print(doc1, printRequestAttributeSet);
                         }
                         catch (PrintException e) {
-
                             log.error("Error", e);
-
                         }
-
                     }
-
                 }
-
             }
-
         }
     }
 
     @Override
     public boolean printBill(TableItem tableToPrint) {
 
+        String printerToSend = barPrinter;
+        Integer printerIndex = null;
+
         DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
 
-        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(flavor, null);
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
 
-        if (printServices[0] != null) {
+        if (printServices.length != 0) {
+            for (int i=0; i<printServices.length; i++)
+                if (printServices[i].getName().equals(printerToSend))
+                    printerIndex=i;
+            if (printerIndex == null) printerIndex=0;
 
             MediaPrintableArea mpa = new MediaPrintableArea(1, 1, 74, 2000, MediaPrintableArea.MM);
 
@@ -408,7 +444,7 @@ public class PrinterServiceBean implements PrinterService {
 
             PrinterServiceBean.BillPrinter bill = new PrinterServiceBean.BillPrinter(tableToPrint);
 
-            DocPrintJob docPrintJob = printServices[0].createPrintJob();
+            DocPrintJob docPrintJob = printServices[printerIndex].createPrintJob();
             SimpleDoc doc1 = new SimpleDoc(bill, flavor, docAttributeSet);
 
             try {
@@ -421,11 +457,7 @@ public class PrinterServiceBean implements PrinterService {
                 return false;
 
             }
-
         }
-
         return true;
-
     }
-
 }

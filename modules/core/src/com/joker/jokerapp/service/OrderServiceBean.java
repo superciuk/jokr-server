@@ -53,12 +53,12 @@ public class OrderServiceBean implements OrderService {
         tableItem.getCurrentOrder().setUser(dataManager.load(User.class).id(UUID.fromString(userId)).one());
         tableItem.getCurrentOrder().setCharge(BigDecimal.ZERO);
         tableItem.getCurrentOrder().setTaxes(BigDecimal.ZERO);
+        tableItem.getCurrentOrder().setNextTicketNumber(1);
         tableItem.getCurrentOrder().setWithService(tableItem.getWithServiceByDefault());
         if (tableItem.getTableStatus().equals(TableItemStatus.reserved)) tableItem.setTableStatus(TableItemStatus.busyAndReserved);
         else tableItem.setTableStatus(TableItemStatus.busy);
 
-        if (orderInProgress.equals("true")) tableItem.getCurrentOrder().setOrderInProgress(true);
-            else tableItem.getCurrentOrder().setOrderInProgress(false);
+        tableItem.getCurrentOrder().setOrderInProgress(orderInProgress.equals("true"));
 
         dataManager.commit(tableItem);
         return tableItem.getCurrentOrder().getId().toString();
@@ -153,12 +153,12 @@ public class OrderServiceBean implements OrderService {
                 currentTicket.setOrder(order);
                 currentTicket.setUser(dataManager.load(User.class).id(UUID.fromString(userId)).one());
                 currentTicket.setTicketStatus(TicketStatus.notSended);
-                if (order.getTickets() != null) currentTicket.setTicketNumber(order.getTickets().size() + 1);
-                else currentTicket.setTicketNumber(1);
+                currentTicket.setTicketNumber(order.getNextTicketNumber());
                 currentTicket.setSubticketStatus("bn-fn-gn");
                 currentTicket.setOrderLines(new ArrayList<>());
                 if (order.getTickets() == null) order.setTickets(new ArrayList<>());
                 order.getTickets().add(currentTicket);
+                order.setNextTicketNumber(order.getNextTicketNumber()+1);
 
             } else {
 
@@ -248,7 +248,7 @@ public class OrderServiceBean implements OrderService {
                 String plusOrMinus= "";
 
                 for (OrderLine line: selectedOrderLine.getTicket().getOrderLines())
-                    if (line.getItemToModifyId()!=null && line.getItemToModifyId().toString().equals(selectedOrderLineId)) {
+                    if (line.getItemToModifyId()!=null && line.getItemToModifyId().equals(selectedOrderLine.getId())) {
                         if (line.getItemName().startsWith(" + ")) plusOrMinus = "plus"; else if(line.getItemName().startsWith(" - ")) plusOrMinus = "minus";
                         if (line.getItemId() != null) addToOrder(orderId, userId, line.getItemId().toString(), "true", addedOrderLineId, plusOrMinus, "", "", "false");
                         else addToOrder(orderId, userId, "", "true", addedOrderLineId, plusOrMinus, line.getItemName(), line.getUnitPrice().toString(), "false");
@@ -288,22 +288,18 @@ public class OrderServiceBean implements OrderService {
     @Override
     public boolean minusButtonPressed(String orderId, String selectedOrderLineId) {
 
-        Ticket currentTicket = null;
-
         CommitContext commitContext= new CommitContext();
 
         Order order = dataManager.load(Order.class).id(UUID.fromString(orderId)).view("order-view").one();
         OrderLine selectedOrderLine = dataManager.load(OrderLine.class).id(UUID.fromString(selectedOrderLineId)).view("order-line-view").one();
 
-        if (selectedOrderLine.getIsModifier()) {
+        Ticket currentTicket = selectedOrderLine.getTicket();
 
-            OrderLine selectedOrderLineParent = null;
+        if (selectedOrderLine.getIsModifier()) {
 
             boolean hasMoreModifiers = false;
 
-            for (OrderLine line: currentTicket.getOrderLines()) {
-                if (line.getId().equals(selectedOrderLine.getItemToModifyId())) {selectedOrderLineParent = line; break;}
-            }
+            OrderLine selectedOrderLineParent = dataManager.load(OrderLine.class).id(selectedOrderLine.getItemToModifyId()).view("order-line-view").one();
 
             order.setCharge(order.getCharge().setScale(1, RoundingMode.HALF_DOWN).subtract(selectedOrderLine.getPrice().multiply(BigDecimal.valueOf(selectedOrderLineParent.getQuantity()))));
             setOrderTaxes(order);
@@ -361,14 +357,14 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
-    public boolean quantityButtonPressed(String orderId, String selectedOrderLineId) {
+    public boolean quantityButtonPressed(String orderId, String selectedOrderLineId, String operation) {
 
         CommitContext commitContext= new CommitContext();
 
         Order order = dataManager.load(Order.class).id(UUID.fromString(orderId)).view("order-view").one();
         OrderLine selectedOrderLine = dataManager.load(OrderLine.class).id(UUID.fromString(selectedOrderLineId)).view("order-line-view").one();
 
-        if (selectedOrderLine.getTicket().getTicketStatus().equals(TicketStatus.notSended)) {
+        if (operation.equals("remove") || selectedOrderLine.getTicket().getTicketStatus().equals(TicketStatus.notSended)) {
 
             if (selectedOrderLine.getHasModifier()) for (OrderLine line: selectedOrderLine.getTicket().getOrderLines())
                 if (line.getItemToModifyId() != null && (line.getItemToModifyId()).equals(selectedOrderLine.getId())) commitContext.addInstanceToRemove(line);
@@ -431,7 +427,7 @@ public class OrderServiceBean implements OrderService {
         newLine.setItemName(selectedOrderLine.getItemName());
         newLine.setItemId(selectedOrderLine.getItemId());
         newLine.setUnitPrice(selectedOrderLine.getUnitPrice());
-        newLine.setPrice(selectedOrderLine.getUnitPrice());
+        newLine.setPrice(selectedOrderLine.getPrice().divide(BigDecimal.valueOf(selectedOrderLine.getQuantity()), RoundingMode.HALF_DOWN));
         newLine.setTaxes(selectedOrderLine.getTaxes());
 
         int addToPosition = 10;
@@ -448,11 +444,38 @@ public class OrderServiceBean implements OrderService {
         newLine.setPrinterGroup(selectedOrderLine.getPrinterGroup());
         newLine.setIsBeverage(selectedOrderLine.getIsBeverage());
 
-        selectedOrderLine.setPrice(selectedOrderLine.getPrice().subtract(selectedOrderLine.getUnitPrice()));
+        selectedOrderLine.setPrice(selectedOrderLine.getPrice().subtract(selectedOrderLine.getPrice().divide(BigDecimal.valueOf(selectedOrderLine.getQuantity()), RoundingMode.HALF_DOWN)));
         selectedOrderLine.setQuantity(selectedOrderLine.getQuantity()-1);
 
         commitContext.addInstanceToCommit(selectedOrderLine);
         commitContext.addInstanceToCommit(newLine);
+
+        if (selectedOrderLine.getHasModifier())
+
+            for (OrderLine line: selectedOrderLine.getTicket().getOrderLines())
+
+                if (line.getItemToModifyId()!=null && line.getItemToModifyId().equals(selectedOrderLine.getId())) {
+
+                    OrderLine newModifierLine = metadata.create(OrderLine.class);
+                    newModifierLine.setQuantity(1);
+                    newModifierLine.setTicket(line.getTicket());
+                    newModifierLine.setItemName(line.getItemName());
+                    newModifierLine.setItemId(line.getItemId());
+                    newModifierLine.setUnitPrice(line.getUnitPrice());
+                    newModifierLine.setPrice(line.getUnitPrice());
+                    newModifierLine.setTaxes(line.getTaxes());
+                    newModifierLine.setPosition(line.getPosition()+addToPosition);
+                    newModifierLine.setHasModifier(line.getHasModifier());
+                    newModifierLine.setIsModifier(line.getIsModifier());
+                    newModifierLine.setItemToModifyId(newLine.getId());
+                    newModifierLine.setChecked(false);
+                    newModifierLine.setIsReversed(line.getIsReversed());
+                    newModifierLine.setPrinterGroup(line.getPrinterGroup());
+                    newModifierLine.setIsBeverage(line.getIsBeverage());
+
+                    commitContext.addInstanceToCommit(newModifierLine);
+                }
+
         dataManager.commit(commitContext);
 
         return true;
@@ -479,31 +502,38 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
-    public boolean sendOrder(String tableItemId, String sendAndClose, String printTicket) {
+    public boolean sendOrder(String tableItemId, String ticketId, String sendAndClose, String printTicket) {
 
         TableItem tableItem = dataManager.load(TableItem.class).id(UUID.fromString(tableItemId)).view("tableItem-view").one();
 
-        Ticket currentTicket=null;
+        if (!ticketId.equals("") && printTicket.equals("true")) {
+            Ticket ticketToPrint = dataManager.load(Ticket.class).id(UUID.fromString(ticketId)).view("ticket-view").one();
+            printerService.printTicket(tableItem, ticketToPrint, true);
+        } else {
 
-        Order order = tableItem.getCurrentOrder();
+            Ticket currentTicket=null;
 
-        removeEmptyTickets(order.getId().toString());
+            Order order = tableItem.getCurrentOrder();
 
-        if (order.getTickets() != null)
-            for (Ticket ticket: order.getTickets())
-                if (ticket.getTicketStatus().equals(TicketStatus.notSended)) {currentTicket = ticket; break;}
+            removeEmptyTickets(order.getId().toString());
 
-        if (currentTicket != null) {
-            if (printTicket.equals("true")) printerService.printTicket(tableItem, currentTicket);
-            currentTicket.setTicketStatus(TicketStatus.sended);
+            if (order.getTickets() != null)
+                for (Ticket ticket: order.getTickets())
+                    if (ticket.getTicketStatus().equals(TicketStatus.notSended)) {currentTicket = ticket; break;}
 
-            dataManager.commit(currentTicket);
+            if (currentTicket != null) {
+                if (printTicket.equals("true")) printerService.printTicket(tableItem, currentTicket, false);
+                currentTicket.setTicketStatus(TicketStatus.sended);
+
+                dataManager.commit(currentTicket);
+
+            }
+            order = dataManager.reload(order, "order-view");
+            if (sendAndClose.equals("true")) order.setOrderInProgress(false);
+
+            dataManager.commit(order);
 
         }
-        order = dataManager.reload(order, "order-view");
-        if (sendAndClose.equals("true")) order.setOrderInProgress(false);
-
-        dataManager.commit(order);
 
         return true;
     }
@@ -517,6 +547,7 @@ public class OrderServiceBean implements OrderService {
 
         for (Ticket ticket: currentOrder.getTickets()) if (ticket.getOrderLines().size() == 0) {
             commitContext.addInstanceToRemove(ticket);
+            if (ticket.getTicketStatus().equals(TicketStatus.notSended)) currentOrder.setNextTicketNumber(currentOrder.getNextTicketNumber()-1);
         }
 
         dataManager.commit(commitContext);
@@ -526,6 +557,7 @@ public class OrderServiceBean implements OrderService {
         if (currentOrder.getTickets().size() == 0 ) {
 
             currentOrder.setPreviousStatus(currentOrder.getCurrentStatus());
+            currentOrder.setNextTicketNumber(1);
             currentOrder.setCurrentStatus(OrderStatus.empty);
 
             dataManager.commit(currentOrder);
@@ -612,6 +644,18 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
+    public boolean renameTable(String orderId, String newTableCaption) {
+
+        Order order = dataManager.load(Order.class).id(UUID.fromString(orderId)).view("order-view").one();
+        order.setTableItemCaption(newTableCaption);
+
+        dataManager.commit(order);
+
+        return true;
+
+    }
+
+    @Override
     public boolean setActualSeats(String orderId, String newActualSeats) {
 
         Order order = dataManager.load(Order.class).id(UUID.fromString(orderId)).view("order-view").one();
@@ -652,6 +696,7 @@ public class OrderServiceBean implements OrderService {
         dataManager.commit(tableItemToMove);
 
         currentOrder.setWithService(newTableItem.getWithServiceByDefault());
+        if (currentOrder.getTableItemCaption().equals(tableItemToMove.getTableCaption())) currentOrder.setTableItemCaption(newTableItem.getTableCaption());
 
         setOrderTaxes(currentOrder);
 
@@ -694,6 +739,24 @@ public class OrderServiceBean implements OrderService {
 
         if (trueOrFalse.equals("true")) order.setOrderInProgress(true);
         else order.setOrderInProgress(false);
+
+        dataManager.commit(order);
+
+        return true;
+
+    }
+
+    @Override
+    public boolean setWaiterCall (String orderId, String userId) {
+
+        Order order = dataManager.load(Order.class).id(UUID.fromString(orderId)).view("order-view").one();
+
+        if (order.getWaiterCallUser()==null) {
+
+            User user = dataManager.load(User.class).id(UUID.fromString(userId)).view("user-view").one();
+            order.setWaiterCallUser(user);
+
+        } else order.setWaiterCallUser(null);
 
         dataManager.commit(order);
 

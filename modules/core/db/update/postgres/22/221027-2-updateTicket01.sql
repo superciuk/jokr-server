@@ -1,2 +1,0 @@
-alter table JOKERAPP_TICKET add constraint FK_JOKERAPP_TICKET_USER foreign key (USER_ID) references JOKERAPP_USER(ID);
-create index IDX_JOKERAPP_TICKET_USER on JOKERAPP_TICKET (USER_ID);

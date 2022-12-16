@@ -16,13 +16,13 @@ public interface OrderService {
 
     boolean minusButtonPressed(String orderId, String orderLineId);
 
-    boolean quantityButtonPressed(String orderId, String orderLineId);
+    boolean quantityButtonPressed(String orderId, String orderLineId, String operation);
 
     boolean splitLineButtonPressed(String orderId, String orderLineId);
 
     boolean priceButtonPressed(String orderId, String orderLineId, String price);
 
-    boolean sendOrder(String tableItemId, String SendAndClose, String printTicket);
+    boolean sendOrder(String tableItemId, String ticketId, String SendAndClose, String printTicket);
 
     boolean removeEmptyTickets(String tableItemId);
 
@@ -34,6 +34,8 @@ public interface OrderService {
 
     boolean tableReservation(String tableItemToReserveId, String operation, String tableReservationName, String tableReservationSeats, String tableReservationTime, String tableReservationPhoneNumber);
 
+    boolean renameTable(String orderId, String newTableName);
+
     boolean setActualSeats(String orderId, String newActualSeats);
 
     String setWithService(String orderId, String trueOrFalse);
@@ -41,5 +43,7 @@ public interface OrderService {
     boolean moveTable(String tableItemToMoveId, String newTableItemId);
 
     boolean setOrderInProgress(String orderId, String trueOrFalse);
+
+    boolean setWaiterCall(String orderId, String userId);
 
 }

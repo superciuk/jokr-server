@@ -7,7 +7,7 @@ public interface PrinterService {
 
     String NAME = "jokerapp_PrinterService";
 
-    void printTicket(TableItem tableToPrint, Ticket ticketToPrint);
+    void printTicket(TableItem tableToPrint, Ticket ticketToPrint, boolean reprint);
 
     boolean printBill(TableItem tableToPrint);
 

@@ -37,6 +37,7 @@
         <method name="quantityButtonPressed">
             <param name="orderId"/>
             <param name="orderLineId"/>
+            <param name="operation"/>
         </method>
         <method name="splitLineButtonPressed">
             <param name="orderId"/>
@@ -49,6 +50,7 @@
         </method>
         <method name="sendOrder">
             <param name="tableItemId"/>
+            <param name="ticketId"/>
             <param name="sendAndClose"/>
             <param name="printTicket"/>
         </method>
@@ -73,6 +75,10 @@
             <param name="tableItemReservationTime"/>
             <param name="tableItemReservationPhoneNumber"/>
         </method>
+        <method name="renameTable">
+            <param name="orderId"/>
+            <param name="newTableCaption"/>
+        </method>
         <method name="setActualSeats">
             <param name="orderId"/>
             <param name="newActualSeats"/>
@@ -88,6 +94,10 @@
         <method name="setOrderInProgress">
             <param name="orderId"/>
             <param name="trueOrFalse"/>
+        </method>
+        <method name="setWaiterCall">
+            <param name="orderId"/>
+            <param name="userId"/>
         </method>
     </service>
 

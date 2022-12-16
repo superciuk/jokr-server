@@ -2,6 +2,11 @@ package com.joker.jokerapp.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.xml.namespace.QName;
+
+import com.haulmont.cuba.core.config.defaults.Default;
+import com.haulmont.cuba.core.config.defaults.DefaultInt;
+import com.haulmont.cuba.core.config.defaults.DefaultInteger;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.chile.core.annotations.NamePattern;
 import java.util.List;
@@ -31,6 +36,12 @@ public class Order extends StandardEntity {
     @Column(name = "ORDER_IN_PROGRESS")
     protected Boolean orderInProgress;
 
+    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @OnDelete(DeletePolicy.UNLINK)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "WAITER_CALL_USER_ID")
+    protected User waiterCallUser;
+
     @Column(name = "TABLE_ITEM_CAPTION")
     protected String tableItemCaption;
 
@@ -46,6 +57,9 @@ public class Order extends StandardEntity {
 
     @Column(name = "TAXES")
     protected BigDecimal taxes;
+
+    @Column(name = "NEXT_TICKET_NUMBER")
+    protected Integer nextTicketNumber;
 
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
@@ -99,6 +113,10 @@ public class Order extends StandardEntity {
         return taxes;
     }
 
+    public Integer getNextTicketNumber() {return nextTicketNumber;}
+
+    public void setNextTicketNumber(Integer nextTicketNumber) {this.nextTicketNumber = nextTicketNumber;}
+
     public void setActualSeats(Integer actualSeats) {
         this.actualSeats = actualSeats;
     }
@@ -139,11 +157,11 @@ public class Order extends StandardEntity {
         this.orderInProgress = orderInProgress;
     }
 
-    public User getUser() {
-        return user;
-    }
+    public User getWaiterCallUser() { return waiterCallUser; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public void setWaiterCallUser(User waiterCallUser) { this.waiterCallUser = waiterCallUser; }
+
+    public User getUser() { return user; }
+
+    public void setUser(User user) { this.user = user; }
 }

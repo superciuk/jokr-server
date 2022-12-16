@@ -121,11 +121,13 @@ create table JOKERAPP_ORDER (
     CURRENT_STATUS varchar(50) not null,
     PREVIOUS_STATUS varchar(50),
     ORDER_IN_PROGRESS boolean,
+    WAITER_CALL_USER_ID uuid,
     TABLE_ITEM_CAPTION varchar(255),
     WITH_SERVICE boolean not null,
     DISCOUNT decimal(12, 2),
     CHARGE decimal(19, 2),
     TAXES decimal(19, 2),
+    NEXT_TICKET_NUMBER integer,
     USER_ID uuid not null,
     --
     primary key (ID)
@@ -239,6 +241,7 @@ create table JOKERAPP_USER (
     ENCRYPTED_USER_PASSWORD varchar(255) not null,
     USER_TYPE varchar(50) not null,
     USER_STATUS varchar(50) not null,
+    NOTIFICATION_TOKEN varchar(255),
     --
     primary key (ID)
 )^

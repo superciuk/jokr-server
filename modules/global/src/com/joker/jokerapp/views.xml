@@ -64,6 +64,7 @@
                 <property name="userType"/>
             </property>
         </property>
+        <property name="waiterCallUser" view="user-view"/>
     </view>
     <view class="com.joker.jokerapp.entity.OrderLine"
           extends="_local"
@@ -118,6 +119,7 @@
             <property name="actualSeats"/>
             <property name="currentStatus"/>
             <property name="orderInProgress"/>
+            <property name="waiterCallUser" view="user-view"/>
             <property name="previousStatus"/>
             <property name="tableItemCaption"/>
             <property name="withService"/>
@@ -177,12 +179,7 @@
           name="ticket-view"
           systemProperties="true">
         <property name="order" view="_minimal"/>
-        <property name="orderLines" view="_minimal">
-            <property name="checked"/>
-            <property name="isModifier"/>
-            <property name="isReversed"/>
-            <property name="printerGroup"/>
-        </property>
+        <property name="orderLines" view="order-line-view"/>
     </view>
     <view class="com.joker.jokerapp.entity.Preferences"
           extends="_local"

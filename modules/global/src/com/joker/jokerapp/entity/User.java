@@ -28,6 +28,9 @@ public class User extends StandardEntity {
     @Column(name = "USER_STATUS", nullable = false)
     protected String userStatus;
 
+    @Column(name = "NOTIFICATION_TOKEN")
+    protected String notificationToken;
+
     public String getUsername() {
         return username;
     }
@@ -51,4 +54,9 @@ public class User extends StandardEntity {
     public void setUserStatus(UserStatus userStatus) { this.userStatus = userStatus == null ? null : userStatus.getId(); }
 
     public UserStatus getUserStatus() { return userStatus == null ? null : UserStatus.fromId(userStatus); }
+
+    public String getNotificationToken() { return notificationToken; }
+
+    public void setNotificationToken(String notificationToken) { this.notificationToken = notificationToken; }
+
 }
