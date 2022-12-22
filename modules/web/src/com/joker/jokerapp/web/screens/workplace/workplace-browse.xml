@@ -1,43 +1,23 @@
 <window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
         xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
-        caption="msg://userBrowse.caption"
+        caption="msg://workplaceBrowse.caption"
         focusComponent="table"
-        messagesPack="com.joker.jokerapp.web.screens.user">
+        messagesPack="com.joker.jokerapp.web.screens.workplace">
     <data>
-        <collection id="usersDc"
-                    class="com.joker.jokerapp.entity.User">
-            <view extends="_local">
-                <property name="workplace" view="_local"/>
-            </view>
-            <loader id="usersDl">
+        <collection id="workplacesDc"
+                    class="com.joker.jokerapp.entity.Workplace">
+            <view extends="_local"/>
+            <loader id="workplacesDl">
                 <query>
-                    <![CDATA[select e from jokerapp_User e]]>
+                    <![CDATA[select e from jokerapp_Workplace e]]>
                 </query>
             </loader>
         </collection>
-        <instance id="userDc"
-                  class="com.joker.jokerapp.entity.User"
-                  view="user-view">
+        <instance id="workplaceDc"
+                  class="com.joker.jokerapp.entity.Workplace">
+            <view extends="_local"/>
             <loader/>
         </instance>
-        <collection id="workplacesDc"
-                    class="com.joker.jokerapp.entity.Workplace"
-                    view="_local">
-            <loader id="workplaceDl">
-                <query>
-                    <![CDATA[select e from jokerapp_Workplace e]]>
-                </query>
-            </loader>
-        </collection>
-        <collection id="workplacesDc2"
-                    class="com.joker.jokerapp.entity.Workplace"
-                    view="_local">
-            <loader id="workplaceDl2">
-                <query>
-                    <![CDATA[select e from jokerapp_Workplace e]]>
-                </query>
-            </loader>
-        </collection>
     </data>
     <actions>
         <action id="save" icon="icons/ok.png" caption="mainMsg://actions.Ok" shortcut="CTRL-ENTER"/>
@@ -47,12 +27,12 @@
     <layout>
         <split id="split" height="100%" orientation="horizontal" reversePosition="true" width="100%">
             <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
-                <filter id="filter" applyTo="table" dataLoader="usersDl">
+                <filter id="filter" applyTo="table" dataLoader="workplacesDl">
                     <properties include=".*"/>
                 </filter>
                 <groupTable id="table"
                             width="100%"
-                            dataContainer="usersDc"
+                            dataContainer="workplacesDc"
                             multiselect="true">
                     <actions>
                         <action id="create" type="create"/>
@@ -60,10 +40,7 @@
                         <action id="remove" type="remove"/>
                     </actions>
                     <columns>
-                        <column id="username"/>
-                        <column id="encryptedUserPassword"/>
-                        <column id="userType"/>
-                        <column id="workplace"/>
+                        <column id="name"/>
                     </columns>
                     <rowsCount/>
                     <buttonsPanel id="buttonsPanel"
@@ -80,14 +57,9 @@
             </vbox>
             <vbox id="editBox" height="100%" margin="false,false,false,true" expand="fieldGroupBox" spacing="true">
                 <scrollBox id="fieldGroupBox">
-                    <form id="form" dataContainer="userDc">
+                    <form id="form" dataContainer="workplaceDc">
                         <column width="350px">
-                            <textField id="usernameField" property="username"/>
-                            <textField id="encryptedUserPasswordField" property="encryptedUserPassword"/>
-                            <lookupField id="userTypeField" property="userType"/>
-                            <lookupField id="workplaceField" property="workplace" optionsContainer="workplacesDc"/>
-                            <optionsGroup id="workplacesAllowedToNotify" property="workplacesAllowedToNotify" multiselect="true" optionsContainer="workplacesDc"/>
-                            <textField id="userStatus" property="userStatus" visible="false"/>
+                            <textField id="nameField" property="name"/>
                         </column>
                     </form>
                 </scrollBox>

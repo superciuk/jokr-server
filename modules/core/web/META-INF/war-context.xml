@@ -9,8 +9,8 @@
       maxWaitMillis="5000"
       driverClassName="org.postgresql.Driver"
       url="jdbc:postgresql://localhost/jokerapp"
-      username="tomacelli"
-      password="9ldel600"/>
+      username="cuba"
+      password="cuba"/>
 
     <!-- Switch off session serialization -->
     <Manager pathname=""/>

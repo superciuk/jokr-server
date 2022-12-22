@@ -11,5 +11,6 @@
         <item screen="jokerapp$TableItem.browse" caption="mainMsg://menu_config.jokerapp_TableItem.browse"/>
         <item screen="jokerapp_TableItemArea.browse" caption="mainMsg://menu_config.jokerapp_TableItemArea.browse"/>
         <item screen="jokerapp_User.browse" caption="mainMsg://menu_config.jokerapp_User.browse"/>
+        <item screen="jokerapp_Workplace.browse" caption="mainMsg://menu_config.jokerapp_Workplace.browse"/>
     </menu>
 </menu-config>

@@ -84,10 +84,10 @@ public class PrinterServiceBean implements PrinterService {
                     y += 30;
                 }
 
-                /*if (printCopy==2) {
+                if (printCopy==2) {
                     graphics2D.drawString("COPIA PER SIMONE", xMin, y);
                     y += 30;
-                }*/
+                }
                 graphics2D.drawString("TAVOLO: ".concat(tableToPrint.getCurrentOrder().getTableItemCaption()), xMin, y);
                 y += 30;
                 graphics2D.setFont(font3);
@@ -203,10 +203,10 @@ public class PrinterServiceBean implements PrinterService {
                 try {
 
                     //linux
-                    bufferedImage = ImageIO.read(new File("/home/tomacelli/logo.jpg"));
+                    //bufferedImage = ImageIO.read(new File("/home/tomacelli/logo.jpg"));
 
                     //windows
-                    //bufferedImage = ImageIO.read(new File("c:\\logo.jpg"));
+                    bufferedImage = ImageIO.read(new File("c:\\logo.jpg"));
 
                 } catch (Exception e) {
                     log.error("Error", e);

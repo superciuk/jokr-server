@@ -8,6 +8,8 @@ public interface OrderService {
 
     String userLogin(String username, String userPassword);
 
+    boolean setNotificationToken(String userId, String token);
+
     String createNewOrder(String tableId, String actualSeats, String userId, String orderInProgress);
 
     String addToOrder(String orderId, String userId, String productItemId, String isModifier, String selectedOrderLineId, String plusOrMinus, String manualModifierText, String manualModifierPrice, String withModifiers);

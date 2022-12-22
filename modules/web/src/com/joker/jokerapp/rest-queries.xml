@@ -13,6 +13,9 @@
       <param name="userPassword" type="java.lang.String"/>
     </params>
   </query>
+  <query name="appUserAll" entity="jokerapp_User" view="user-view">
+    <jpql><![CDATA[select c from jokerapp_User c]]></jpql>
+  </query>
   <query name="preferences" entity="jokerapp_Preferences" view="_local">
     <jpql><![CDATA[select c from jokerapp_Preferences c where c.user.id = :userId]]></jpql>
       <params>

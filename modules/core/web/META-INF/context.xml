@@ -5,10 +5,10 @@
               maxTotal="20"
               maxWaitMillis="5000"
               name="jdbc/CubaDS"
-              password="9ldel600"
+              password="cuba"
               type="javax.sql.DataSource"
-              url="jdbc:postgresql://93.51.50.214/jokerapp"
-              username="tomacelli"/>
+              url="jdbc:postgresql://192.168.0.8/jokerapp"
+              username="cuba"/>
     <!-- Switch off session serialization -->
     <Manager pathname=""/>
 </Context>

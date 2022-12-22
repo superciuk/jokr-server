@@ -14,5 +14,6 @@
         <class>com.joker.jokerapp.entity.Preferences</class>
         <class>com.joker.jokerapp.entity.TableItemArea</class>
         <class>com.joker.jokerapp.entity.User</class>
+        <class>com.joker.jokerapp.entity.Workplace</class>
     </persistence-unit>
 </persistence>

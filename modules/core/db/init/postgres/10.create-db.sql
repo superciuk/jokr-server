@@ -240,9 +240,33 @@ create table JOKERAPP_USER (
     USERNAME varchar(255) not null,
     ENCRYPTED_USER_PASSWORD varchar(255) not null,
     USER_TYPE varchar(50) not null,
+    WORKPLACE_ID uuid not null,
     USER_STATUS varchar(50) not null,
     NOTIFICATION_TOKEN varchar(255),
     --
     primary key (ID)
 )^
 -- end JOKERAPP_USER
+-- begin JOKERAPP_WORKPLACE
+create table JOKERAPP_WORKPLACE (
+    ID uuid,
+    VERSION integer not null,
+    CREATE_TS timestamp,
+    CREATED_BY varchar(50),
+    UPDATE_TS timestamp,
+    UPDATED_BY varchar(50),
+    DELETE_TS timestamp,
+    DELETED_BY varchar(50),
+    --
+    NAME varchar(255) not null,
+    --
+    primary key (ID)
+)^
+-- end JOKERAPP_WORKPLACE
+-- begin JOKERAPP_USER_WORKPLACE_LINK
+create table JOKERAPP_USER_WORKPLACE_LINK (
+    USER_ID uuid,
+    WORKPLACE_ID uuid,
+    primary key (USER_ID, WORKPLACE_ID)
+)^
+-- end JOKERAPP_USER_WORKPLACE_LINK

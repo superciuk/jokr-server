@@ -42,6 +42,17 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
+    public boolean setNotificationToken (String userId, String token) {
+
+        User user = dataManager.load(User.class).id(UUID.fromString(userId)).view("user-view").one();
+        user.setNotificationToken(token);
+        dataManager.commit(user);
+
+        return true;
+
+    }
+
+    @Override
     public String createNewOrder(String tableId, String actualSeats, String userId, String orderInProgress) {
 
         TableItem tableItem = dataManager.load(TableItem.class).id(UUID.fromString(tableId)).view("tableItem-view").one();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
+
     <view class="com.joker.jokerapp.entity.ProductItemCategory"
           extends="_local"
           name="productCategory-view"/>
@@ -59,10 +60,7 @@
             <property name="createdBy"/>
             <property name="updateTs"/>
             <property name="updatedBy"/>
-            <property name="user" view="_minimal">
-                <property name="username"/>
-                <property name="userType"/>
-            </property>
+            <property name="user" view="user-view"/>
         </property>
         <property name="waiterCallUser" view="user-view"/>
     </view>
@@ -189,6 +187,13 @@
           extends="_local"
           name="user-view"
           entity="jokerapp_User">
+        <property name="workplace" view="_local"/>
+        <property name="workplacesAllowedToNotify" view="_local"/>
+    </view>
+    <view class="com.joker.jokerapp.entity.Workplace"
+          extends="_local"
+          name="workplace-view"
+          entity="jokerapp_Workplace">
     </view>
 
 </views>

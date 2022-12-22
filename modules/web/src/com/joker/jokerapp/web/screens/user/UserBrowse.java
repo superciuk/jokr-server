@@ -1,11 +1,8 @@
 package com.joker.jokerapp.web.screens.user;
 
-import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.gui.screen.*;
 import com.joker.jokerapp.entity.User;
 import com.joker.jokerapp.entity.UserStatus;
-
-import java.math.BigDecimal;
 
 @UiController("jokerapp_User.browse")
 @UiDescriptor("user-browse.xml")
