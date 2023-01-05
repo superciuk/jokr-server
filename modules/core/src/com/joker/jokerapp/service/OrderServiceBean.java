@@ -42,11 +42,34 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
-    public boolean setNotificationToken (String userId, String token) {
+    public boolean setNotificationToken (String userId, String token, String task) {
 
-        User user = dataManager.load(User.class).id(UUID.fromString(userId)).view("user-view").one();
-        user.setNotificationToken(token);
-        dataManager.commit(user);
+        switch (task) {
+            case "set": {
+
+                User user = dataManager.load(User.class).id(UUID.fromString(userId)).view("user-view").one();
+                user.setNotificationToken(token);
+                dataManager.commit(user);
+
+                break;
+            }
+            case "unset": {
+
+                User user = dataManager.load(User.class).id(UUID.fromString(userId)).view("user-view").one();
+                user.setNotificationToken(null);
+                dataManager.commit(user);
+
+                break;
+            }
+            case "unsetAll":
+
+                CommitContext commitContext= new CommitContext();
+                List<User> users = dataManager.load(User.class).view("user-view").list();
+                users.forEach(user -> {user.setNotificationToken(null); commitContext.addInstanceToCommit(user);});
+                dataManager.commit(commitContext);
+
+                break;
+        }
 
         return true;
 
@@ -750,24 +773,6 @@ public class OrderServiceBean implements OrderService {
 
         if (trueOrFalse.equals("true")) order.setOrderInProgress(true);
         else order.setOrderInProgress(false);
-
-        dataManager.commit(order);
-
-        return true;
-
-    }
-
-    @Override
-    public boolean setWaiterCall (String orderId, String userId) {
-
-        Order order = dataManager.load(Order.class).id(UUID.fromString(orderId)).view("order-view").one();
-
-        if (order.getWaiterCallUser()==null) {
-
-            User user = dataManager.load(User.class).id(UUID.fromString(userId)).view("user-view").one();
-            order.setWaiterCallUser(user);
-
-        } else order.setWaiterCallUser(null);
 
         dataManager.commit(order);
 

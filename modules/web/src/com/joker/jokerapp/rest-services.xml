@@ -11,6 +11,7 @@
         <method name="setNotificationToken">
             <param name="userId"/>
             <param name="token"/>
+            <param name="task"/>
         </method>
         <method name="createNewOrder">
             <param name="tableId"/>
@@ -98,10 +99,6 @@
         <method name="setOrderInProgress">
             <param name="orderId"/>
             <param name="trueOrFalse"/>
-        </method>
-        <method name="setWaiterCall">
-            <param name="orderId"/>
-            <param name="userId"/>
         </method>
     </service>
 

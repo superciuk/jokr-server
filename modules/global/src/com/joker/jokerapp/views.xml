@@ -178,6 +178,7 @@
           systemProperties="true">
         <property name="order" view="_minimal"/>
         <property name="orderLines" view="order-line-view"/>
+        <property name="user" view="user-view"/>
     </view>
     <view class="com.joker.jokerapp.entity.Preferences"
           extends="_local"

@@ -8,7 +8,7 @@ public interface OrderService {
 
     String userLogin(String username, String userPassword);
 
-    boolean setNotificationToken(String userId, String token);
+    boolean setNotificationToken(String userId, String token, String task);
 
     String createNewOrder(String tableId, String actualSeats, String userId, String orderInProgress);
 
@@ -45,7 +45,5 @@ public interface OrderService {
     boolean moveTable(String tableItemToMoveId, String newTableItemId);
 
     boolean setOrderInProgress(String orderId, String trueOrFalse);
-
-    boolean setWaiterCall(String orderId, String userId);
 
 }
